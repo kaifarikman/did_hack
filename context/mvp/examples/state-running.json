@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "run_id": "fixture-run-001",
+  "revision": 12,
+  "status": "running",
+  "scenario": "easy",
+  "seed": 42,
+  "judge_mode": "local",
+  "planner_mode": "fallback",
+  "simulation_time_s": 18.5,
+  "map_id": "fixture-map-v1",
+  "robot_pose": {
+    "position_x_m": -1.6,
+    "position_y_m": -0.5,
+    "heading_rad": 0.0
+  },
+  "base_position": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5
+  },
+  "battery_remaining": 55.8,
+  "battery_initial": 60,
+  "sample_signal": 0.68,
+  "samples_collected": 0,
+  "return_energy_estimate": 1.8,
+  "current_goal": {
+    "kind": "explore",
+    "target": {
+      "position_x_m": -1.3,
+      "position_y_m": -0.3
+    },
+    "reason": "Сравнить расход на соседнем участке до продолжения поиска."
+  },
+  "trajectory": [
+    {
+      "position_x_m": -2.0,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.8,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.6,
+      "position_y_m": -0.5
+    }
+  ],
+  "planned_path": [
+    {
+      "position_x_m": -1.6,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.5,
+      "position_y_m": -0.3
+    },
+    {
+      "position_x_m": -1.3,
+      "position_y_m": -0.3
+    }
+  ],
+  "collected_samples": [],
+  "terrain_estimates": [
+    {
+      "region_id": "observed-area-1",
+      "center": {
+        "position_x_m": -1.7,
+        "position_y_m": -0.5
+      },
+      "radius_m": 0.2,
+      "energy_per_m": 2.1,
+      "confidence": 0.4
+    }
+  ],
+  "last_error": null
+}

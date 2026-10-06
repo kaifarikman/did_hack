@@ -1,0 +1,13 @@
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+
+.git
+.DS_Store
+**/node_modules
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/dist

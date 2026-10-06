@@ -1,0 +1,2 @@
+# Occupancy rasters are binary PGM images, not reviewable text.
+*.pgm binary
