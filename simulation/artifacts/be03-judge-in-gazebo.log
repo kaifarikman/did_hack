@@ -1,0 +1,8 @@
+MOVE: clock +4.96s odom (0.4929500096014108, 1.0809788010401215e-12) -> (0.9827000095999945, 2.0183124727143428e-12) world (-1.0172999904000055, -0.49999999999798167)
+STOP: odom (0.98410000960186, 2.0207665513219854e-12) -> (0.98410000960186, 2.0207665513219854e-12) drift_m=0.00000
+RESULT OK
+data: 57.50885009765625
+---
+data: '{"judge_mode": "local", "state": "running", "score": -2.0, "collected": 0, "collisions": 0, "false_collects": 1, "finished": false, "finish_success": false, "battery": 57.50884999999858, "simulation_time_s": 334.896}'
+---
+std_srvs.srv.Trigger_Response(success=False, message='not_at_base')

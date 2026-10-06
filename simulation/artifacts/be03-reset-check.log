@@ -1,0 +1,13 @@
+RESULT OK
+RESULT OK
+data: 59.01449966430664
+b'{"state": "ready", "seed": 5}'
+
+real	0m6.212s
+user	0m0.034s
+sys	0m0.001s
+data: 60.0
+x: 9.600839178895098e-09
+y: -2.2140745915100947e-21
+data: '{"judge_mode": "local", "state": "running", "score": 0.0, "collected": 0, "collisions": 0, "false_collects": 0, "finished": fals...'
+---
