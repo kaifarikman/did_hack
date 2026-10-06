@@ -1,0 +1,40 @@
+{
+  "run_id": "fixture-run-001",
+  "entries": [
+    {
+      "sequence": 1,
+      "simulation_time_s": 0.0,
+      "kind": "decision",
+      "title": "Начало миссии",
+      "detail": "Синтетический пример работы с локальным судьёй.",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 2,
+      "simulation_time_s": 16.0,
+      "kind": "hypothesis",
+      "title": "Повышенный расход на участке",
+      "detail": "Требуется сравнение при сопоставимых условиях движения.",
+      "hypothesis_id": "fixture-hypothesis-1",
+      "expected": "На соседнем участке расход на метр ниже.",
+      "observed": "Предварительная оценка текущего участка — 2.1 ед./м.",
+      "conclusion": null
+    },
+    {
+      "sequence": 3,
+      "simulation_time_s": 18.5,
+      "kind": "experiment",
+      "title": "Проверка соседнего участка",
+      "detail": "Выбрана короткая проба с сохранением запаса возврата.",
+      "hypothesis_id": "fixture-hypothesis-1",
+      "expected": "Получить сравнительную оценку расхода.",
+      "observed": null,
+      "conclusion": null
+    }
+  ],
+  "next_sequence": 3,
+  "has_more": false
+}

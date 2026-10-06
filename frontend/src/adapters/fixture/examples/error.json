@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "environment_not_ready",
+    "message": "Ожидаются наблюдения ROS.",
+    "retryable": true
+  }
+}

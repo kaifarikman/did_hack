@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "run_id": null,
+  "revision": 0,
+  "status": "idle",
+  "scenario": null,
+  "seed": null,
+  "judge_mode": "local",
+  "planner_mode": "fallback",
+  "simulation_time_s": null,
+  "map_id": "fixture-map-v1",
+  "robot_pose": null,
+  "base_position": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5
+  },
+  "battery_remaining": null,
+  "battery_initial": 60,
+  "sample_signal": null,
+  "samples_collected": 0,
+  "return_energy_estimate": null,
+  "current_goal": null,
+  "trajectory": [],
+  "planned_path": [],
+  "collected_samples": [],
+  "terrain_estimates": [],
+  "last_error": null
+}
