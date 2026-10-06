@@ -1,0 +1,16 @@
+FROM ros:jazzy-ros-base
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    TURTLEBOT3_MODEL=burger \
+    GZ_SIM_RESOURCE_PATH=/opt/ros/jazzy/share/turtlebot3_gazebo/models
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ros-jazzy-turtlebot3-gazebo \
+        ros-jazzy-turtlebot3-navigation2 \
+        ros-jazzy-ros-gz-sim \
+        ros-jazzy-ros-gz-bridge \
+        ros-jazzy-turtlebot3-description \
+        python3-pytest python3-numpy \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace

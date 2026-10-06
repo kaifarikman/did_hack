@@ -1,0 +1,4 @@
+FROM did-sim:dev
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        xvfb x11vnc novnc websockify mesa-utils libgl1-mesa-dri openbox imagemagick \
+    && rm -rf /var/lib/apt/lists/*

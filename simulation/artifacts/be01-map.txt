@@ -1,0 +1,33 @@
+image: map.pgm
+resolution: 0.050000
+origin: [-10.000000, -10.000000, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+
+P5
+# CREATOR: map_sa1
+meshes
+model-1_4.sdf
+model.config
+model.sdf
+7:          <pose>-1.1 -1.1 0.25 0 0 0</pose>
+27:          <pose>-1.1 -1.1 0.25 0 0 0</pose>
+43:          <pose>-1.1 0 0.25 0 0 0</pose>
+63:          <pose>-1.1 0 0.25 0 0 0</pose>
+79:          <pose>-1.1 1.1 0.25 0 0 0</pose>
+99:          <pose>-1.1 1.1 0.25 0 0 0</pose>
+115:          <pose>0 -1.1 0.25 0 0 0</pose>
+135:          <pose>0 -1.1 0.25 0 0 0</pose>
+151:          <pose>0 0 0.25 0 0 0</pose>
+171:          <pose>0 0 0.25 0 0 0</pose>
+187:          <pose>0 1.1 0.25 0 0 0</pose>
+207:          <pose>0 1.1 0.25 0 0 0</pose>
+223:          <pose>1.1 -1.1 0.25 0 0 0</pose>
+243:          <pose>1.1 -1.1 0.25 0 0 0</pose>
+259:          <pose>1.1 0 0.25 0 0 0</pose>
+279:          <pose>1.1 0 0.25 0 0 0</pose>
+295:          <pose>1.1 1.1 0.25 0 0 0</pose>
+315:          <pose>1.1 1.1 0.25 0 0 0</pose>
+332:          <pose>3.5 0 -0.5 0 0 0</pose>
+352:          <pose>3.5 0 -0.5 0 0 0</pose>

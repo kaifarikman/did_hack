@@ -1,0 +1,19 @@
+aarch64
+ros-jazzy-gz-sim-vendor 0.0.13-1noble.20260904.022149 arm64
+ros-jazzy-ros-gz-sim 1.0.24-1noble.20261006.040359 arm64
+ros-jazzy-turtlebot3-gazebo 2.3.7-1noble.20261006.044322 arm64
+ros-jazzy-turtlebot3-navigation2 2.3.6-1noble.20261006.050100 arm64
+/opt/ros/jazzy/share/turtlebot3_gazebo/launch:
+empty_world.launch.py
+robot_state_publisher.launch.py
+spawn_turtlebot3.launch.py
+turtlebot3_dqn_stage1.launch.py
+turtlebot3_dqn_stage2.launch.py
+turtlebot3_dqn_stage3.launch.py
+turtlebot3_dqn_stage4.launch.py
+turtlebot3_house.launch.py
+turtlebot3_world.launch.py
+
+/opt/ros/jazzy/share/turtlebot3_navigation2/map:
+map.pgm
+map.yaml

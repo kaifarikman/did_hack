@@ -1,0 +1,22 @@
+header {
+  stamp {
+    sec: 60
+    nsec: 23000000
+  }
+}
+pose {
+  name: "burger"
+  id: 43
+  position {
+    x: -1.5211281655271218
+    y: -0.49999511418179926
+    z: 0.010008826122567236
+  }
+  orientation {
+    x: -3.4138752334205261e-09
+    y: -0.0062295444775012669
+    z: -1.4278793090639524e-08
+    w: 0.9999805961995476
+  }
+/world/default/dynamic_pose/info
+/world/default/pose/info
