@@ -41,3 +41,44 @@ services:
     depends_on:
       simulation:
         condition: service_healthy
+
+  backend:
+    build:
+      context: backend
+    init: true
+    environment:
+      ROS_DOMAIN_ID: "7"
+      SIMULATION_URL: http://simulation:7000
+      MAP_YAML: /workspace/simulation/judge/data/map.yaml
+      JOURNAL_DIR: /data/journal
+      LLM_ENDPOINT: ${LLM_ENDPOINT:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+    volumes:
+      - ./simulation/judge/data:/workspace/simulation/judge/data:ro
+      - journal:/data/journal
+    expose:
+      - "8000"
+    depends_on:
+      simulation:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # Панель: docker compose up → http://localhost:8080
+  frontend:
+    build:
+      context: frontend
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  journal:

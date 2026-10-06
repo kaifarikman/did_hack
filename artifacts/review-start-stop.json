@@ -1,0 +1,18 @@
+{
+  "run_id": "d2823dc2920641b8ade5b5a77e765ff4",
+  "kind": "start_motion_stop_smoke",
+  "full_mission": false,
+  "moving_pose": {
+    "position_x_m": -1.9999190591493363,
+    "position_y_m": -0.49999961709079777,
+    "heading_rad": 0.8180669094132712
+  },
+  "final_status": "stopped",
+  "last_error": null,
+  "physical_stop_probe": {
+    "odom_samples": 192,
+    "max_translation_m": 0.0,
+    "max_rotation_rad": 0.0,
+    "commands_all_zero": true
+  }
+}
