@@ -1,0 +1,46 @@
+{
+  "source_commit": "e7e32056d3d846ba4fc11f8daa5fa2527f66d4ab",
+  "seed": 1,
+  "scenario": "easy",
+  "judge_mode": "local",
+  "start_method": "Chrome UI Start via CUA",
+  "images": [
+    {
+      "ID": "sha256:e22e24bde82802164c6c40fe4b054e420de137faa9501a67efc441a3a2a9ced8",
+      "ContainerName": "did_hack-gui-1",
+      "Repository": "did_hack-gui",
+      "Tag": "latest",
+      "Platform": "linux/arm64",
+      "Size": 1072269622,
+      "LastTagTime": "2026-10-06T17:45:14.267854177Z"
+    },
+    {
+      "ID": "sha256:aab327d4fd018ed0eccc560b4b993b4ff6250a1ee3a847843d3498ba4801541c",
+      "ContainerName": "did_hack-backend-1",
+      "Repository": "did_hack-backend",
+      "Tag": "latest",
+      "Platform": "linux/arm64",
+      "Size": 298115228,
+      "LastTagTime": "2026-10-06T20:27:22.296901049Z"
+    },
+    {
+      "ID": "sha256:f774edce075b5b370d8360a38c60955123a44df48dd7f0c8f5bbb0c5d0870c41",
+      "ContainerName": "did_hack-frontend-1",
+      "Repository": "did_hack-frontend",
+      "Tag": "latest",
+      "Platform": "linux/arm64",
+      "Size": 25919526,
+      "LastTagTime": "2026-10-06T20:27:22.280718132Z"
+    },
+    {
+      "ID": "sha256:8536aa02052ba3a2fedde83a89d62c7a7a33db76898f46f3db91323830b9c614",
+      "ContainerName": "did_hack-simulation-1",
+      "Repository": "did-sim",
+      "Tag": "dev",
+      "Platform": "linux/arm64",
+      "Size": 1003894412,
+      "LastTagTime": "2026-10-06T20:27:22.292163632Z"
+    }
+  ],
+  "notes": "Default configuration; no changes to battery, placements, target_samples or physics for acceptance."
+}

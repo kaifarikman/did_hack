@@ -1,0 +1,117 @@
+{
+  "run_id": "67b4bc099afb47e8ac8b81050ff7fc3d",
+  "last_sequence": 10,
+  "entry_count": 10,
+  "entries": [
+    {
+      "sequence": 1,
+      "simulation_time_s": null,
+      "kind": "decision",
+      "title": "Начало миссии",
+      "detail": "Сценарий easy, seed 1, судья local.",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 2,
+      "simulation_time_s": 5.541,
+      "kind": "decision",
+      "title": "Подцель: explore",
+      "detail": "Исследовать ближайшую перспективную точку при достаточном заряде Источник: llm. Расход по маршруту ≈ 4.5, оценка возврата 0.0 (по 0 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 3,
+      "simulation_time_s": 22.523,
+      "kind": "decision",
+      "title": "Подцель: explore",
+      "detail": "Исследовать наиболее перспективную кандидатную точку при достаточном заряде Источник: llm. Расход по маршруту ≈ 4.4, оценка возврата 3.0 (по 3 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 4,
+      "simulation_time_s": 37.988,
+      "kind": "decision",
+      "title": "Подцель: explore",
+      "detail": "Достаточный заряд; исследую наиболее перспективную кандидатную точку с максимальным ожидаемым сигналом Источник: llm. Расход по маршруту ≈ 4.6, оценка возврата 5.8 (по 5 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 5,
+      "simulation_time_s": 57.143,
+      "kind": "decision",
+      "title": "Подцель: explore",
+      "detail": "Исследую кандидат с максимальным ожидаемым сигналом при достаточном заряде Источник: llm. Расход по маршруту ≈ 5.4, оценка возврата 9.5 (по 5 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 6,
+      "simulation_time_s": 80.066,
+      "kind": "decision",
+      "title": "Подцель: explore",
+      "detail": "Достаточный заряд; исследую наиболее перспективную точку с максимальным ожидаемым сигналом Источник: llm. Расход по маршруту ≈ 4.4, оценка возврата 5.3 (по 5 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 7,
+      "simulation_time_s": 98.4,
+      "kind": "outcome",
+      "title": "Образец собран",
+      "detail": "sample-1: подтверждён судьёй в точке (-1.40, 1.50).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 8,
+      "simulation_time_s": 102.212,
+      "kind": "decision",
+      "title": "Подцель отклонена исполнителем",
+      "detail": "collect: сигнал ниже порога попытки сбора. Источник: llm.",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 9,
+      "simulation_time_s": 102.212,
+      "kind": "decision",
+      "title": "Подцель: approach",
+      "detail": "Резервная цель после отказа исполнителя. Источник: fallback. Расход по маршруту ≈ 4.2, оценка возврата 5.1 (по 5 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    },
+    {
+      "sequence": 10,
+      "simulation_time_s": 121.464,
+      "kind": "decision",
+      "title": "Подцель: explore",
+      "detail": "Заряда достаточно для исследования наиболее перспективной кандидатной точки и последующего возврата на базу Источник: llm. Расход по маршруту ≈ 7.5, оценка возврата 8.3 (по 6 измеренным участкам).",
+      "hypothesis_id": null,
+      "expected": null,
+      "observed": null,
+      "conclusion": null
+    }
+  ]
+}
