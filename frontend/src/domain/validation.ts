@@ -8,6 +8,7 @@ import type {
   MissionSnapshot,
   Point,
 } from "./contract";
+import { SCENARIOS } from "./contract";
 
 export class ContractError extends Error {
   constructor(message: string) {
@@ -144,7 +145,7 @@ export function parseSnapshot(raw: unknown): MissionSnapshot {
     run_id: field(source, "run_id", path, nullable(readString)),
     revision: field(source, "revision", path, numberReader({ min: 0 }, true)),
     status: field(source, "status", path, readRunStatus),
-    scenario: field(source, "scenario", path, nullable(enumReader(["easy"] as const))),
+    scenario: field(source, "scenario", path, nullable(enumReader(SCENARIOS))),
     seed: field(source, "seed", path, nullable(numberReader({}, true))),
     judge_mode: field(source, "judge_mode", path, enumReader(["local", "official"] as const)),
     planner_mode: field(source, "planner_mode", path, enumReader(["llm", "fallback"] as const)),
@@ -207,6 +208,10 @@ export function parseHealth(raw: unknown): HealthStatus {
     ros_connected: field(source, "ros_connected", path, readBoolean),
     judge_mode: field(source, "judge_mode", path, enumReader(["local", "official"] as const)),
     llm_available: field(source, "llm_available", path, readBoolean),
+    supported_scenarios:
+      source.supported_scenarios === undefined
+        ? ["easy"]
+        : field(source, "supported_scenarios", path, arrayOf(enumReader(SCENARIOS))),
   };
 }
 

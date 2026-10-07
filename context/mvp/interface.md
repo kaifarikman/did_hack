@@ -16,10 +16,10 @@
 
 | Метод и путь | Результат | Ошибки |
 | --- | --- | --- |
-| `GET /health` | 200: `{ "status": "ready" или "starting", "ros_connected": boolean, "judge_mode": "local" или "official", "llm_available": boolean }` | 503, если процесс не может обслуживать запросы |
+| `GET /health` | 200: `{ "status": "ready" или "starting", "ros_connected": boolean, "judge_mode": "local" или "official", "llm_available": boolean, "supported_scenarios": ["easy" \| "medium" \| "hard"] }`. Поле `supported_scenarios` добавлено совместимо (F02); клиент без него считает доступным только easy | 503, если процесс не может обслуживать запросы |
 | `GET /state` | 200: снимок ниже; до первого прогона `run_id: null`, `status: idle` | 503 при недоступности состояния |
 | `GET /map` | 200: карта ниже, доступна независимо от активного прогона | 503, пока карта не загружена |
-| `POST /runs` | Тело `{ "request_id": string, "scenario": "easy", "seed": integer }`; 202: снимок нового прогона | 409, если другой прогон активен; 422 неверный запрос; 503 среда не готова |
+| `POST /runs` | Тело `{ "request_id": string, "scenario": "easy" \| "medium" \| "hard", "seed": integer }`; 202: снимок нового прогона | 409 `run_conflict`, если другой прогон активен; 409 `scenario_unavailable`, если профиль не входит в `supported_scenarios`; 422 неверный запрос или неизвестный профиль; 503 среда не готова |
 | `POST /runs/{run_id}/stop` | Тело `{ "request_id": string }`; 202: текущий снимок, подтверждение остановки приходит в `/state` | 404 неизвестный прогон; 409 это не текущий прогон |
 | `GET /runs/{run_id}/journal?after_sequence=0&limit=100` | 200: страница журнала ниже | 404 неизвестный прогон; 422 неверные параметры |
 
@@ -37,7 +37,7 @@ HTTP-команда старт/стоп подтверждает приняти�
 | `run_id` | Строка или null до первого прогона |
 | `revision` | Целое >= 0 |
 | `status` | `idle`, `starting`, `running`, `returning`, `stopping`, `completed`, `stopped`, `failed` |
-| `scenario` | `easy` или null в idle |
+| `scenario` | `easy`, `medium`, `hard` или null в idle |
 | `seed` | Целое или null в idle |
 | `judge_mode` | `local` или `official` |
 | `planner_mode` | `llm` или `fallback` |

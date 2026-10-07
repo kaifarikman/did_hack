@@ -71,10 +71,18 @@ def create_default_app() -> FastAPI:
     llm_config = LlmConfig.from_environment()
     runtime = RosRuntime(observation_max_age_s=settings.observation_max_age_s)
     bridge = runtime.bridge
-    # Супервизор MVP принимает только seed: обёртка честно отклоняет medium/hard, SLAM и второго робота.
-    simulation = LegacySimulationControl(SupervisorSimulationControl(
-        os.environ.get("SIMULATION_URL", "http://simulation:7000"), bridge.clear_observations))
-    environment = _Environment(runtime, llm_config is not None, settings.judge_mode)
+    supervisor = SupervisorSimulationControl(
+        os.environ.get("SIMULATION_URL", "http://simulation:7000"), bridge.clear_observations)
+    if os.environ.get("SIMULATION_CONTRACT", "legacy") == "2.0":
+        # адаптер A подтверждает ResetRequest сам; профили перечисляет среда
+        simulation, scenarios = supervisor, tuple(os.environ.get("SUPPORTED_SCENARIOS", "easy").split(","))
+    else:
+        # Супервизор MVP принимает только seed: обёртка честно отклоняет medium/hard, SLAM и второго робота.
+        simulation, scenarios = LegacySimulationControl(supervisor), LEGACY_SCENARIOS
+    environment = _Environment(runtime, llm_config is not None, settings.judge_mode, scenarios)
+    # События и счёт подключаются, когда мост A их реализует (контракт 2.0); иначе ядро работает как в MVP.
+    events = bridge if hasattr(bridge, "events_after") else None
+    score = bridge if hasattr(bridge, "score") else None
     clock = _MonotonicClock()
 
     def build_controller(mission: Mission) -> MissionController:
@@ -86,6 +94,7 @@ def create_default_app() -> FastAPI:
             motion=MotionExecutor(bridge, StuckDetector(), settings.arrival_tolerance_m),
             judge=bridge, simulation=simulation, planner=planner, journal=journal,
             navigation=NavigationService(grid, estimator, settings), clock=clock,
+            events=events, score=score,
         )
         return MissionController(mission, ports, settings, estimator, SignalSearch(), HypothesisBook())
 

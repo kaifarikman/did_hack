@@ -12,6 +12,8 @@ export const ACTIVE_STATUSES: readonly RunStatus[] = ["starting", "running", "re
 export const FINISHED_STATUSES: readonly RunStatus[] = ["completed", "stopped", "failed"];
 
 export type GoalKind = "explore" | "approach" | "collect" | "return";
+export const SCENARIOS = ["easy", "medium", "hard"] as const;
+export type Scenario = (typeof SCENARIOS)[number];
 export type JudgeMode = "local" | "official";
 export type PlannerMode = "llm" | "fallback";
 export type JournalKind = "observation" | "hypothesis" | "experiment" | "decision" | "outcome" | "error";
@@ -55,7 +57,7 @@ export interface MissionSnapshot {
   run_id: string | null;
   revision: number;
   status: RunStatus;
-  scenario: "easy" | null;
+  scenario: Scenario | null;
   seed: number | null;
   judge_mode: JudgeMode;
   planner_mode: PlannerMode;
@@ -81,6 +83,8 @@ export interface HealthStatus {
   ros_connected: boolean;
   judge_mode: JudgeMode;
   llm_available: boolean;
+  /** Профили, которые среда применяет при reset; старый backend без поля — только easy. */
+  supported_scenarios: Scenario[];
 }
 
 export interface MapOrigin {
@@ -119,7 +123,7 @@ export interface JournalPage {
 
 export interface StartRunRequest {
   request_id: string;
-  scenario: "easy";
+  scenario: Scenario;
   seed: number;
 }
 

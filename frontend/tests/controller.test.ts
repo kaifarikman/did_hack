@@ -198,6 +198,15 @@ describe("команды", () => {
     expect(harness.controller.getView().snapshot?.run_id).toBe("run-a");
   });
 
+  it("Start передаёт выбранный профиль", async () => {
+    const harness = await boot();
+    const pending = harness.controller.startRun(9, "hard");
+    await flush();
+    expect(harness.gateway.startCalls[0]?.request).toEqual({ request_id: "req-1", scenario: "hard", seed: 9 });
+    lastOf(harness.gateway.startCalls).deferred.resolve(runA({ revision: 1, status: "starting" }));
+    await pending;
+  });
+
   it("Start недоступен без готовности среды и без свежей связи", async () => {
     const harness = create();
     harness.controller.start();

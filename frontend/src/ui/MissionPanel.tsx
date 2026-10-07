@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SCENARIOS, type Scenario } from "../domain/contract";
 import type { MissionController } from "../application/missionController";
 import { startDisabledReason, stopDisabledReason, type MissionViewState } from "../application/viewState";
 import {
@@ -30,10 +31,15 @@ const OUTCOME_TEXT: Record<Exclude<OutcomeKind, "none">, string> = {
 
 export function MissionPanel({ view, controller }: MissionPanelProps) {
   const [seedText, setSeedText] = useState("42");
+  const [scenario, setScenario] = useState<Scenario>("easy");
   const { snapshot, health, command } = view;
+  const supported = health?.supported_scenarios ?? ["easy"];
   const seed = Number(seedText);
   const seedValid = seedText.trim() !== "" && Number.isInteger(seed);
-  const startReason = startDisabledReason(view) ?? (seedValid ? null : "seed должен быть целым числом");
+  const startReason =
+    startDisabledReason(view) ??
+    (seedValid ? null : "seed должен быть целым числом") ??
+    (supported.includes(scenario) ? null : `профиль ${scenario} не поддерживается средой`);
   const stopReason = stopDisabledReason(view);
   const ratio = snapshot === null ? null : batteryRatio(snapshot.battery_remaining, snapshot.battery_initial);
   const outcome = snapshot === null ? "none" : outcomeKind(snapshot.status);
@@ -79,7 +85,11 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
             <dt>Подтверждённых сборов</dt>
             <dd>{snapshot.samples_collected}</dd>
             <dt>Прогон</dt>
-            <dd>{snapshot.run_id ?? "нет данных"}{snapshot.seed !== null && ` · seed ${snapshot.seed}`}</dd>
+            <dd>
+              {snapshot.run_id ?? "нет данных"}
+              {snapshot.scenario !== null && ` · ${snapshot.scenario}`}
+              {snapshot.seed !== null && ` · seed ${snapshot.seed}`}
+            </dd>
           </dl>
 
           <div className="goal">
@@ -104,7 +114,18 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
 
       <div className="controls">
         <label className="seed-field">
-          seed (easy)
+          Профиль
+          <select value={scenario} onChange={(event) => setScenario(event.target.value as Scenario)}>
+            {SCENARIOS.map((name) => (
+              <option key={name} value={name} disabled={!supported.includes(name)}>
+                {name}
+                {supported.includes(name) ? "" : " (нет в среде)"}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="seed-field">
+          seed
           <input
             type="text"
             inputMode="numeric"
@@ -118,7 +139,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           className="button-primary"
           disabled={startReason !== null}
           aria-describedby="command-hint"
-          onClick={() => void controller.startRun(seed)}
+          onClick={() => void controller.startRun(seed, scenario)}
         >
           Start
         </button>

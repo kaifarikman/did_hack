@@ -39,7 +39,13 @@ interface FixtureRun {
   outageTriggered: boolean;
 }
 
-const FIXTURE_HEALTH: HealthStatus = { status: "ready", ros_connected: true, judge_mode: "local", llm_available: true };
+const FIXTURE_HEALTH: HealthStatus = {
+  status: "ready",
+  ros_connected: true,
+  judge_mode: "local",
+  llm_available: true,
+  supported_scenarios: ["easy"],
+};
 
 function clone<T>(value: T): T {
   return structuredClone(value);
