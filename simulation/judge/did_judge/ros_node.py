@@ -19,6 +19,7 @@ from .config import JudgeConfig
 from .engine import JudgeEngine
 from .occupancy import load_occupancy_grid
 from .dynamics import generate_event_schedule
+from .gazebo_pose import GazeboPoseSource
 from .scenario import generate_scenario
 from .soil_slowdown import DEFAULT_STATE_PATH, write_soil_state
 
@@ -48,6 +49,7 @@ class JudgeNode(Node):
         self.simulation_time_s = 0.0
         self.last_collision_time_s = -COLLISION_COOLDOWN_S
         self.published_events = 0
+        self.physical_pose_source = self._open_physical_pose_source()
 
         self.battery_pub = self.create_publisher(Float32, "/did/battery", 10)
         self.sensor_pub = self.create_publisher(Float32, "/did/sample_sensor", 10)
@@ -61,12 +63,30 @@ class JudgeNode(Node):
         self.create_timer(0.2, self._publish_fast)
         self.create_timer(1.0, self._publish_score)
         self.create_timer(0.2, self._publish_soil_state)
+        self.create_timer(0.05, self._apply_physical_pose)
         self.get_logger().info(f"Судья local готов: seed={seed} (истина не публикуется)")
 
     def _on_clock(self, message):
         self.simulation_time_s = message.clock.sec + message.clock.nanosec * 1e-9
 
+    def _open_physical_pose_source(self):
+        """Поза судьи — физическая из Gazebo; одометрия только как явный запасной вариант."""
+        if self.config.pose_source != "gazebo":
+            return None
+        try:
+            return GazeboPoseSource()
+        except Exception as error:  # нет привязок gz или подписка не удалась
+            self.get_logger().error(f"Физическая поза Gazebo недоступна, судья использует odom: {error}")
+            return None
+
+    def _apply_physical_pose(self):
+        pose = self.physical_pose_source.latest() if self.physical_pose_source else None
+        if pose is not None:
+            self.engine.update_pose(pose[0], pose[1], pose[2], self.simulation_time_s)
+
     def _on_odom(self, message):
+        if self.physical_pose_source is not None:
+            return
         position = message.pose.pose.position
         base_x, base_y = self.config.base_world_m
         self.engine.update_pose(base_x + position.x, base_y + position.y,

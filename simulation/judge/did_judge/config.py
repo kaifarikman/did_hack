@@ -32,6 +32,7 @@ class JudgeConfig:
     score_per_false_collect: float = 2.0
     pose_jump_limit_m: float = 0.5
     max_round_trip_battery_fraction: float = 0.5
+    pose_source: str = "gazebo"  # gazebo | odom
     dynamic_events: bool = False
     event_earliest_s: float = 60.0
     event_window_s: float = 240.0
