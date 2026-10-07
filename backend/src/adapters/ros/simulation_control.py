@@ -15,7 +15,7 @@ class SupervisorSimulationControl:
     def reset(self, scenario: str, seed: int) -> None:
         self._on_reset()  # старые наблюдения не должны попасть в новый прогон
         request = urllib.request.Request(
-            f"{self._url}/reset", data=json.dumps({"seed": seed}).encode(),
+            f"{self._url}/reset", data=json.dumps({"seed": seed, "scenario": scenario}).encode(),
             headers={"Content-Type": "application/json"}, method="POST",
         )
         with urllib.request.urlopen(request, timeout=self._timeout_s) as response:  # HTTPError = отказ
