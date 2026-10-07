@@ -1,0 +1,6 @@
+backend-1  | INFO:     172.18.0.4:56472 - "GET /api/v1/state HTTP/1.1" 200 OK
+backend-1  | INFO:     172.18.0.4:56480 - "GET /api/v1/state HTTP/1.1" 200 OK
+backend-1  | INFO:     Shutting down
+backend-1  | INFO:     Waiting for application shutdown.
+backend-1  | INFO:     Application shutdown complete.
+backend-1  | INFO:     Finished server process [7]

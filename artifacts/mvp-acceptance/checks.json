@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-07",
+  "backend": {
+    "passed": 86,
+    "failed": 0,
+    "command": "docker run --rm -e ROS_DOMAIN_ID=79 -v \"$PWD:/workspace:ro\" -w /workspace/backend --entrypoint bash did_hack-backend -c 'source /opt/ros/jazzy/setup.bash && python3 -m pytest tests -q'",
+    "warnings": [
+      "Starlette/httpx deprecation",
+      "pytest cache cannot write to read-only mount",
+      "One ROS asynchronous destroyed-object message after suite; standalone lifecycle rerun clean"
+    ]
+  },
+  "ros_lifecycle": {
+    "passed": 3,
+    "failed": 0,
+    "before_fix": {
+      "passed": 1,
+      "failed": 2
+    }
+  },
+  "unchanged_suites_from_previous_review": {
+    "judge": 40,
+    "frontend": 75,
+    "frontend_build": "passed"
+  },
+  "secret_scan": {
+    "configured_secrets_checked": 1,
+    "tracked_file_matches": 0
+  }
+}
