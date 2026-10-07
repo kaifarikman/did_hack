@@ -1,0 +1,25 @@
+{
+ "scenario": "medium",
+ "split": "tuning",
+ "manifest": {
+  "commit": "1f8b2d5ed581efc84fc4999adb19cefaefba8819",
+  "dirty": true,
+  "config_sha256": {
+   "compose.yaml": "bc67998b20f746dedccb95db508cd8569358109513d42444fb45177d4523b1d6",
+   "simulation/judge/config/local_easy.json": "940ddb4ceae2c4d7ce165a28458a84a0f4e766fa61598b3231e4fb277207afdb",
+   "simulation/judge/config/local_medium.json": "383e3cc366af05f74ced74ea83a71ae8fb1e005fe06b8852946de7f6ee1dbe25",
+   "simulation/judge/config/local_hard.json": "9ba3ecaab1d68f39e9d8c31773c9c6063458eff44790cbeeb00cd337bfd43a1c"
+  }
+ },
+ "runs": [
+  {
+   "seed": 1,
+   "outcome": "failed",
+   "success": false,
+   "samples": 0,
+   "battery": 4.395349025726318,
+   "wall_time_s": 292.9,
+   "file": "medium-seed1-failed.json"
+  }
+ ]
+}
