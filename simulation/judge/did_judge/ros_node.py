@@ -18,6 +18,7 @@ from std_srvs.srv import Trigger
 from .config import JudgeConfig
 from .engine import JudgeEngine
 from .occupancy import load_occupancy_grid
+from .dynamics import generate_event_schedule
 from .scenario import generate_scenario
 
 DEFAULT_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
@@ -40,7 +41,9 @@ class JudgeNode(Node):
         self.config = JudgeConfig.from_json_file(config_path) if config_path else JudgeConfig()
         grid = load_occupancy_grid(self.get_parameter("map_yaml").value)
         seed = int(self.get_parameter("seed").value)
-        self.engine = JudgeEngine(generate_scenario(seed, grid, self.config), self.config)
+        scenario = generate_scenario(seed, grid, self.config)
+        schedule = generate_event_schedule(seed, grid, self.config, scenario) if self.config.dynamic_events else None
+        self.engine = JudgeEngine(scenario, self.config, schedule=schedule)
         self.simulation_time_s = 0.0
         self.last_collision_time_s = -COLLISION_COOLDOWN_S
         self.published_events = 0
@@ -88,7 +91,9 @@ class JudgeNode(Node):
     def _publish_fast(self):
         self.battery_pub.publish(Float32(data=float(self.engine.battery)))
         if self.engine.active:
-            self.sensor_pub.publish(Float32(data=float(self.engine.sample_signal())))
+            signal = self.engine.sample_signal()
+            if signal is not None:
+                self.sensor_pub.publish(Float32(data=float(signal)))
         for event in self.engine.events[self.published_events:]:
             self.events_pub.publish(String(data=json.dumps({
                 "type": event.kind,
