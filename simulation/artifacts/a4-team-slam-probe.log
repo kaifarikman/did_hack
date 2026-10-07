@@ -1,0 +1,10 @@
+reset seed=2 scenario=medium map_mode=slam robots=2; scripts/probe_team_slam.py, оба робота: 2 круга квадрата 0.5 м
+localization_error_m: robot_1 mean=0.013 max=0.028 (≈14.4k замеров); robot_2 mean=0.013 max=0.026 (≈14.4k замеров)
+team_map (/team/map, frame=world): 89x103, origin=(-2.95,-2.55), known_cells=4832, occupied_cells=433
+occupied_match_with_reference (допуск 0.06 м) = 0.979
+occupied_match_if_shifted_0_3m = 0.533   (метрика различает привязку)
+occupied_match_if_double_shifted (сдвиг на базу (-2.0,-0.5)) = 0.864 (слабо различает: мир почти симметричен, сдвиг попадает на другие стены)
+Эталон карты читает только проба; агентские процессы его не получают.
+Для запуска потребовались исправления: ключ параметров SLAM /** (иначе файл не применялся к namespaced-узлам),
+ремап /map и /map_metadata на /robot_N/*, накопление готовых топиков в проверке готовности supervisor.
+Не проверено: loop closure на длинных маршрутах, поведение при потере одного робота во время SLAM, слияние при относительном повороте стартов (допущение: старты без поворота).

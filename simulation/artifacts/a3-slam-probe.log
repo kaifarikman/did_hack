@@ -1,0 +1,4 @@
+seed=1 scenario=easy map_mode=slam, slam_toolbox 2.8.5 (config/slam_params.yaml), проезд: 2 круга квадрата 0.5 м (0.15 м/с, повороты 0.5 рад/с)
+samples=6945 error_mean_m=0.011 error_max_m=0.027 error_final_m=0.012
+map: {'width': 89, 'height': 103, 'resolution': 0.05, 'origin': (-0.96, -2.08), 'known': 4412, 'occupied': 386}
+Ошибка = |base + TF(map->base_footprint) - gz-поза burger|; gz-поза используется только пробой.

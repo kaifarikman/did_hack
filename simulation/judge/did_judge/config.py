@@ -22,6 +22,7 @@ class JudgeConfig:
     sensor_noise_sigma: float = 0.03
     energy_per_m: float = 1.0
     soil_surcharge_per_m: float = 2.0
+    soil_speed_factor: float = 0.5
     rotation_energy_per_rad: float = 0.1
     idle_energy_per_s: float = 0.0
     collision_penalty_energy: float = 1.0
@@ -30,6 +31,15 @@ class JudgeConfig:
     score_per_collision: float = 1.0
     score_per_false_collect: float = 2.0
     pose_jump_limit_m: float = 0.5
+    max_round_trip_battery_fraction: float = 0.5
+    pose_source: str = "gazebo"  # gazebo | odom
+    dynamic_events: bool = False
+    event_earliest_s: float = 60.0
+    event_window_s: float = 240.0
+    hazard_zone_radius_m: float = 0.4
+    hazard_penalty_energy: float = 3.0
+    sensor_fault_duration_s: float = 20.0
+    sensor_noisy_sigma: float = 0.2
 
     @staticmethod
     def from_json_file(path: str) -> "JudgeConfig":

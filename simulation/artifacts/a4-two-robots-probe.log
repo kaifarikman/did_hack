@@ -1,0 +1,6 @@
+multi_robot_world.launch.py robot_count:=2, команда 0.1 м/с × 5 с только в /robot_1/cmd_vel
+robot_1: odom_move_m=0.593 gazebo_move_m=0.594 start_world=(-2.01, -0.5)
+robot_2: odom_move_m=0.000 gazebo_move_m=0.000 start_world=(-2.01, 0.5)
+tf robot_1/base_scan: ok
+tf robot_2/base_scan: ok
+Топики: /robot_N/{cmd_vel,scan,odom,imu,joint_states,robot_description}, общий /tf и /tf_static, кадры robot_N/odom, robot_N/base_footprint, robot_N/base_scan.

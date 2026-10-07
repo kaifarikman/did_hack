@@ -18,7 +18,10 @@ from std_srvs.srv import Trigger
 from .config import JudgeConfig
 from .engine import JudgeEngine
 from .occupancy import load_occupancy_grid
-from .scenario import generate_easy_scenario
+from .dynamics import generate_event_schedule
+from .gazebo_pose import GazeboPoseSource
+from .scenario import generate_scenario
+from .soil_slowdown import DEFAULT_STATE_PATH, write_soil_state
 
 DEFAULT_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 COLLISION_RANGE_M = 0.14  # лидар Burger стоит у центра; радиус корпуса ~0.105 м
@@ -40,10 +43,13 @@ class JudgeNode(Node):
         self.config = JudgeConfig.from_json_file(config_path) if config_path else JudgeConfig()
         grid = load_occupancy_grid(self.get_parameter("map_yaml").value)
         seed = int(self.get_parameter("seed").value)
-        self.engine = JudgeEngine(generate_easy_scenario(seed, grid, self.config), self.config)
+        scenario = generate_scenario(seed, grid, self.config)
+        schedule = generate_event_schedule(seed, grid, self.config, scenario) if self.config.dynamic_events else None
+        self.engine = JudgeEngine(scenario, self.config, schedule=schedule)
         self.simulation_time_s = 0.0
         self.last_collision_time_s = -COLLISION_COOLDOWN_S
         self.published_events = 0
+        self.physical_pose_source = self._open_physical_pose_source()
 
         self.battery_pub = self.create_publisher(Float32, "/did/battery", 10)
         self.sensor_pub = self.create_publisher(Float32, "/did/sample_sensor", 10)
@@ -56,12 +62,31 @@ class JudgeNode(Node):
         self.create_service(Trigger, "/did/finish", self._on_finish)
         self.create_timer(0.2, self._publish_fast)
         self.create_timer(1.0, self._publish_score)
+        self.create_timer(0.2, self._publish_soil_state)
+        self.create_timer(0.05, self._apply_physical_pose)
         self.get_logger().info(f"Судья local готов: seed={seed} (истина не публикуется)")
 
     def _on_clock(self, message):
         self.simulation_time_s = message.clock.sec + message.clock.nanosec * 1e-9
 
+    def _open_physical_pose_source(self):
+        """Поза судьи — физическая из Gazebo; одометрия только как явный запасной вариант."""
+        if self.config.pose_source != "gazebo":
+            return None
+        try:
+            return GazeboPoseSource()
+        except Exception as error:  # нет привязок gz или подписка не удалась
+            self.get_logger().error(f"Физическая поза Gazebo недоступна, судья использует odom: {error}")
+            return None
+
+    def _apply_physical_pose(self):
+        pose = self.physical_pose_source.latest() if self.physical_pose_source else None
+        if pose is not None:
+            self.engine.update_pose(pose[0], pose[1], pose[2], self.simulation_time_s)
+
     def _on_odom(self, message):
+        if self.physical_pose_source is not None:
+            return
         position = message.pose.pose.position
         base_x, base_y = self.config.base_world_m
         self.engine.update_pose(base_x + position.x, base_y + position.y,
@@ -88,7 +113,9 @@ class JudgeNode(Node):
     def _publish_fast(self):
         self.battery_pub.publish(Float32(data=float(self.engine.battery)))
         if self.engine.active:
-            self.sensor_pub.publish(Float32(data=float(self.engine.sample_signal())))
+            signal = self.engine.sample_signal()
+            if signal is not None:
+                self.sensor_pub.publish(Float32(data=float(signal)))
         for event in self.engine.events[self.published_events:]:
             self.events_pub.publish(String(data=json.dumps({
                 "type": event.kind,
@@ -96,6 +123,11 @@ class JudgeNode(Node):
                 "battery": event.battery,
             })))
         self.published_events = len(self.engine.events)
+
+    def _publish_soil_state(self):
+        """Закрытый канал к стражу скорости внутри контейнера; не ROS-топик."""
+        write_soil_state(DEFAULT_STATE_PATH, self.config.base_world_m, self.engine.soil_zones(),
+                         self.config.soil_speed_factor)
 
     def _publish_score(self):
         engine = self.engine

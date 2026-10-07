@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 
 from .config import JudgeConfig
+from .dynamics import EventSchedule, SENSOR_DROPOUT, SENSOR_NOISY, SENSOR_STUCK
 from .scenario import Scenario
 
 Point = Tuple[float, float]
@@ -28,6 +29,8 @@ class JudgeEngine:
     scenario: Scenario
     config: JudgeConfig
     noise_rng: random.Random = field(default=None)
+    schedule: Optional[EventSchedule] = None
+    shared_remaining: Optional[List[Point]] = None  # общий список образцов команды
     battery: float = 0.0
     collected: int = 0
     collisions: int = 0
@@ -40,12 +43,15 @@ class JudgeEngine:
     _last_pose: Optional[Tuple[float, float, float]] = None
     _pose: Optional[Point] = None
     _last_time_s: Optional[float] = None
+    _in_hazard: bool = False
+    _last_signal: float = 0.0
 
     def __post_init__(self):
         if self.noise_rng is None:
             self.noise_rng = random.Random(self.scenario.seed + 1)
         self.battery = self.config.battery_initial
-        self._remaining = list(self.scenario.samples)
+        self._remaining = (self.shared_remaining if self.shared_remaining is not None
+                           else list(self.scenario.samples))
 
     @property
     def depleted(self) -> bool:
@@ -69,26 +75,47 @@ class JudgeEngine:
                 self._spend(turn * self.config.rotation_energy_per_rad)
             if self._last_time_s is not None and simulation_time_s > self._last_time_s:
                 self._spend((simulation_time_s - self._last_time_s) * self.config.idle_energy_per_s)
+        self._check_hazard((x_m, y_m), simulation_time_s)
         self._last_pose = (x_m, y_m, heading_rad)
         self._last_time_s = simulation_time_s
 
+    def _check_hazard(self, point: Point, simulation_time_s: float):
+        hazard = self.schedule.hazard_at(simulation_time_s) if self.schedule else None
+        inside = hazard is not None and hazard.contains(point)
+        if inside and not self._in_hazard and self.active:
+            self._spend(self.config.hazard_penalty_energy)
+            self._record("hazard_hit")
+        self._in_hazard = inside
+
     def _travel_cost(self, start: Point, end: Point, distance: float) -> float:
         midpoint = ((start[0] + end[0]) / 2.0, (start[1] + end[1]) / 2.0)
-        in_soil = any(zone.contains(midpoint) for zone in self.scenario.soil_zones)
+        in_soil = any(zone.contains(midpoint) for zone in self.soil_zones())
         per_metre = self.config.energy_per_m + (self.config.soil_surcharge_per_m if in_soil else 0.0)
         return distance * per_metre
+
+    def soil_zones(self):
+        if self.schedule is None:
+            return self.scenario.soil_zones
+        return self.schedule.soil_zones_at(self.scenario, self.simulation_time_s)
 
     def _spend(self, amount: float):
         self.battery = max(0.0, self.battery - amount)
 
-    def sample_signal(self) -> float:
-        """Шумная скалярная близость к ближайшему несобранному образцу, 0..1."""
+    def sample_signal(self) -> Optional[float]:
+        """Шумная близость к ближайшему несобранному образцу, 0..1; None — датчик молчит."""
+        fault = self.schedule.sensor_fault_at(self.simulation_time_s) if self.schedule else None
+        if fault is not None and fault.kind == SENSOR_DROPOUT:
+            return None
+        if fault is not None and fault.kind == SENSOR_STUCK:
+            return self._last_signal
         if self._pose is None or not self._remaining:
             return 0.0
         nearest = min(math.dist(self._pose, sample) for sample in self._remaining)
         clean = math.exp(-nearest / self.config.sensor_decay_length_m)
-        noisy = clean + self.noise_rng.gauss(0.0, self.config.sensor_noise_sigma)
-        return min(1.0, max(0.0, noisy))
+        sigma = (self.config.sensor_noisy_sigma if fault is not None and fault.kind == SENSOR_NOISY
+                 else self.config.sensor_noise_sigma)
+        self._last_signal = min(1.0, max(0.0, clean + self.noise_rng.gauss(0.0, sigma)))
+        return self._last_signal
 
     def register_collision(self):
         if not self.active:

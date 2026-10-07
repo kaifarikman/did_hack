@@ -1,0 +1,9 @@
+reset seed=3 scenario=medium map_mode=static robots=2; scripts/probe_team.py (внутри контейнера simulation)
+checks: topics_present, commands_are_addressed, batteries_are_independent, false_collects_per_robot,
+        team_has_no_double_credit, silent_robot_stops, other_robot_keeps_moving,
+        silent_robot_stopped_within_limit, collision_registered_for_driver — все true
+battery_spent_phase1: robot_1=0.548, robot_2=0.004 (команды шли только robot_1)
+итог: robot_1 collisions=1 false_collects=1; robot_2 collisions=0 false_collects=1; team_collected=0
+Повторный reset seed=4 scenario=hard robots=2 → ready.
+Первый прогон пробы выдал silent_robot_stops=false из-за ошибки измерения в самой пробе (точка остановки бралась через 0.2 с при таймауте стража 0.5 с); проба исправлена, не среда.
+Не проверено: одновременный сбор настоящего образца двумя роботами в Gazebo (проверен только юнит-тестами TeamJudge, в т.ч. параллельные потоки), возврат обоих на свои базы по полной миссии.
