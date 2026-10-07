@@ -1,4 +1,4 @@
-import type { MissionSnapshot, StartRunRequest } from "../domain/contract";
+import type { MapMode, MissionSnapshot, Scenario, StartRunRequest } from "../domain/contract";
 import { mergeJournalEntries, type JournalExport } from "../domain/journal";
 import { isActiveStatus } from "../domain/presentation";
 import { describeError, isUnknownOutcome } from "./errorMessages";
@@ -338,14 +338,27 @@ export class MissionController {
 
   // ---- команды ----
 
-  async startRun(seed: number): Promise<void> {
+  async startRun(
+    seed: number,
+    scenario: Scenario = "easy",
+    missionText = "",
+    mapMode: MapMode = "static",
+    robotCount = 1,
+  ): Promise<void> {
     const snapshot = this.view.snapshot;
     if (snapshot === null || startDisabledReason(this.view) !== null) return;
     const requestId = this.generateId();
     this.pending = {
       kind: "start",
       requestId,
-      startBody: { request_id: requestId, scenario: "easy", seed },
+      startBody: {
+        request_id: requestId,
+        scenario,
+        seed,
+        ...(missionText.trim() === "" ? {} : { mission_text: missionText.trim() }),
+        ...(mapMode === "static" ? {} : { map_mode: mapMode }),
+        ...(robotCount === 1 ? {} : { robot_count: robotCount }),
+      },
       baselineRunId: snapshot.run_id,
       stopRunId: null,
       sentAt: this.scheduler.now(),

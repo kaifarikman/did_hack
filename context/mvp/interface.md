@@ -16,10 +16,10 @@
 
 | Метод и путь | Результат | Ошибки |
 | --- | --- | --- |
-| `GET /health` | 200: `{ "status": "ready" или "starting", "ros_connected": boolean, "judge_mode": "local" или "official", "llm_available": boolean }` | 503, если процесс не может обслуживать запросы |
+| `GET /health` | 200: `{ "status": "ready" или "starting", "ros_connected": boolean, "judge_mode": "local" или "official", "llm_available": boolean, "supported_scenarios": ["easy" \| "medium" \| "hard"] }`. Поле `supported_scenarios` добавлено совместимо (F02); клиент без него считает доступным только easy | 503, если процесс не может обслуживать запросы |
 | `GET /state` | 200: снимок ниже; до первого прогона `run_id: null`, `status: idle` | 503 при недоступности состояния |
 | `GET /map` | 200: карта ниже, доступна независимо от активного прогона | 503, пока карта не загружена |
-| `POST /runs` | Тело `{ "request_id": string, "scenario": "easy", "seed": integer }`; 202: снимок нового прогона | 409, если другой прогон активен; 422 неверный запрос; 503 среда не готова |
+| `POST /runs` | Тело `{ "request_id": string, "scenario": "easy" \| "medium" \| "hard", "seed": integer }`; 202: снимок нового прогона | 409 `run_conflict`, если другой прогон активен; 409 `scenario_unavailable`, если профиль не входит в `supported_scenarios`; 422 неверный запрос или неизвестный профиль; 503 среда не готова |
 | `POST /runs/{run_id}/stop` | Тело `{ "request_id": string }`; 202: текущий снимок, подтверждение остановки приходит в `/state` | 404 неизвестный прогон; 409 это не текущий прогон |
 | `GET /runs/{run_id}/journal?after_sequence=0&limit=100` | 200: страница журнала ниже | 404 неизвестный прогон; 422 неверные параметры |
 
@@ -37,7 +37,7 @@ HTTP-команда старт/стоп подтверждает приняти�
 | `run_id` | Строка или null до первого прогона |
 | `revision` | Целое >= 0 |
 | `status` | `idle`, `starting`, `running`, `returning`, `stopping`, `completed`, `stopped`, `failed` |
-| `scenario` | `easy` или null в idle |
+| `scenario` | `easy`, `medium`, `hard` или null в idle |
 | `seed` | Целое или null в idle |
 | `judge_mode` | `local` или `official` |
 | `planner_mode` | `llm` или `fallback` |
@@ -102,3 +102,17 @@ JournalEntry = {
 Frontend обращается к относительному `/api/v1`. Для разработки и контейнера его прокси использует `BACKEND_URL` (по умолчанию `http://backend:8000` в Compose). Frontend Dockerfile слушает порт 8080 на `0.0.0.0`; локальный адрес панели публикует Compose агента A. Контейнер backend доступен как `backend:8000`. Ключ LLM в frontend не передаётся.
 
 Режим fixture включается только явно и имеет постоянную видимую метку «Демо-данные». Потеря реального backend никогда автоматически не переключает панель на фикстуры.
+
+## Совместимое расширение 1.1 (поток B, 2026-10-07)
+
+`schema_version` = `"1.1"`. Поля 1.0 не менялись; клиент 1.0 игнорирует новые поля, клиент 1.1 принимает их отсутствие у старого backend.
+
+- `POST /runs`: необязательный `mission_text` (строка до 500 символов; пусто — текст по умолчанию). Повтор с тем же `request_id` и другим текстом — `409`.
+- Снимок: `mission_text`, `target_samples` (число образцов профиля по ТЗ), `plan` и `research` (null в idle).
+- `plan`: `plan_id`, `source` (`llm`/`fallback`), `rationale`, `premises[]`, `fallback_reason`, `revision_reason`, `steps[]` с `kind`, `target`, `reason`, `status` (`pending`/`active`/`done`/`rejected`/`dropped`), `evidence[]`, `revise_if`.
+- `research`: `sensor` (`state` ok/suspected/degraded/recovering, `fault` noise/stuck/dropout/null, `quality` 0..1), `hazards[]` (`detection_id`, `center`, `radius_m`, `hits` — наблюдаемая область, не истинная граница), `hypotheses[]` (`hypothesis_id`, `kind`, `status`, `center`, `prediction`, `measurement`, `detection_id`, `experiment_id`), `last_replan_reason`, `last_replan_detection_id`, `planner_requests`.
+- `terrain_estimates[]`: `std_energy_per_m` (неопределённость), `regime` (номер режима после обнаруженного изменения), `last_measured_s`.
+- Запись журнала: `experiment_id`, `detection_id`, `plan_id`, `evidence[]` (`segment-N`, `event-N`, `#N`).
+- После терминального статуса `current_goal` = null и `planned_path` = [].
+
+Все поля — оценки и решения агента; истина сценария в снимок не попадает.

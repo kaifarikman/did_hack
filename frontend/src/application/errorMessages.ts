@@ -5,7 +5,9 @@ export function describeError(error: unknown): string {
   if (error instanceof ApiError) {
     switch (error.status) {
       case 409:
-        return `Конфликт: ${error.message}`;
+        return error.code === "scenario_unavailable"
+          ? `Профиль недоступен в текущей среде: ${error.message}`
+          : `Конфликт: ${error.message}`;
       case 422:
         return `Запрос отклонён: ${error.message}`;
       case 503:

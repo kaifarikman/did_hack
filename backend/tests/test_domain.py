@@ -95,13 +95,54 @@ def segment(distance=1.0, drop=1.0, rotation=0.0, penalty=False, x=0.0):
     return TravelSegment(Point(x, 0), Point(x + distance, 0), distance, drop, 5.0, rotation, penalty)
 
 
-def test_estimator_ignores_short_penalized_rotating_segments_and_zero_distance():
+def test_estimator_ignores_short_penalized_and_zero_distance_segments():
     estimator = TerrainEstimator()
     assert not estimator.record(segment(distance=0.0, drop=0.0))
     assert not estimator.record(segment(distance=0.1, drop=0.1))
     assert not estimator.record(segment(penalty=True, drop=9))
-    assert not estimator.record(segment(rotation=3.0))
+    assert not estimator.record(segment(rotation=8.0))  # почти полный разворот на месте — не измерение пути
     assert estimator.revision == 0
+
+
+def cell_segment(x0, x1, drop, rotation=0.0, y=0.25):
+    return TravelSegment(Point(x0, y), Point(x1, y), abs(x1 - x0), drop, 5.0, rotation)
+
+
+def test_turns_are_attributed_to_rotation_not_to_terrain():
+    estimator = TerrainEstimator(prior_energy_per_m=1.5)
+    for index in range(8):
+        rotation = 2.0 if index % 2 else 0.0
+        estimator.record(cell_segment(0.05, 0.45, 0.4 * 1.0 + 0.1 * rotation, rotation))
+    estimate = estimator.estimate_at(Point(0.25, 0.25))
+    assert estimate.energy_per_m == pytest.approx(1.0, abs=0.12)
+    assert estimator.rotation_energy_per_rad == pytest.approx(0.1, abs=0.03)
+
+
+def test_segment_across_two_cells_is_split_by_path_not_assigned_to_midpoint():
+    estimator = TerrainEstimator(prior_energy_per_m=1.5)
+    for _ in range(4):
+        estimator.record(cell_segment(0.05, 0.45, 0.4))  # клетка A дешёвая: 1 ед./м
+    for _ in range(4):
+        estimator.record(cell_segment(0.25, 0.75, 0.25 * 1.0 + 0.25 * 3.0))  # половина в A, половина в B
+    cheap, expensive = estimator.estimate_at(Point(0.25, 0.25)), estimator.estimate_at(Point(0.75, 0.25))
+    assert cheap.energy_per_m == pytest.approx(1.0, abs=0.2)
+    assert expensive.energy_per_m == pytest.approx(3.0, abs=0.45)
+    assert expensive.std_energy_per_m > 0 and expensive.distance_m == pytest.approx(1.0, abs=0.05)
+
+
+def test_new_regime_lets_new_measurements_replace_old_ones():
+    estimator = TerrainEstimator(prior_energy_per_m=1.0)
+    for _ in range(10):
+        estimator.record(cell_segment(0.05, 0.45, 0.4 * 1.0))
+    switch = estimator.revision + 1
+    for _ in range(2):
+        estimator.record(cell_segment(0.05, 0.45, 0.4 * 3.0))
+    diluted = estimator.estimate_at(Point(0.25, 0.25)).energy_per_m
+    estimator.open_regime(estimator.bucket_of(Point(0.25, 0.25)), switch)
+    renewed = estimator.estimate_at(Point(0.25, 0.25))
+    assert diluted < 1.6  # без смены режима старая история подавляет изменение
+    assert renewed.energy_per_m > 2.4 and renewed.regime == 1
+    assert renewed.confidence < 1.0 and renewed.std_energy_per_m > 0
 
 
 def test_unmeasured_area_uses_conservative_prior_not_zero():
@@ -144,12 +185,12 @@ def test_hypothesis_proposed_tested_and_confirmed_by_new_measurement():
     estimator = build_estimator_with_expensive_zone()
     book = HypothesisBook()
     hypothesis = book.propose(estimator)
-    assert hypothesis is not None and hypothesis.center.x_m == pytest.approx(2.75, abs=0.3)
+    assert hypothesis is not None and 2.0 <= hypothesis.center.x_m <= 3.0
     book.start_experiment(hypothesis, estimator)
     assert book.evaluate(hypothesis, estimator) is None  # измерений ещё нет
-    estimator.record(segment(drop=3.6, x=hypothesis.center.x_m - 0.5))
+    estimator.record(segment(distance=0.4, drop=0.4 * 3.6, x=hypothesis.center.x_m - 0.2))  # целиком в корзине
     assert book.evaluate(hypothesis, estimator) is HypothesisStatus.CONFIRMED
-    assert hypothesis.measured_energy_per_m == pytest.approx(3.6)
+    assert hypothesis.measured_energy_per_m == pytest.approx(3.6, abs=0.1)
 
 
 def test_hypothesis_refuted_and_unverified_after_attempt_limit():
@@ -157,7 +198,7 @@ def test_hypothesis_refuted_and_unverified_after_attempt_limit():
     book = HypothesisBook(max_attempts=1)
     hypothesis = book.propose(estimator)
     book.start_experiment(hypothesis, estimator)
-    estimator.record(segment(drop=1.0, x=hypothesis.center.x_m - 0.5))
+    estimator.record(segment(distance=0.4, drop=0.4, x=hypothesis.center.x_m - 0.2))
     assert book.evaluate(hypothesis, estimator) is HypothesisStatus.REFUTED
     second = HypothesisBook(max_attempts=1)
     other = second.propose(estimator)

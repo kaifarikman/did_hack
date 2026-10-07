@@ -1,0 +1,3676 @@
+{
+ "note": "подменная среда backend/tests/fakes.py; не Gazebo",
+ "profiles": {
+  "easy": {
+   "tight": {
+    "limits": {
+     "max_false_collects": 3,
+     "stall_decisions": 20,
+     "max_decisions": 85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.08,
+     "median_collected": 2.0,
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 18.84
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 354.9
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 16.17,
+      "simulated_s": 332.6
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 28.47,
+      "simulated_s": 247.3
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.08,
+      "simulated_s": 330.5
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.34,
+      "simulated_s": 200.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 9.65,
+      "simulated_s": 329.8
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   },
+   "table": {
+    "limits": {
+     "max_false_collects": 4,
+     "stall_decisions": 30,
+     "max_decisions": 80
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.08,
+     "median_collected": 2.0,
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 18.84
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 354.9
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 16.17,
+      "simulated_s": 332.6
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 28.47,
+      "simulated_s": 247.3
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.08,
+      "simulated_s": 330.5
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.34,
+      "simulated_s": 200.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 9.65,
+      "simulated_s": 329.8
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   },
+   "loose": {
+    "limits": {
+     "max_false_collects": 6,
+     "stall_decisions": 45,
+     "max_decisions": 150
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.08,
+     "median_collected": 2.0,
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 18.84
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 354.9
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 16.17,
+      "simulated_s": 332.6
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 28.47,
+      "simulated_s": 247.3
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.08,
+      "simulated_s": 330.5
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.34,
+      "simulated_s": 200.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 9.65,
+      "simulated_s": 329.8
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   }
+  },
+  "medium": {
+   "tight": {
+    "limits": {
+     "max_false_collects": 5,
+     "stall_decisions": 20,
+     "max_decisions": 115
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.25,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 12.12
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 20.79,
+      "simulated_s": 304.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 7.3,
+      "simulated_s": 406.1
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 11.71,
+      "simulated_s": 331.4
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 10.24,
+      "simulated_s": 338.6
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.75,
+      "simulated_s": 317.4
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.35,
+      "simulated_s": 371.4
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.14,
+      "simulated_s": 336.7
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "table": {
+    "limits": {
+     "max_false_collects": 5,
+     "stall_decisions": 30,
+     "max_decisions": 120
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.25,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 11.35
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.56,
+      "simulated_s": 373.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 7.3,
+      "simulated_s": 406.1
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 11.71,
+      "simulated_s": 331.4
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 10.24,
+      "simulated_s": 338.6
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.75,
+      "simulated_s": 317.4
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.35,
+      "simulated_s": 371.4
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.14,
+      "simulated_s": 336.7
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "loose": {
+    "limits": {
+     "max_false_collects": 10,
+     "stall_decisions": 45,
+     "max_decisions": 210
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.25,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 11.35
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.56,
+      "simulated_s": 373.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 7.3,
+      "simulated_s": 406.1
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 11.71,
+      "simulated_s": 331.4
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 10.24,
+      "simulated_s": 338.6
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.75,
+      "simulated_s": 317.4
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.35,
+      "simulated_s": 371.4
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.14,
+      "simulated_s": 336.7
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   }
+  },
+  "hard": {
+   "tight": {
+    "limits": {
+     "max_false_collects": 7,
+     "stall_decisions": 20,
+     "max_decisions": 145
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 4.17,
+     "median_collected": 4.5,
+     "mean_false_collects": 1.17,
+     "mean_battery_left": 12.25
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.92,
+      "simulated_s": 324.1
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 282.1
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 15.22,
+      "simulated_s": 335.5
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 31.8,
+      "simulated_s": 216.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 13.83,
+      "simulated_s": 261.7
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.46,
+      "simulated_s": 337.7
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 4.62,
+      "simulated_s": 362.3
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
+     }
+    ]
+   },
+   "table": {
+    "limits": {
+     "max_false_collects": 6,
+     "stall_decisions": 30,
+     "max_decisions": 160
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 4.17,
+     "median_collected": 4.5,
+     "mean_false_collects": 1.33,
+     "mean_battery_left": 11.77
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.92,
+      "simulated_s": 324.1
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 282.1
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 15.22,
+      "simulated_s": 335.5
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 25.96,
+      "simulated_s": 262.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 13.83,
+      "simulated_s": 261.7
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.46,
+      "simulated_s": 337.7
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 4.62,
+      "simulated_s": 362.3
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
+     }
+    ]
+   },
+   "loose": {
+    "limits": {
+     "max_false_collects": 14,
+     "stall_decisions": 45,
+     "max_decisions": 270
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 4.17,
+     "median_collected": 4.5,
+     "mean_false_collects": 1.33,
+     "mean_battery_left": 11.29
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.92,
+      "simulated_s": 324.1
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 282.1
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 15.22,
+      "simulated_s": 335.5
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 20.28,
+      "simulated_s": 302.5
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 13.83,
+      "simulated_s": 261.7
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.46,
+      "simulated_s": 337.7
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 4.62,
+      "simulated_s": 362.3
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
+     }
+    ]
+   }
+  }
+ },
+ "policies": {
+  "easy": {
+   "current": {
+    "overrides": {},
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.08,
+     "median_collected": 2.0,
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 18.84
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 354.9
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 16.17,
+      "simulated_s": 332.6
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 28.47,
+      "simulated_s": 247.3
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.08,
+      "simulated_s": 330.5
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.34,
+      "simulated_s": 200.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 9.65,
+      "simulated_s": 329.8
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   },
+   "safety_1.15": {
+    "overrides": {
+     "return_safety_factor": 1.15
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 2.17,
+     "median_collected": 2.5,
+     "mean_false_collects": 1,
+     "mean_battery_left": 17.73
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 7.02,
+      "simulated_s": 366.7
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 27.35,
+      "simulated_s": 248.4
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 11.32,
+      "simulated_s": 336.9
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 17.76,
+      "simulated_s": 319.5
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 13.25,
+      "simulated_s": 306.9
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 2,
+      "battery_left": 11.95,
+      "simulated_s": 306.0
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.34,
+      "simulated_s": 200.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 9.39,
+      "simulated_s": 308.8
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   },
+   "price_0.08": {
+    "overrides": {
+     "energy_price": 0.08
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 2.25,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.33,
+     "mean_battery_left": 21.07
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 16.11,
+      "simulated_s": 274.5
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.42,
+      "simulated_s": 225.6
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 354.9
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 1,
+      "battery_left": 29.21,
+      "simulated_s": 238.0
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 8.85,
+      "simulated_s": 338.8
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 38.83,
+      "simulated_s": 161.1
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 28.11,
+      "simulated_s": 245.9
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 2,
+      "battery_left": 11.95,
+      "simulated_s": 306.0
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 4,
+      "battery_left": 22.35,
+      "simulated_s": 292.1
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 1,
+      "battery_left": 20.48,
+      "simulated_s": 245.4
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   },
+   "reserve_2": {
+    "overrides": {
+     "return_reserve": 2.0
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 2,
+     "median_collected": 2.0,
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 17.54
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 7.02,
+      "simulated_s": 366.7
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 16.17,
+      "simulated_s": 332.6
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 12.37,
+      "simulated_s": 312.8
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 28.47,
+      "simulated_s": 247.3
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 13.25,
+      "simulated_s": 306.9
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 2,
+      "battery_left": 9.37,
+      "simulated_s": 333.1
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.34,
+      "simulated_s": 200.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 9.11,
+      "simulated_s": 333.1
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.38,
+      "simulated_s": 283.6
+     }
+    ]
+   },
+   "collect_0.85": {
+    "overrides": {
+     "collect_signal_threshold": 0.85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 2.17,
+     "median_collected": 2.5,
+     "mean_false_collects": 0,
+     "mean_battery_left": 17.86
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.4,
+      "simulated_s": 280.1
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 14.15,
+      "simulated_s": 356.9
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 320.2
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 25.13,
+      "simulated_s": 267.4
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 12.4,
+      "simulated_s": 308.8
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 9.49,
+      "simulated_s": 378.1
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 36.85,
+      "simulated_s": 182.5
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 17.19,
+      "simulated_s": 275.2
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 23.08,
+      "simulated_s": 276.6
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 17.18,
+      "simulated_s": 304.0
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 12.23,
+      "simulated_s": 278.6
+     }
+    ]
+   },
+   "collect_0.75": {
+    "overrides": {
+     "collect_signal_threshold": 0.75
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 10,
+     "mean_collected": 2.33,
+     "median_collected": 3.0,
+     "mean_false_collects": 2,
+     "mean_battery_left": 25.34
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 18.04,
+      "simulated_s": 265.9
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 28.9,
+      "simulated_s": 240.5
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 20.43,
+      "simulated_s": 297.6
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 4,
+      "battery_left": 39.83,
+      "simulated_s": 159.1
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.32,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 35.6,
+      "simulated_s": 178.2
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 33.49,
+      "simulated_s": 205.9
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 16.17,
+      "simulated_s": 283.1
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 29.92,
+      "simulated_s": 231.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 23.46,
+      "simulated_s": 250.6
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 3,
+      "battery_left": 12.79,
+      "simulated_s": 274.7
+     }
+    ]
+   }
+  },
+  "medium": {
+   "current": {
+    "overrides": {},
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.25,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 11.35
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.56,
+      "simulated_s": 373.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 7.3,
+      "simulated_s": 406.1
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 11.71,
+      "simulated_s": 331.4
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 10.24,
+      "simulated_s": 338.6
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.75,
+      "simulated_s": 317.4
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.35,
+      "simulated_s": 371.4
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.14,
+      "simulated_s": 336.7
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "safety_1.15": {
+    "overrides": {
+     "return_safety_factor": 1.15
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.42,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.25,
+     "mean_battery_left": 10.61
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 11.78,
+      "simulated_s": 259.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 8.18,
+      "simulated_s": 364.6
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 16.43,
+      "simulated_s": 328.8
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 9.88,
+      "simulated_s": 345.7
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 5,
+      "battery_left": 12.07,
+      "simulated_s": 322.6
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 9.76,
+      "simulated_s": 369.0
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.1,
+      "simulated_s": 331.2
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 6.94,
+      "simulated_s": 342.8
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 5.7,
+      "simulated_s": 356.0
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 9.06,
+      "simulated_s": 366.5
+     }
+    ]
+   },
+   "price_0.08": {
+    "overrides": {
+     "energy_price": 0.08
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 3.42,
+     "median_collected": 4.0,
+     "mean_false_collects": 1.5,
+     "mean_battery_left": 12.13
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 10.9,
+      "simulated_s": 273.2
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 4,
+      "battery_left": 19.86,
+      "simulated_s": 307.4
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 8.47,
+      "simulated_s": 328.8
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 12.52,
+      "simulated_s": 324.0
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 19.32,
+      "simulated_s": 312.9
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 5,
+      "battery_left": 11.42,
+      "simulated_s": 327.2
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 9.0,
+      "simulated_s": 354.2
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.75,
+      "simulated_s": 317.4
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 15.47,
+      "simulated_s": 280.4
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 1,
+      "battery_left": 6.5,
+      "simulated_s": 376.9
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 15.74,
+      "simulated_s": 293.6
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 6.67,
+      "simulated_s": 355.2
+     }
+    ]
+   },
+   "reserve_2": {
+    "overrides": {
+     "return_reserve": 2.0
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.25,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 11.49
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.56,
+      "simulated_s": 373.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 12.1,
+      "simulated_s": 328.4
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 16.43,
+      "simulated_s": 328.8
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.78,
+      "simulated_s": 338.5
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 9.07,
+      "simulated_s": 347.9
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 9.76,
+      "simulated_s": 369.0
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.82,
+      "simulated_s": 318.1
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.81,
+      "simulated_s": 341.0
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 5.33,
+      "simulated_s": 357.3
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "collect_0.85": {
+    "overrides": {
+     "collect_signal_threshold": 0.85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.58,
+     "median_collected": 3.0,
+     "mean_false_collects": 0,
+     "mean_battery_left": 14.08
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.33,
+      "simulated_s": 301.0
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 15.59,
+      "simulated_s": 318.7
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 7.15,
+      "simulated_s": 412.0
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 11.39,
+      "simulated_s": 323.5
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 28.11,
+      "simulated_s": 247.9
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 9.57,
+      "simulated_s": 347.6
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.73,
+      "simulated_s": 354.9
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.24,
+      "simulated_s": 316.2
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 24.71,
+      "simulated_s": 272.9
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 13.6,
+      "simulated_s": 358.7
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 15.68,
+      "simulated_s": 296.8
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "collect_0.75": {
+    "overrides": {
+     "collect_signal_threshold": 0.75
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.75,
+     "median_collected": 3.0,
+     "mean_false_collects": 4.25,
+     "mean_battery_left": 13.12
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 12.49,
+      "simulated_s": 360.6
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 5,
+      "battery_left": 21.94,
+      "simulated_s": 293.4
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 12.25,
+      "simulated_s": 367.2
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 5,
+      "battery_left": 9.93,
+      "simulated_s": 322.0
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 5,
+      "battery_left": 8.54,
+      "simulated_s": 407.1
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 4,
+      "battery_left": 11.58,
+      "simulated_s": 345.0
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 9.28,
+      "simulated_s": 336.1
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 5,
+      "battery_left": 30.34,
+      "simulated_s": 231.2
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 10.22,
+      "simulated_s": 335.9
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.33,
+      "simulated_s": 322.6
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 5,
+      "battery_left": 13.54,
+      "simulated_s": 342.2
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 6.94,
+      "simulated_s": 320.1
+     }
+    ]
+   }
+  },
+  "hard": {
+   "current": {
+    "overrides": {},
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 4.17,
+     "median_collected": 4.5,
+     "mean_false_collects": 1.33,
+     "mean_battery_left": 11.77
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.92,
+      "simulated_s": 324.1
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 282.1
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 15.22,
+      "simulated_s": 335.5
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 25.96,
+      "simulated_s": 262.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 13.83,
+      "simulated_s": 261.7
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.46,
+      "simulated_s": 337.7
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 4.62,
+      "simulated_s": 362.3
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
+     }
+    ]
+   },
+   "safety_1.15": {
+    "overrides": {
+     "return_safety_factor": 1.15
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.92,
+     "median_collected": 4.0,
+     "mean_false_collects": 2,
+     "mean_battery_left": 10.39
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.92,
+      "simulated_s": 324.1
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 11.0,
+      "simulated_s": 297.6
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 10.74,
+      "simulated_s": 332.8
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 10.24,
+      "simulated_s": 385.6
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 22.94,
+      "simulated_s": 286.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 10.31,
+      "simulated_s": 273.3
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 9.06,
+      "simulated_s": 385.2
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.46,
+      "simulated_s": 337.7
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 7.17,
+      "simulated_s": 381.2
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 6,
+      "battery_left": 7.28,
+      "simulated_s": 360.4
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 6.4,
+      "simulated_s": 381.4
+     }
+    ]
+   },
+   "price_0.08": {
+    "overrides": {
+     "energy_price": 0.08
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.83,
+     "median_collected": 4.0,
+     "mean_false_collects": 2.08,
+     "mean_battery_left": 8.72
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 6.74,
+      "simulated_s": 322.4
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 5,
+      "battery_left": 6.56,
+      "simulated_s": 344.8
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 3,
+      "battery_left": 7.06,
+      "simulated_s": 412.9
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 4,
+      "battery_left": 10.18,
+      "simulated_s": 392.3
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 9.92,
+      "simulated_s": 388.6
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 14.08,
+      "simulated_s": 243.0
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 3,
+      "battery_left": 6.76,
+      "simulated_s": 356.6
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 7.59,
+      "simulated_s": 336.4
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 0,
+      "battery_left": 6.67,
+      "simulated_s": 390.1
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 11.34,
+      "simulated_s": 355.2
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 8.59,
+      "simulated_s": 372.0
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 9.11,
+      "simulated_s": 328.5
+     }
+    ]
+   },
+   "reserve_2": {
+    "overrides": {
+     "return_reserve": 2.0
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 4.33,
+     "median_collected": 4.5,
+     "mean_false_collects": 1.5,
+     "mean_battery_left": 11.81
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.92,
+      "simulated_s": 324.1
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 282.1
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 10.74,
+      "simulated_s": 332.8
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 10.24,
+      "simulated_s": 385.6
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 25.96,
+      "simulated_s": 262.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 10.43,
+      "simulated_s": 275.0
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 9.83,
+      "simulated_s": 343.8
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.46,
+      "simulated_s": 337.7
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 7,
+      "false_collects": 4,
+      "battery_left": 5.79,
+      "simulated_s": 363.7
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 16.48,
+      "simulated_s": 312.3
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
+     }
+    ]
+   },
+   "collect_0.85": {
+    "overrides": {
+     "collect_signal_threshold": 0.85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 2.75,
+     "median_collected": 2.0,
+     "mean_false_collects": 0,
+     "mean_battery_left": 12.16
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 12.84,
+      "simulated_s": 279.8
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 7.66,
+      "simulated_s": 336.7
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 7.35,
+      "simulated_s": 356.3
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 12.96,
+      "simulated_s": 367.7
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 23.51,
+      "simulated_s": 279.4
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 21.85,
+      "simulated_s": 216.1
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 0,
+      "battery_left": 11.14,
+      "simulated_s": 381.6
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 10.69,
+      "simulated_s": 299.8
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 9.66,
+      "simulated_s": 404.5
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.17,
+      "simulated_s": 331.5
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 8.2,
+      "simulated_s": 409.4
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 9.86,
+      "simulated_s": 356.4
+     }
+    ]
+   },
+   "collect_0.75": {
+    "overrides": {
+     "collect_signal_threshold": 0.75
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 3.17,
+     "median_collected": 3.0,
+     "mean_false_collects": 4.83,
+     "mean_battery_left": 13.45
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.2,
+      "simulated_s": 308.8
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 8.97,
+      "simulated_s": 281.0
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 6,
+      "battery_left": 23.63,
+      "simulated_s": 285.2
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 11.55,
+      "simulated_s": 370.1
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 6,
+      "battery_left": 31.74,
+      "simulated_s": 219.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 5,
+      "battery_left": 10.74,
+      "simulated_s": 318.7
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 13.42,
+      "simulated_s": 359.6
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 4,
+      "battery_left": 11.53,
+      "simulated_s": 305.6
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 6,
+      "battery_left": 7.91,
+      "simulated_s": 412.4
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 6,
+      "battery_left": 9.5,
+      "simulated_s": 329.0
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 3,
+      "battery_left": 8.17,
+      "simulated_s": 373.0
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 14.04,
+      "simulated_s": 364.1
+     }
+    ]
+   }
+  }
+ }
+}

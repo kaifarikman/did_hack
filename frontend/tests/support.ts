@@ -34,11 +34,23 @@ export function entry(sequence: number, patch: Partial<JournalEntry> = {}): Jour
     expected: null,
     observed: null,
     conclusion: null,
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
     ...patch,
   };
 }
 
-export const readyHealth: HealthStatus = { status: "ready", ros_connected: true, judge_mode: "local", llm_available: true };
+export const readyHealth: HealthStatus = {
+  status: "ready",
+  ros_connected: true,
+  judge_mode: "local",
+  llm_available: true,
+  supported_scenarios: ["easy", "medium", "hard"],
+  supported_map_modes: ["static", "slam"],
+  supported_robot_counts: [1, 2],
+};
 
 /** Виртуальные часы: время идёт только через advance. */
 export class FakeScheduler implements Scheduler {

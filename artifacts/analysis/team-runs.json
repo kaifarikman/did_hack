@@ -1,0 +1,1306 @@
+{
+ "note": "подменная среда TeamWorld; равные батареи; не Gazebo",
+ "summary": {
+  "easy/coordinated": {
+   "runs": 10,
+   "success": 10,
+   "both_returned": 10,
+   "mean_collected": 3,
+   "mean_false_collects": 0.9,
+   "mean_overlap": 0.087,
+   "deadlocks": 1
+  },
+  "easy/independent": {
+   "runs": 10,
+   "success": 10,
+   "both_returned": 10,
+   "mean_collected": 2.9,
+   "mean_false_collects": 1.5,
+   "mean_overlap": 0.164,
+   "deadlocks": 13
+  },
+  "easy/paired_difference": {
+   "mean": 0.1,
+   "values": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ]
+  },
+  "medium/coordinated": {
+   "runs": 10,
+   "success": 10,
+   "both_returned": 10,
+   "mean_collected": 4.8,
+   "mean_false_collects": 2.3,
+   "mean_overlap": 0.068,
+   "deadlocks": 1
+  },
+  "medium/independent": {
+   "runs": 10,
+   "success": 10,
+   "both_returned": 10,
+   "mean_collected": 4.5,
+   "mean_false_collects": 1.7,
+   "mean_overlap": 0.145,
+   "deadlocks": 17
+  },
+  "medium/paired_difference": {
+   "mean": 0.3,
+   "values": [
+    -1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ]
+  },
+  "hard/coordinated": {
+   "runs": 10,
+   "success": 10,
+   "both_returned": 10,
+   "mean_collected": 6.8,
+   "mean_false_collects": 3.4,
+   "mean_overlap": 0.215,
+   "deadlocks": 5
+  },
+  "hard/independent": {
+   "runs": 10,
+   "success": 10,
+   "both_returned": 10,
+   "mean_collected": 6.3,
+   "mean_false_collects": 3.3,
+   "mean_overlap": 0.1,
+   "deadlocks": 24
+  },
+  "hard/paired_difference": {
+   "mean": 0.5,
+   "values": [
+    0,
+    0,
+    2,
+    0,
+    2,
+    2,
+    -1,
+    -1,
+    1,
+    0
+   ]
+  }
+ },
+ "runs": [
+  {
+   "profile": "easy",
+   "seed": 1,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.05,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 9.28,
+    "robot_2": 16.75
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 1,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 3,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 38.1,
+    "robot_2": 38.45
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 2,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.1,
+   "yield_events": 2,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 12.53,
+    "robot_2": 9.41
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 2,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.57,
+   "yield_events": 2,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 38.94,
+    "robot_2": 35.5
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 3,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 3,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 16,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 12.4,
+    "robot_2": 8.39
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 3,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.24,
+   "yield_events": 6,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 32.8,
+    "robot_2": 42.5
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 4,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.1,
+   "yield_events": 11,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 10.33,
+    "robot_2": 17.77
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 4,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.4,
+   "yield_events": 2,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 20.23,
+    "robot_2": 11.81
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 5,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 36.5,
+    "robot_2": 36.66
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 5,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 4,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 24.18,
+    "robot_2": 41.44
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 6,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.29,
+   "yield_events": 1,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 42.44,
+    "robot_2": 41.92
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 6,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 12,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 32.26,
+    "robot_2": 38.43
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 7,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.11,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 26.38,
+    "robot_2": 35.25
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 7,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 1,
+   "overlap_robot2_on_robot1": 0.17,
+   "yield_events": 2,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 16.08,
+    "robot_2": 13.78
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 8,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 39.65,
+    "robot_2": 43.6
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 8,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 2,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 6,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 8,
+   "deadlocks": 5,
+   "battery_left": {
+    "robot_1": 40.05,
+    "robot_2": 18.41
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 9,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.22,
+   "yield_events": 6,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 11.91,
+    "robot_2": 7.97
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 9,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 4,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 11.8,
+    "robot_2": 23.34
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 10,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 15.02,
+    "robot_2": 14.93
+   }
+  },
+  {
+   "profile": "easy",
+   "seed": 10,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 0,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.26,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 32.47,
+    "robot_2": 36.32
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 1,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 4,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.13,
+   "yield_events": 17,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 16.85,
+    "robot_2": 14.96
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 1,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.27,
+   "yield_events": 43,
+   "deadlocks": 4,
+   "battery_left": {
+    "robot_1": 22.05,
+    "robot_2": 13.51
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 2,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 4,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 5,
+   "overlap_robot2_on_robot1": 0.04,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 24.14,
+    "robot_2": 18.27
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 2,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 3,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 6,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 1,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 11.86,
+    "robot_2": 36.17
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 3,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 4
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.13,
+   "yield_events": 1,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 27.42,
+    "robot_2": 17.03
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 3,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 5,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 1,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 8,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 42.58,
+    "robot_2": 33.88
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 4,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 14,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 20.21,
+    "robot_2": 10.9
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 4,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 4,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 4,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 13.9,
+    "robot_2": 29.95
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 5,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 4
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 29.38,
+    "robot_2": 21.31
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 5,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 4
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.09,
+   "yield_events": 13,
+   "deadlocks": 5,
+   "battery_left": {
+    "robot_1": 27.41,
+    "robot_2": 16.51
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 6,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.16,
+   "yield_events": 1,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 30.2,
+    "robot_2": 19.77
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 6,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 2,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 22.06,
+    "robot_2": 12.51
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 7,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 1,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 13.92,
+    "robot_2": 23.75
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 7,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 5,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 5,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 27.44,
+    "robot_2": 41.21
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 8,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 4
+   },
+   "both_returned": true,
+   "false_collects": 6,
+   "overlap_robot2_on_robot1": 0.12,
+   "yield_events": 10,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 18.99,
+    "robot_2": 12.07
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 8,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 1,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 22.58,
+    "robot_2": 11.91
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 9,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.1,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 23.79,
+    "robot_2": 19.63
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 9,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 4,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.96,
+   "yield_events": 18,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 15.7,
+    "robot_2": 32.12
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 10,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 13.06,
+    "robot_2": 13.63
+   }
+  },
+  {
+   "profile": "medium",
+   "seed": 10,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 4,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.13,
+   "yield_events": 24,
+   "deadlocks": 4,
+   "battery_left": {
+    "robot_1": 13.92,
+    "robot_2": 16.88
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 1,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 4
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.06,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 17.28,
+    "robot_2": 7.66
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 1,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 4,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.04,
+   "yield_events": 6,
+   "deadlocks": 3,
+   "battery_left": {
+    "robot_1": 9.77,
+    "robot_2": 16.61
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 2,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 4,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.23,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 13.5,
+    "robot_2": 14.1
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 2,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 5
+   },
+   "both_returned": true,
+   "false_collects": 8,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 14,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 12.51,
+    "robot_2": 10.27
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 3,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 4,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 8.42,
+    "robot_2": 13.87
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 3,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.13,
+   "yield_events": 72,
+   "deadlocks": 7,
+   "battery_left": {
+    "robot_1": 25.3,
+    "robot_2": 10.3
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 4,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 4,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.46,
+   "yield_events": 8,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 9.15,
+    "robot_2": 17.81
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 4,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 5,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.04,
+   "yield_events": 41,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 13.18,
+    "robot_2": 24.84
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 5,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 6,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.24,
+   "yield_events": 2,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 12.41,
+    "robot_2": 36.43
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 5,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 4,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 1,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 12,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 12.47,
+    "robot_2": 32.52
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 6,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 2,
+    "robot_2": 5
+   },
+   "both_returned": true,
+   "false_collects": 2,
+   "overlap_robot2_on_robot1": 0.06,
+   "yield_events": 8,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 6.77,
+    "robot_2": 12.43
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 6,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 5,
+   "collected_by": {
+    "robot_1": 5,
+    "robot_2": 0
+   },
+   "both_returned": true,
+   "false_collects": 6,
+   "overlap_robot2_on_robot1": 0.08,
+   "yield_events": 17,
+   "deadlocks": 3,
+   "battery_left": {
+    "robot_1": 16.07,
+    "robot_2": 38.17
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 7,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 6,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 12.29,
+    "robot_2": 23.39
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 7,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 6,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 27,
+   "deadlocks": 1,
+   "battery_left": {
+    "robot_1": 13.92,
+    "robot_2": 33.53
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 8,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 6,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 3
+   },
+   "both_returned": true,
+   "false_collects": 6,
+   "overlap_robot2_on_robot1": 0.56,
+   "yield_events": 17,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 15.78,
+    "robot_2": 18.02
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 8,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 6,
+    "robot_2": 1
+   },
+   "both_returned": true,
+   "false_collects": 5,
+   "overlap_robot2_on_robot1": 0.69,
+   "yield_events": 3,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 11.77,
+    "robot_2": 33.66
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 9,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 1,
+    "robot_2": 6
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.06,
+   "yield_events": 0,
+   "deadlocks": 0,
+   "battery_left": {
+    "robot_1": 28.89,
+    "robot_2": 14.25
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 9,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 6,
+   "collected_by": {
+    "robot_1": 4,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 0,
+   "overlap_robot2_on_robot1": 0.0,
+   "yield_events": 7,
+   "deadlocks": 4,
+   "battery_left": {
+    "robot_1": 16.72,
+    "robot_2": 27.83
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 10,
+   "coordinated": true,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 3,
+    "robot_2": 4
+   },
+   "both_returned": true,
+   "false_collects": 4,
+   "overlap_robot2_on_robot1": 0.48,
+   "yield_events": 21,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 13.72,
+    "robot_2": 8.6
+   }
+  },
+  {
+   "profile": "hard",
+   "seed": 10,
+   "coordinated": false,
+   "outcome": "success",
+   "collected": 7,
+   "collected_by": {
+    "robot_1": 5,
+    "robot_2": 2
+   },
+   "both_returned": true,
+   "false_collects": 1,
+   "overlap_robot2_on_robot1": 0.02,
+   "yield_events": 4,
+   "deadlocks": 2,
+   "battery_left": {
+    "robot_1": 13.9,
+    "robot_2": 21.66
+   }
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+  "contract_version": "2.0",
+  "description": "Запрос сброса и подтверждение готовности того же поколения.",
+  "request": {"scenario": "hard", "seed": 17, "generation": 3, "map_mode": "static", "robot_ids": ["robot_1"]},
+  "ack": {"scenario": "hard", "seed": 17, "generation": 3, "map_mode": "static", "robot_ids": ["robot_1"],
+          "notes": []},
+  "stale_ack": {"scenario": "hard", "seed": 17, "generation": 2, "map_mode": "static", "robot_ids": ["robot_1"],
+                "notes": []}
+}

@@ -3,7 +3,7 @@ import json
 import pytest
 
 from adapters.llm.config import LlmConfig
-from adapters.llm.openai_planner import LlmResponseError, OpenAiCompatiblePlanner, parse_subgoal
+from adapters.llm.openai_planner import LlmResponseError, OpenAiCompatiblePlanner, parse_plan, parse_subgoal
 from adapters.llm.prompt import build_user_message
 from adapters.llm.transport import TransportError
 from application.planner import FallbackPlanner, ResilientPlanner
@@ -44,20 +44,45 @@ def chat(content) -> dict:
     return {"choices": [{"message": {"content": content}}]}
 
 
-GOOD = json.dumps({"kind": "explore", "target": {"position_x_m": 1.0, "position_y_m": 1.0}, "reason": "кандидат"})
+STEP = {"kind": "explore", "target": {"position_x_m": 1.0, "position_y_m": 1.0}, "reason": "кандидат"}
+GOOD_STEP = json.dumps(STEP)
+GOOD = json.dumps({
+    "steps": [{**STEP, "evidence": ["#3"], "revise_if": "сигнал выше 0.5"},
+              {"kind": "return", "target": None, "reason": "вернуться"}],
+    "rationale": "сначала разведка, потом возврат", "premises": ["запас энергии достаточен"],
+})
 never = lambda: False
 
 
-def test_valid_reply_becomes_llm_subgoal_with_reason():
+def test_valid_reply_becomes_llm_plan_with_steps_evidence_and_conditions():
     planner = OpenAiCompatiblePlanner(CONFIG, FakeTransport([chat(GOOD)]))
-    goal = planner.propose(context(), never)
-    assert goal.kind is GoalKind.EXPLORE and goal.target == Point(1.0, 1.0)
-    assert goal.source == "llm" and goal.reason == "кандидат"
+    plan = planner.propose(context(plan_id="plan-7", model_epoch=3), never)
+    assert plan.plan_id == "plan-7" and plan.model_epoch == 3 and plan.source == "llm"
+    first, second = plan.steps
+    assert first.goal.kind is GoalKind.EXPLORE and first.goal.target == Point(1.0, 1.0)
+    assert first.goal.source == "llm" and first.evidence == ("#3",) and first.revise_if == "сигнал выше 0.5"
+    assert second.goal.kind is GoalKind.RETURN and plan.premises == ("запас энергии достаточен",)
+
+
+@pytest.mark.parametrize("content", [
+    json.dumps({"steps": [], "rationale": "x"}),
+    json.dumps({"steps": [STEP] * 5, "rationale": "x"}),
+    json.dumps({"steps": [STEP], "rationale": ""}),
+    json.dumps({"steps": [STEP], "rationale": "x", "speed": 1}),
+    json.dumps({"steps": [{**STEP, "linear_mps": 0.2}], "rationale": "x"}),
+    json.dumps({"steps": [{**STEP, "evidence": "#1"}], "rationale": "x"}),
+    '{"steps": [{"kind": "explore", "target": {"position_x_m": NaN, "position_y_m": 1}, "reason": "x"}], "rationale": "x"}',
+    '{"steps": [{"kind": "explore", "target": {"position_x_m": Infinity, "position_y_m": 1}, "reason": "x"}], "rationale": "x"}',
+    GOOD_STEP,
+])
+def test_plan_schema_violations_are_rejected(content):
+    with pytest.raises(LlmResponseError):
+        parse_plan(content, context())
 
 
 def test_prompt_contains_only_allowed_observations():
-    message = build_user_message(context())
-    assert "candidates" in message and "battery_remaining" in message
+    message = build_user_message(context(mission_text="собери два образца"))
+    assert "candidates" in message and "battery_remaining" in message and "собери два образца" in message
     for forbidden in ("true_", "hidden", "sample_position", "seed"):
         assert forbidden not in message
 
@@ -78,7 +103,8 @@ def test_schema_violations_are_rejected(content):
 
 
 def test_json_in_code_fence_is_accepted():
-    assert parse_subgoal("```json\n" + GOOD + "\n```").kind is GoalKind.EXPLORE
+    assert parse_subgoal("```json\n" + GOOD_STEP + "\n```").kind is GoalKind.EXPLORE
+    assert len(parse_plan("```json\n" + GOOD + "\n```", context()).steps) == 2
 
 
 @pytest.mark.parametrize("replies,fragment", [
@@ -111,9 +137,10 @@ def test_resilient_planner_falls_back_visibly_for_each_failure_and_without_key()
     settings = MissionSettings()
     for transport in (FakeTransport([TransportError("x")] * 2), FakeTransport([chat("мусор")] * 2)):
         planner = ResilientPlanner(OpenAiCompatiblePlanner(CONFIG, transport), FallbackPlanner(settings))
-        goal = planner.propose(context(), never)
-        assert goal.source == "fallback" and "fallback" in goal.reason
-        assert planner.last_fallback_reason
+        plan = planner.propose(context(), never)
+        goal = plan.steps[0].goal
+        assert plan.source == "fallback" and goal.source == "fallback" and "fallback" in goal.reason
+        assert plan.fallback_reason and planner.last_fallback_reason
     no_key = ResilientPlanner(None, FallbackPlanner(settings))
     assert no_key.propose(context(), never).source == "fallback"
     assert no_key.last_fallback_reason == "LLM не настроена"

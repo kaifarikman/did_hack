@@ -28,6 +28,22 @@ const adapters: Array<[string, () => MissionGateway]> = [
   ["fixture", () => new FixtureMissionGateway()],
 ];
 
+describe("health и профили", () => {
+  it("старый backend без supported_scenarios понимается как только easy", async () => {
+    const gateway = new HttpMissionGateway({ fetchFn: exampleFetch() });
+    expect((await gateway.getHealth()).supported_scenarios).toEqual(["easy"]);
+  });
+
+  it("новый backend перечисляет профили; неизвестный профиль — ошибка контракта", async () => {
+    const health = (scenarios: unknown) => () =>
+      Response.json({ status: "ready", ros_connected: true, judge_mode: "local", llm_available: false, supported_scenarios: scenarios });
+    const ok = new HttpMissionGateway({ fetchFn: exampleFetch({ "GET /api/v1/health": health(["easy", "hard"]) }) });
+    expect((await ok.getHealth()).supported_scenarios).toEqual(["easy", "hard"]);
+    const bad = new HttpMissionGateway({ fetchFn: exampleFetch({ "GET /api/v1/health": health(["extreme"]) }) });
+    await expect(bad.getHealth()).rejects.toBeInstanceOf(ContractError);
+  });
+});
+
 describe.each(adapters)("порт MissionGateway: %s", (_name, create) => {
   it("до первого прогона отдаёт idle с null-позицией робота и батареей", async () => {
     const snapshot = await create().getState();

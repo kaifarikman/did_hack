@@ -1,19 +1,24 @@
 """Сборка контроллера и сервиса прогона на двойниках."""
 from __future__ import annotations
 
+from dataclasses import replace
+
 from adapters.journal.memory import InMemoryJournal
 from application.mission_controller import ControllerPorts, MissionController
 from application.motion import MotionExecutor
 from application.navigation_service import NavigationService
+from application.ports import MapMode
+from application.research import TerrainResearch
 from application.planner import FallbackPlanner, ResilientPlanner
 from application.run_service import RunService
 from domain.energy import TerrainEstimator
+from domain.hazards import HazardMap
 from domain.hypotheses import HypothesisBook
 from domain.mission import Mission
 from domain.navigation import StuckDetector
 from domain.search import SignalSearch
 from domain.settings import MissionSettings
-from fakes import FakeClock, FakeEnvironment, SimWorld, StaticMap, build_arena
+from fakes import FakeClock, FakeEnvironment, SimWorld, StaticMap, SynchronousExecutor, build_arena
 
 SETTINGS = MissionSettings()
 
@@ -23,10 +28,13 @@ def make_mission(run_id: str = "run-1") -> Mission:
 
 
 def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=None, mission=None,
-                    settings: MissionSettings = SETTINGS, simulation=None, estimator=None, judge=None):
+                    settings: MissionSettings = SETTINGS, simulation=None, estimator=None, judge=None,
+                    events=None, score=None, planner_executor=None, planner_rate_limited=False,
+                    maps=None, map_mode=MapMode.STATIC):
     journal = journal or InMemoryJournal()
     mission = mission or make_mission()
     estimator = estimator or TerrainEstimator()
+    hazards = HazardMap()
     ports = ControllerPorts(
         observations=world,
         motion=MotionExecutor(world, StuckDetector(), settings.arrival_tolerance_m),
@@ -34,10 +42,15 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
         simulation=simulation or world,
         planner=planner or ResilientPlanner(None, FallbackPlanner(settings)),
         journal=journal,
-        navigation=NavigationService(build_arena(), estimator, settings),
+        navigation=NavigationService(maps if maps is not None else build_arena(), estimator, settings, hazards),
         clock=clock,
+        events=events,
+        score=score,
+        map_mode=map_mode,
     )
-    controller = MissionController(mission, ports, settings, estimator, SignalSearch(), HypothesisBook())
+    research = TerrainResearch(estimator, HypothesisBook(), hazards=hazards)
+    controller = MissionController(mission, ports, settings, research, SignalSearch(),
+                                   planner_executor or SynchronousExecutor(), planner_rate_limited)
     return controller, mission, journal
 
 
@@ -56,10 +69,33 @@ def make_service(world: SimWorld, clock: FakeClock, journal=None, environment=No
     maps = StaticMap()
     counter = iter(range(1, 1000))
 
-    def factory(mission: Mission) -> MissionController:
+    def factory(mission: Mission, link=None) -> MissionController:
         controller, _, _ = make_controller(world, clock, journal=journal, mission=mission)
         return controller
 
     service = RunService(environment, maps, journal, factory, SETTINGS,
                          id_factory=ids or (lambda: f"run-{next(counter)}"))
     return service, environment, maps, journal
+
+
+def make_team_service(team, clock, journal=None, settings: MissionSettings = SETTINGS):
+    """Сервис прогона команды на TeamWorld: у каждого робота свои порты, координатор общий."""
+    journal = journal or InMemoryJournal()
+    environment = FakeEnvironment(robot_counts=(1, 2), scenarios=("easy", "medium", "hard"))
+    counter = iter(range(1, 1000))
+    controllers = {}
+
+    def factory(mission: Mission, link=None) -> MissionController:
+        robot = team.robots[mission.robot_id]
+        # у каждого робота своя база — его старт (второй старт — локальное допущение до ответа организаторов)
+        own = replace(settings, base=robot.start.point)
+        controller, _, _ = make_controller(robot, clock, journal=journal, mission=mission, settings=own,
+                                           simulation=team, events=robot, score=robot)
+        controller._ports.robot_id = mission.robot_id
+        controller._ports.coordination = link
+        controllers[mission.robot_id] = controller
+        return controller
+
+    service = RunService(environment, StaticMap(), journal, factory, settings,
+                         id_factory=lambda: f"team-{next(counter)}")
+    return service, journal, controllers

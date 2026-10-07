@@ -10,7 +10,12 @@
       "hypothesis_id": null,
       "expected": null,
       "observed": null,
-      "conclusion": null
+      "conclusion": null,
+      "experiment_id": null,
+      "detection_id": null,
+      "plan_id": null,
+      "evidence": [],
+      "robot_id": null
     },
     {
       "sequence": 2,
@@ -21,7 +26,12 @@
       "hypothesis_id": "fixture-hypothesis-1",
       "expected": "На соседнем участке расход на метр ниже.",
       "observed": "Предварительная оценка текущего участка — 2.1 ед./м.",
-      "conclusion": null
+      "conclusion": null,
+      "experiment_id": null,
+      "detection_id": null,
+      "plan_id": null,
+      "evidence": [],
+      "robot_id": null
     },
     {
       "sequence": 3,
@@ -32,7 +42,12 @@
       "hypothesis_id": "fixture-hypothesis-1",
       "expected": "Получить сравнительную оценку расхода.",
       "observed": null,
-      "conclusion": null
+      "conclusion": null,
+      "experiment_id": null,
+      "detection_id": null,
+      "plan_id": null,
+      "evidence": [],
+      "robot_id": null
     }
   ],
   "next_sequence": 3,

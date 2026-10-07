@@ -1,0 +1,11 @@
+{
+  "contract_version": "2.0",
+  "description": "SLAM потерял позу: движение останавливается, sample-сигнал не помогает.",
+  "observation": {
+    "robot_id": "robot_1", "generation": 3, "sequence": 43,
+    "simulation_time_s": 12.8, "received_monotonic_s": 1000.4,
+    "pose": {"position_x_m": -1.1, "position_y_m": -0.4, "heading_rad": 0.3},
+    "battery_remaining": 54.9, "sample_signal": 0.2, "sample_signal_age_s": 0.1,
+    "localization": "lost", "localization_error_m": 0.6, "penalty_recent": false
+  }
+}

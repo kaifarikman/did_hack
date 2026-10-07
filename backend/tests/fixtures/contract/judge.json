@@ -1,0 +1,11 @@
+{
+  "contract_version": "2.0",
+  "description": "Три исхода сервисов судьи и публичный счёт для сверки неизвестного исхода.",
+  "replies": {
+    "succeeded": {"success": true, "message": "collected", "outcome": "succeeded"},
+    "rejected": {"success": false, "message": "no_sample_in_range", "outcome": "rejected"},
+    "unknown": {"success": false, "message": "судья не ответил вовремя", "outcome": "unknown"}
+  },
+  "score": {"collected": 2, "finished": false, "finish_success": null, "simulation_time_s": 88.0,
+            "robot_id": "robot_1"}
+}

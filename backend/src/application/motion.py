@@ -44,6 +44,11 @@ class MotionExecutor:
         self._drive.command(command.linear_mps, command.angular_radps)
         return MotionState.MOVING
 
+    def hold(self) -> None:
+        """Пауза без отмены пути (уступаем партнёру): ожидание не считается застреванием."""
+        self._stuck.reset()
+        self._drive.stop()
+
     def stop(self) -> None:
         """Останавливает всегда, даже без активного пути; восстановление связи не возобновляет путь."""
         self._tracker = None

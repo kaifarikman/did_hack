@@ -39,7 +39,15 @@ interface FixtureRun {
   outageTriggered: boolean;
 }
 
-const FIXTURE_HEALTH: HealthStatus = { status: "ready", ros_connected: true, judge_mode: "local", llm_available: true };
+const FIXTURE_HEALTH: HealthStatus = {
+  status: "ready",
+  ros_connected: true,
+  judge_mode: "local",
+  llm_available: true,
+  supported_scenarios: ["easy"],
+  supported_map_modes: ["static"],
+  supported_robot_counts: [1],
+};
 
 function clone<T>(value: T): T {
   return structuredClone(value);
@@ -163,6 +171,10 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
         expected: null,
         observed: null,
         conclusion: null,
+        experiment_id: null,
+        detection_id: null,
+        plan_id: null,
+        evidence: [],
       });
     }
     return clone(run.lastSnapshot);

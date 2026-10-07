@@ -198,6 +198,29 @@ describe("команды", () => {
     expect(harness.controller.getView().snapshot?.run_id).toBe("run-a");
   });
 
+  it("Start передаёт выбранный профиль и текст миссии", async () => {
+    const harness = await boot();
+    const pending = harness.controller.startRun(9, "hard", "  собери два образца  ");
+    await flush();
+    expect(harness.gateway.startCalls[0]?.request).toEqual({
+      request_id: "req-1",
+      scenario: "hard",
+      seed: 9,
+      mission_text: "собери два образца",
+    });
+    lastOf(harness.gateway.startCalls).deferred.resolve(runA({ revision: 1, status: "starting" }));
+    await pending;
+  });
+
+  it("Start передаёт режим SLAM, только если он выбран", async () => {
+    const harness = await boot();
+    const pending = harness.controller.startRun(4, "easy", "", "slam");
+    await flush();
+    expect(harness.gateway.startCalls[0]?.request).toEqual({ request_id: "req-1", scenario: "easy", seed: 4, map_mode: "slam" });
+    lastOf(harness.gateway.startCalls).deferred.resolve(runA({ revision: 1, status: "starting" }));
+    await pending;
+  });
+
   it("Start недоступен без готовности среды и без свежей связи", async () => {
     const harness = create();
     harness.controller.start();

@@ -1,18 +1,32 @@
-"""Порты: границы ядра с внешним миром. Реализации — ROS, HTTP/LLM и файловые адаптеры или тестовые двойники."""
+"""Порты: границы ядра с внешним миром. Реализации — ROS, HTTP/LLM и файловые адаптеры или тестовые двойники.
+
+Контракт F02 описан в context/full-solution/contract-f02.md. Изменение сигнатур — новая версия
+CONTRACT_VERSION и обновление общих fixtures в tests/fixtures/contract.
+"""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from enum import Enum
 from typing import Protocol
 
+from domain.events import PublicEvent
 from domain.grid import OccupancyGrid
 from domain.journal import JournalDraft, JournalEntry
-from domain.observations import Observation
-from domain.subgoals import PlanningContext, Subgoal
+from domain.observations import DEFAULT_ROBOT_ID, Observation
+from domain.plans import MissionPlan
+from domain.subgoals import PlanningContext
+
+CONTRACT_VERSION = "2.0"
 
 
 class ObservationSource(Protocol):
     def latest(self) -> Observation | None:
         """Последнее наблюдение (поза в мировых координатах, батарея, сигнал) или None."""
+
+
+class EventSource(Protocol):
+    def events_after(self, sequence: int) -> list[PublicEvent]:
+        """Разрешённые события с номером > sequence по возрастанию; пустой список — новых нет."""
 
 
 class VelocityDrive(Protocol):
@@ -24,10 +38,37 @@ class VelocityDrive(Protocol):
         """Должна фактически остановить робота; вызывается идемпотентно."""
 
 
+class OperationOutcome(str, Enum):
+    """Исход сервиса судьи. `unknown` — таймаут/обрыв: результат сверяется со счётом, не повторяется вслепую."""
+
+    SUCCEEDED = "succeeded"
+    REJECTED = "rejected"
+    UNKNOWN = "unknown"
+
+
 @dataclass(frozen=True)
 class JudgeReply:
     success: bool
     message: str = ""
+    outcome: OperationOutcome | None = None  # None в старом адаптере: выводится из success
+
+    def __post_init__(self) -> None:
+        if self.outcome is None:
+            derived = OperationOutcome.SUCCEEDED if self.success else OperationOutcome.REJECTED
+            object.__setattr__(self, "outcome", derived)
+        elif (self.outcome is OperationOutcome.SUCCEEDED) != self.success:
+            raise ValueError("success и outcome противоречат друг другу")
+
+
+@dataclass(frozen=True)
+class PublicScore:
+    """Публичный счёт /did/score: единственный способ сверить неизвестный исход collect/finish."""
+
+    collected: int
+    finished: bool
+    finish_success: bool | None = None
+    simulation_time_s: float | None = None
+    robot_id: str = DEFAULT_ROBOT_ID
 
 
 class JudgeClient(Protocol):
@@ -36,16 +77,56 @@ class JudgeClient(Protocol):
     def finish(self) -> JudgeReply: ...
 
 
+class ScoreSource(Protocol):
+    def score(self) -> PublicScore | None:
+        """Последний опубликованный счёт или None, если его ещё не было."""
+
+
+class MapMode(str, Enum):
+    STATIC = "static"  # готовая карта turtlebot3_world
+    SLAM = "slam"  # карта строится из наблюдений, вначале может отсутствовать
+
+
+@dataclass(frozen=True)
+class ResetRequest:
+    scenario: str
+    seed: int
+    generation: int  # новое поколение прогона; ответы старых поколений отбрасываются
+    map_mode: MapMode = MapMode.STATIC
+    robot_ids: tuple[str, ...] = (DEFAULT_ROBOT_ID,)
+
+
+@dataclass(frozen=True)
+class ResetAck:
+    """Готовность нового поколения. Адаптер подтверждает то, что фактически применено."""
+
+    generation: int
+    scenario: str
+    seed: int
+    map_mode: MapMode = MapMode.STATIC
+    robot_ids: tuple[str, ...] = (DEFAULT_ROBOT_ID,)
+    notes: tuple[str, ...] = field(default_factory=tuple)
+
+    def matches(self, request: ResetRequest) -> bool:
+        return (
+            self.generation == request.generation
+            and self.scenario == request.scenario
+            and self.seed == request.seed
+            and self.map_mode is request.map_mode
+            and self.robot_ids == request.robot_ids
+        )
+
+
 class SimulationControl(Protocol):
     """Согласованный сброс робота, судьи, батареи, сигнала и часов перед новым прогоном."""
 
-    def reset(self, scenario: str, seed: int) -> None:
+    def reset(self, request: ResetRequest) -> ResetAck:
         """Блокирует до готовности; исключение — отказ сброса."""
 
 
 class MapSource(Protocol):
     def load(self) -> OccupancyGrid | None:
-        """None — карта ещё не загружена."""
+        """None — карты ещё нет (статичная не загружена или SLAM не начал). `revision` растёт при изменениях."""
 
 
 class EnvironmentStatus(Protocol):
@@ -55,11 +136,20 @@ class EnvironmentStatus(Protocol):
 
     def llm_available(self) -> bool: ...
 
+    def supported_scenarios(self) -> tuple[str, ...]:
+        """Профили, которые среда действительно применяет при reset."""
+
+    def supported_map_modes(self) -> tuple[str, ...]:
+        """Режимы карты среды: static — готовая карта, slam — строится из наблюдений."""
+
+    def supported_robot_counts(self) -> tuple[int, ...]:
+        """Сколько роботов среда может поднять в одном прогоне."""
+
 
 class Planner(Protocol):
-    """Выбор подцели. Возвращает намерение, не скорости."""
+    """План из нескольких подцелей. Возвращает намерения, не скорости."""
 
-    def propose(self, context: PlanningContext, is_cancelled: "CancelCheck") -> Subgoal:
+    def propose(self, context: PlanningContext, is_cancelled: "CancelCheck") -> MissionPlan:
         """Исключение PlannerError — планировщик не смог ответить."""
 
 

@@ -68,7 +68,9 @@ def test_running_state_has_same_fields_and_types_as_example(stack):
 def test_health_map_and_error_shape(stack):
     client, _, _, environment, maps = stack
     assert client.get("/api/v1/health").json() == {
-        "status": "ready", "ros_connected": True, "judge_mode": "local", "llm_available": False}
+        "status": "ready", "ros_connected": True, "judge_mode": "local", "llm_available": False,
+        "supported_scenarios": ["easy"], "supported_map_modes": ["static"],
+        "supported_robot_counts": [1]}
     body = client.get("/api/v1/map").json()
     assert set(body) == set(example("map.json")) and len(body["cells"]) == body["width"] * body["height"]
     assert body["origin"].keys() == example("map.json")["origin"].keys()
@@ -87,7 +89,9 @@ def test_start_is_202_conflicts_and_validation(stack):
     assert first.status_code == 202 and first.json()["status"] == "starting" and first.json()["revision"] >= 0
     other = start(client, request_id="req-2")
     assert other.status_code == 409 and other.json()["error"]["code"] == "run_conflict"
-    assert start(client, request_id="req-3", scenario="hard").status_code == 422
+    unavailable = start(client, request_id="req-3", scenario="hard")
+    assert unavailable.status_code == 409 and unavailable.json()["error"]["code"] == "scenario_unavailable"
+    assert start(client, request_id="req-4", scenario="extreme").status_code == 422
     assert client.post("/api/v1/runs", json={"request_id": "x", "scenario": "easy"}).status_code == 422
     assert client.post("/api/v1/runs", json={"request_id": "x", "scenario": "easy", "seed": "1"}).status_code == 422
     assert client.post("/api/v1/runs", json={"request_id": 1, "scenario": "easy", "seed": 1}).status_code == 422
@@ -98,7 +102,7 @@ def test_request_id_dedup_same_body_replays_and_different_body_conflicts(stack):
     first = start(client, "dup", seed=7).json()
     again = start(client, "dup", seed=7)
     assert again.status_code == 202 and again.json()["run_id"] == first["run_id"]
-    assert len(service._missions) == 1
+    assert len(service._runs) == 1
     clash = start(client, "dup", seed=8)
     assert clash.status_code == 409 and clash.json()["error"]["code"] == "run_conflict"
     stop = client.post(f"/api/v1/runs/{first['run_id']}/stop", json={"request_id": "dup"})

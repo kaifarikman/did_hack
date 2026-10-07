@@ -1,4 +1,5 @@
 import type { MapData, MissionSnapshot, Point } from "../domain/contract";
+import { placeLabels, terrainLabel } from "../domain/presentation";
 import {
   createViewTransform,
   headingToScreenAngle,
@@ -19,6 +20,9 @@ export const MAP_COLORS = {
   goal: "#7b3fb8",
   collected: "#b8860b",
   terrain: "#0f8b8d",
+  hazard: "#d0021b",
+  planStep: "#5a2d91",
+  partner: "#0b7a75",
 } as const;
 
 const mapImageCache = new WeakMap<MapData, HTMLCanvasElement>();
@@ -85,26 +89,43 @@ export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport,
 
   if (snapshot === null) return transform;
 
-  for (const estimate of snapshot.terrain_estimates) {
+  const labels: Array<{ x: number; y: number; width: number; height: number; text: string; color: string }> = [];
+  context.font = "600 11px system-ui, sans-serif";
+  const label = (text: string, x: number, y: number, color: string) => {
+    const width = context.measureText(text).width + 4;
+    labels.push({ x: x - width / 2, y: y - 11, width, height: 13, text, color });
+  };
+
+  // оценки грунта: заливка по уверенности, подписи — только самые уверенные без наложения
+  const estimates = [...snapshot.terrain_estimates].sort((first, second) => second.confidence - first.confidence);
+  for (const estimate of estimates) {
     const center = worldToScreen(transform, estimate.center);
     const radius = estimate.radius_m * transform.scale;
     context.beginPath();
     context.arc(center.x, center.y, radius, 0, Math.PI * 2);
-    context.fillStyle = `rgba(15, 139, 141, ${0.12 + 0.25 * estimate.confidence})`;
+    context.fillStyle = `rgba(15, 139, 141, ${0.08 + 0.25 * estimate.confidence})`;
     context.fill();
     context.setLineDash([4, 3]);
     context.strokeStyle = MAP_COLORS.terrain;
-    context.lineWidth = 1.5;
+    context.lineWidth = estimate.regime > 0 ? 2.5 : 1;
     context.stroke();
     context.setLineDash([]);
-    context.fillStyle = MAP_COLORS.terrain;
-    context.font = "600 11px system-ui, sans-serif";
-    context.textAlign = "center";
-    context.fillText(
-      `оценка ${estimate.energy_per_m.toFixed(1)}/м · conf ${estimate.confidence.toFixed(2)}`,
-      center.x,
-      center.y - radius - 4,
-    );
+    if (estimate.confidence >= 0.25) label(terrainLabel(estimate), center.x, center.y + 4, MAP_COLORS.terrain);
+  }
+
+  // наблюдаемые опасности: круг вокруг поз робота в моменты hazard_hit, не истинная граница
+  for (const hazard of snapshot.research?.hazards ?? []) {
+    const center = worldToScreen(transform, hazard.center);
+    context.beginPath();
+    context.arc(center.x, center.y, hazard.radius_m * transform.scale, 0, Math.PI * 2);
+    context.fillStyle = "rgba(208, 2, 27, 0.12)";
+    context.fill();
+    context.setLineDash([6, 3]);
+    context.strokeStyle = MAP_COLORS.hazard;
+    context.lineWidth = 2;
+    context.stroke();
+    context.setLineDash([]);
+    label(`опасность ×${hazard.hits}`, center.x, center.y - hazard.radius_m * transform.scale - 2, MAP_COLORS.hazard);
   }
 
   if (snapshot.trajectory.length > 1) {
@@ -149,6 +170,32 @@ export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport,
     context.stroke();
   }
 
+  // ещё не начатые шаги плана — пронумерованные точки
+  (snapshot.plan?.steps ?? []).forEach((step, index) => {
+    if (step.status !== "pending" || step.target === null) return;
+    const point = worldToScreen(transform, step.target);
+    context.beginPath();
+    context.arc(point.x, point.y, 7, 0, Math.PI * 2);
+    context.fillStyle = "#ffffff";
+    context.fill();
+    context.strokeStyle = MAP_COLORS.planStep;
+    context.lineWidth = 2;
+    context.stroke();
+    context.fillStyle = MAP_COLORS.planStep;
+    context.font = "700 10px system-ui, sans-serif";
+    context.textAlign = "center";
+    context.fillText(String(index + 1), point.x, point.y + 3.5);
+  });
+
+  context.font = "600 11px system-ui, sans-serif";
+  context.textAlign = "center";
+  for (const placed of placeLabels(labels)) {
+    context.fillStyle = "rgba(255, 255, 255, 0.85)";
+    context.fillRect(placed.x, placed.y, placed.width, placed.height);
+    context.fillStyle = placed.color;
+    context.fillText(placed.text, placed.x + placed.width / 2, placed.y + 10);
+  }
+
   const target = snapshot.current_goal?.target ?? null;
   if (target !== null) {
     const screen = worldToScreen(transform, target);
@@ -161,6 +208,27 @@ export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport,
     context.arc(screen.x, screen.y, 2.5, 0, Math.PI * 2);
     context.fillStyle = MAP_COLORS.goal;
     context.fill();
+  }
+
+  // остальные роботы команды: траектория, бронь и корпус своим цветом
+  for (const partner of (snapshot.team?.robots ?? []).slice(1)) {
+    if (partner.trajectory.length > 1) {
+      tracePath(context, transform, partner.trajectory);
+      context.strokeStyle = MAP_COLORS.partner;
+      context.lineWidth = 2;
+      context.stroke();
+    }
+    if (partner.reservation !== null) {
+      const place = worldToScreen(transform, partner.reservation);
+      context.setLineDash([3, 3]);
+      context.beginPath();
+      context.arc(place.x, place.y, 0.8 * transform.scale, 0, Math.PI * 2);
+      context.strokeStyle = MAP_COLORS.partner;
+      context.lineWidth = 1.5;
+      context.stroke();
+      context.setLineDash([]);
+    }
+    if (partner.robot_pose !== null) drawRobot(context, transform, partner.robot_pose, MAP_COLORS.partner);
   }
 
   // отсутствие позиции — робота нет на карте, а не «в нуле»
@@ -183,4 +251,28 @@ export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport,
     context.restore();
   }
   return transform;
+}
+
+function drawRobot(
+  context: CanvasRenderingContext2D,
+  transform: ViewTransform,
+  pose: { position_x_m: number; position_y_m: number; heading_rad: number },
+  color: string,
+): void {
+  const robot = worldToScreen(transform, pose);
+  context.save();
+  context.translate(robot.x, robot.y);
+  context.rotate(headingToScreenAngle(pose.heading_rad));
+  context.beginPath();
+  context.moveTo(12, 0);
+  context.lineTo(-8, 8);
+  context.lineTo(-4, 0);
+  context.lineTo(-8, -8);
+  context.closePath();
+  context.fillStyle = color;
+  context.fill();
+  context.strokeStyle = "#ffffff";
+  context.lineWidth = 1.5;
+  context.stroke();
+  context.restore();
 }

@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.1",
+  "run_id": "run-1",
+  "revision": 337,
+  "status": "running",
+  "scenario": "easy",
+  "seed": 1,
+  "judge_mode": "local",
+  "planner_mode": "fallback",
+  "simulation_time_s": 124.99999999999858,
+  "map_id": "slam-test#r29",
+  "robot_pose": {
+    "position_x_m": -2.167379932307865,
+    "position_y_m": -1.5094417382248495,
+    "heading_rad": 6.226529925707355
+  },
+  "base_position": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5
+  },
+  "battery_remaining": 57.355479132914866,
+  "battery_initial": 60.0,
+  "sample_signal": 0.2121960335344902,
+  "samples_collected": 0,
+  "return_energy_estimate": 2.5254468241221057,
+  "current_goal": {
+    "kind": "explore",
+    "target": {
+      "position_x_m": -1.4499999999999997,
+      "position_y_m": -1.5499999999999998
+    },
+    "reason": "Прогноз сигнала 0.21; сигнал слабый, исследуем новые области. Путь ≈ 4.6, возврат оттуда ≈ 4.5."
+  },
+  "trajectory": [
+    {
+      "position_x_m": -2.0,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -2.0804764438266345,
+      "position_y_m": -0.48269892750366555
+    },
+    {
+      "position_x_m": -2.2146885575553164,
+      "position_y_m": -0.47288905699852357
+    },
+    {
+      "position_x_m": -2.361016741809553,
+      "position_y_m": -0.4675570245487846
+    },
+    {
+      "position_x_m": -2.510093160859602,
+      "position_y_m": -0.4634398663824922
+    },
+    {
+      "position_x_m": -2.659821677317967,
+      "position_y_m": -0.4596339936266621
+    },
+    {
+      "position_x_m": -2.809711800950704,
+      "position_y_m": -0.4559124405381294
+    },
+    {
+      "position_x_m": -2.9461247627197724,
+      "position_y_m": -0.4568375860071975
+    },
+    {
+      "position_x_m": -2.9522616328559965,
+      "position_y_m": -0.5397759258618203
+    },
+    {
+      "position_x_m": -2.9438580394346157,
+      "position_y_m": -0.6744222058504091
+    },
+    {
+      "position_x_m": -2.9295246798179573,
+      "position_y_m": -0.8202510022153605
+    },
+    {
+      "position_x_m": -2.9136706888110733,
+      "position_y_m": -0.9685755381616954
+    },
+    {
+      "position_x_m": -2.897439543231964,
+      "position_y_m": -1.117484019661717
+    },
+    {
+      "position_x_m": -2.881110614922807,
+      "position_y_m": -1.2665346861244904
+    },
+    {
+      "position_x_m": -2.8647535605962515,
+      "position_y_m": -1.4156211448886773
+    },
+    {
+      "position_x_m": -2.810350091559498,
+      "position_y_m": -1.4613632182154923
+    },
+    {
+      "position_x_m": -2.6847806265518916,
+      "position_y_m": -1.4772093134639106
+    },
+    {
+      "position_x_m": -2.5402871492076464,
+      "position_y_m": -1.4876760851924893
+    },
+    {
+      "position_x_m": -2.391707033021986,
+      "position_y_m": -1.4966156822406305
+    },
+    {
+      "position_x_m": -2.2422173860667893,
+      "position_y_m": -1.5051918424329962
+    }
+  ],
+  "planned_path": [
+    {
+      "position_x_m": -1.4499999999999997,
+      "position_y_m": -1.5499999999999998
+    }
+  ],
+  "collected_samples": [],
+  "terrain_estimates": [
+    {
+      "region_id": "cell--6--3",
+      "center": {
+        "position_x_m": -2.75,
+        "position_y_m": -1.25
+      },
+      "radius_m": 0.25,
+      "energy_per_m": 0.9461660691747105,
+      "confidence": 0.39347093059885907,
+      "std_energy_per_m": 0.1314248050800395,
+      "regime": 0,
+      "last_measured_s": 123.99999999999864
+    },
+    {
+      "region_id": "cell--6--2",
+      "center": {
+        "position_x_m": -2.75,
+        "position_y_m": -0.75
+      },
+      "radius_m": 0.25,
+      "energy_per_m": 0.9440578119907793,
+      "confidence": 0.2643955353048687,
+      "std_energy_per_m": 0.16573582781362262,
+      "regime": 0,
+      "last_measured_s": 115.99999999999909
+    },
+    {
+      "region_id": "cell--6--1",
+      "center": {
+        "position_x_m": -2.75,
+        "position_y_m": -0.25
+      },
+      "radius_m": 0.25,
+      "energy_per_m": 1.1080445991633052,
+      "confidence": 0.23168167780852367,
+      "std_energy_per_m": 0.18341493499693062,
+      "regime": 0,
+      "last_measured_s": 113.89999999999921
+    },
+    {
+      "region_id": "cell--5--4",
+      "center": {
+        "position_x_m": -2.25,
+        "position_y_m": -1.75
+      },
+      "radius_m": 0.25,
+      "energy_per_m": 1.475531497357381,
+      "confidence": 0.007486960276127344,
+      "std_energy_per_m": 0.6819259651671197,
+      "regime": 0,
+      "last_measured_s": 123.99999999999864
+    },
+    {
+      "region_id": "cell--5--3",
+      "center": {
+        "position_x_m": -2.25,
+        "position_y_m": -1.25
+      },
+      "radius_m": 0.25,
+      "energy_per_m": 1.2073718345372857,
+      "confidence": 0.08953941655094544,
+      "std_energy_per_m": 0.3418633734038045,
+      "regime": 0,
+      "last_measured_s": 123.99999999999864
+    },
+    {
+      "region_id": "cell--5--1",
+      "center": {
+        "position_x_m": -2.25,
+        "position_y_m": -0.25
+      },
+      "radius_m": 0.25,
+      "energy_per_m": 0.7608851651919776,
+      "confidence": 0.25635175497786156,
+      "std_energy_per_m": 0.18018043551726243,
+      "regime": 0,
+      "last_measured_s": 107.69999999999956
+    }
+  ],
+  "last_error": null,
+  "mission_text": "",
+  "map_mode": "slam",
+  "target_samples": null,
+  "plan": {
+    "plan_id": "plan-3",
+    "source": "fallback",
+    "rationale": "Алгоритмический резерв: Прогноз сигнала 0.21; сигнал слабый, исследуем новые области. Путь ≈ 4.6, возврат оттуда ≈ 4.5.",
+    "premises": [],
+    "fallback_reason": null,
+    "revision_reason": null,
+    "steps": [
+      {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.4499999999999997,
+          "position_y_m": -1.5499999999999998
+        },
+        "reason": "Прогноз сигнала 0.21; сигнал слабый, исследуем новые области. Путь ≈ 4.6, возврат оттуда ≈ 4.5.",
+        "status": "active",
+        "evidence": [],
+        "revise_if": null
+      }
+    ]
+  },
+  "research": {
+    "sensor": {
+      "state": "ok",
+      "fault": null,
+      "quality": 1.0
+    },
+    "hazards": [],
+    "hypotheses": [],
+    "last_replan_reason": null,
+    "last_replan_detection_id": null,
+    "planner_requests": 3
+  },
+  "team": null
+}

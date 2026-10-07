@@ -1,0 +1,11 @@
+{
+  "contract_version": "2.0",
+  "description": "Наблюдение второго робота команды: та же схема, другой robot_id.",
+  "observation": {
+    "robot_id": "robot_2", "generation": 3, "sequence": 7,
+    "simulation_time_s": 12.4, "received_monotonic_s": 1000.0,
+    "pose": {"position_x_m": -2.0, "position_y_m": 0.5, "heading_rad": 0.0},
+    "battery_remaining": 59.1, "sample_signal": 0.12, "sample_signal_age_s": 0.05,
+    "localization": "degraded", "localization_error_m": 0.12, "penalty_recent": false
+  }
+}

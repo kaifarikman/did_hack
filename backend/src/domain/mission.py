@@ -10,6 +10,7 @@ from enum import Enum
 
 from domain.errors import InvalidTransition
 from domain.geometry import Point, Pose
+from domain.plans import MissionPlan, StepStatus
 from domain.subgoals import Subgoal
 
 TRAJECTORY_LIMIT = 500
@@ -68,6 +69,9 @@ class TerrainEstimateView:
     radius_m: float
     energy_per_m: float
     confidence: float
+    std_energy_per_m: float = 0.0
+    regime: int = 0
+    last_measured_s: float | None = None
 
 
 @dataclass(frozen=True)
@@ -94,6 +98,73 @@ class MissionSnapshot:
     collected_samples: tuple[CollectedSample, ...]
     terrain_estimates: tuple[TerrainEstimateView, ...]
     last_error: MissionError | None
+    mission_text: str = ""
+    target_samples: int | None = None
+    map_mode: str = "static"
+    plan: MissionPlan | None = None
+    plan_statuses: tuple[StepStatus, ...] = ()
+    plan_revision_reason: str | None = None
+    research: "ResearchView" = None  # type: ignore[assignment]
+    team: "TeamView | None" = None
+
+
+@dataclass(frozen=True)
+class RobotView:
+    robot_id: str
+    status: MissionStatus
+    pose: Pose | None
+    battery_remaining: float | None
+    samples_collected: int
+    current_goal: Subgoal | None
+    trajectory: tuple[Point, ...]
+    planned_path: tuple[Point, ...]
+    reservation: Point | None
+    last_error: MissionError | None
+
+
+@dataclass(frozen=True)
+class TeamView:
+    """Команда роботов: отдельные исходы и общий результат (успех/частичный/провал/идёт)."""
+
+    robots: tuple[RobotView, ...]
+    outcome: str  # running | success | partial | failed | stopped
+    samples_collected: int
+    coordinated: bool
+    lost_robots: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class HazardView:
+    detection_id: str
+    center: Point
+    radius_m: float
+    hits: int
+
+
+@dataclass(frozen=True)
+class HypothesisView:
+    hypothesis_id: str
+    kind: str
+    status: str
+    center: Point
+    prediction: str
+    measurement: str | None
+    detection_id: str | None
+    experiment_id: str | None
+
+
+@dataclass(frozen=True)
+class ResearchView:
+    """Оценки агента для панели: состояние датчика, опасности, гипотезы. Не истина сценария."""
+
+    sensor_state: str = "ok"
+    sensor_fault: str | None = None
+    sensor_quality: float = 1.0
+    hazards: tuple[HazardView, ...] = ()
+    hypotheses: tuple[HypothesisView, ...] = ()
+    last_replan_reason: str | None = None
+    last_replan_detection_id: str | None = None
+    planner_requests: int = 0
 
 
 class Mission:
@@ -107,11 +178,25 @@ class Mission:
         map_id: str | None,
         base: Point,
         battery_initial: float,
+        generation: int = 1,
+        mission_text: str = "",
+        robot_id: str = "robot_1",
+        target_samples: int | None = None,
+        map_mode: str = "static",
     ) -> None:
         self._lock = threading.RLock()
         self.run_id = run_id
         self.scenario = scenario
         self.seed = seed
+        self.generation = generation  # поколение прогона: наблюдения и ответы других поколений отбрасываются
+        self.mission_text = mission_text
+        self.robot_id = robot_id
+        self.map_mode = map_mode
+        self.target_samples = target_samples
+        self._plan: MissionPlan | None = None
+        self._plan_statuses: tuple[StepStatus, ...] = ()
+        self._plan_revision_reason: str | None = None
+        self._research_view: ResearchView = ResearchView()
         self._judge_mode = judge_mode
         self._planner_mode = planner_mode
         self._map_id = map_id
@@ -147,6 +232,8 @@ class Mission:
         if target not in _ALLOWED.get(self._status, set()):
             raise InvalidTransition(f"{self._status.value} -> {target.value}")
         self._status = target
+        if target.is_terminal:  # после завершения нет «текущей» цели: последняя цель не выдаётся за активную
+            self._goal, self._planned_path = None, ()
         self._revision += 1
 
     def mark_running(self) -> None:
@@ -170,12 +257,15 @@ class Mission:
         with self._lock:
             self._transition(MissionStatus.STOPPED)
 
-    def complete(self, finish_confirmed: bool) -> None:
-        """Успех только при подтверждённом сборе, положительной батарее и ответе судьи."""
+    def complete(self, finish_confirmed: bool, require_sample: bool = True) -> None:
+        """Успех только при подтверждённом сборе, положительной батарее и ответе судьи.
+
+        Член команды может вернуться без своего сбора: общий успех команды проверяется отдельно.
+        """
         with self._lock:
             if not finish_confirmed:
                 raise InvalidTransition("судья не подтвердил завершение")
-            if not self._collected:
+            if require_sample and not self._collected:
                 raise InvalidTransition("нет подтверждённого сбора")
             if self._battery is None or self._battery <= 0:
                 raise InvalidTransition("батарея не положительна")
@@ -219,9 +309,31 @@ class Mission:
                 self._planner_mode = goal.source
             self._revision += 1
 
+    def set_map_id(self, map_id: str | None) -> None:
+        """SLAM: карта появляется и меняет идентификатор по ходу прогона."""
+        with self._lock:
+            if self._status.is_terminal or map_id == self._map_id:
+                return
+            self._map_id = map_id
+            self._revision += 1
+
     def set_return_estimate(self, estimate: float | None) -> None:
         with self._lock:
             self._return_estimate = estimate
+            self._revision += 1
+
+    def set_plan(self, plan: MissionPlan, statuses: tuple[StepStatus, ...], revision_reason: str | None) -> None:
+        with self._lock:
+            if self._status.is_terminal:
+                return
+            self._plan, self._plan_statuses, self._plan_revision_reason = plan, statuses, revision_reason
+            self._revision += 1
+
+    def set_research(self, view: "ResearchView") -> None:
+        with self._lock:
+            if self._status.is_terminal or view == self._research_view:
+                return
+            self._research_view = view
             self._revision += 1
 
     def set_terrain(self, terrain: tuple[TerrainEstimateView, ...]) -> None:
@@ -247,7 +359,6 @@ class Mission:
                 judge_mode=self._judge_mode,
                 planner_mode=self._planner_mode,
                 simulation_time_s=self._simulation_time_s,
-                map_id=self._map_id,
                 robot_pose=self._pose,
                 base_position=self._base,
                 battery_remaining=self._battery,
@@ -261,4 +372,12 @@ class Mission:
                 collected_samples=tuple(self._collected),
                 terrain_estimates=self._terrain,
                 last_error=self._error,
+                mission_text=self.mission_text,
+                target_samples=self.target_samples,
+                map_mode=self.map_mode,
+                map_id=self._map_id,
+                plan=self._plan,
+                plan_statuses=self._plan_statuses,
+                plan_revision_reason=self._plan_revision_reason,
+                research=self._research_view,
             )
