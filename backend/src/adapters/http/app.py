@@ -7,12 +7,15 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 
 from adapters.http.serialization import journal_page_json, map_json, snapshot_json
-from application.errors import ApplicationError, EnvironmentNotReady, InvalidRequest, RunConflict, UnknownRun
+from application.errors import (
+    ApplicationError, EnvironmentNotReady, InvalidRequest, RunConflict, ScenarioUnavailable, UnknownRun,
+)
 from application.ports import EnvironmentStatus, MapSource
 from application.run_service import RunService
 
 _STATUS_BY_ERROR = {
     InvalidRequest: 422, UnknownRun: 404, RunConflict: 409, EnvironmentNotReady: 503,
+    ScenarioUnavailable: 409,
 }
 
 
@@ -59,6 +62,7 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
             "ros_connected": environment.ros_connected(),
             "judge_mode": environment.judge_mode,
             "llm_available": environment.llm_available(),
+            "supported_scenarios": list(environment.supported_scenarios()),
         }
 
     @app.get("/api/v1/state")

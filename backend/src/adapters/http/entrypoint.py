@@ -9,6 +9,7 @@ from fastapi import FastAPI
 
 from adapters.http.app import create_app
 from adapters.journal.jsonl import JsonlJournal
+from adapters.legacy_reset import LEGACY_SCENARIOS, LegacySimulationControl
 from adapters.llm.config import LlmConfig
 from adapters.llm.openai_planner import OpenAiCompatiblePlanner
 from adapters.map_file import load_nav2_map
@@ -40,12 +41,16 @@ class _Environment:
     runtime: RosRuntime
     llm_configured: bool
     judge_mode: str = "local"
+    scenarios: tuple[str, ...] = LEGACY_SCENARIOS
 
     def ros_connected(self) -> bool:
         return self.runtime.bridge.ros_connected()
 
     def llm_available(self) -> bool:
         return self.llm_configured
+
+    def supported_scenarios(self) -> tuple[str, ...]:
+        return self.scenarios
 
 
 class _LazyMap:
@@ -66,8 +71,9 @@ def create_default_app() -> FastAPI:
     llm_config = LlmConfig.from_environment()
     runtime = RosRuntime(observation_max_age_s=settings.observation_max_age_s)
     bridge = runtime.bridge
-    simulation = SupervisorSimulationControl(
-        os.environ.get("SIMULATION_URL", "http://simulation:7000"), bridge.clear_observations)
+    # Супервизор MVP принимает только seed: обёртка честно отклоняет medium/hard, SLAM и второго робота.
+    simulation = LegacySimulationControl(SupervisorSimulationControl(
+        os.environ.get("SIMULATION_URL", "http://simulation:7000"), bridge.clear_observations))
     environment = _Environment(runtime, llm_config is not None, settings.judge_mode)
     clock = _MonotonicClock()
 

@@ -6,14 +6,14 @@ import uuid
 from dataclasses import dataclass
 from typing import Callable
 
-from application.errors import EnvironmentNotReady, InvalidRequest, RunConflict, UnknownRun
+from application.errors import EnvironmentNotReady, InvalidRequest, RunConflict, ScenarioUnavailable, UnknownRun
 from application.mission_controller import MissionController
 from application.ports import EnvironmentStatus, JournalStore, MapSource
 from domain.journal import JournalEntry
 from domain.mission import Mission, MissionSnapshot, MissionStatus
 from domain.settings import MissionSettings
 
-SUPPORTED_SCENARIOS = ("easy",)
+KNOWN_SCENARIOS = ("easy", "medium", "hard")
 JOURNAL_LIMIT_MAX = 200
 
 ControllerFactory = Callable[[Mission], MissionController]
@@ -48,6 +48,11 @@ class RunService:
         self._controllers: dict[str, MissionController] = {}
         self._current: Mission | None = None
         self._commands: dict[str, tuple[tuple, str]] = {}
+        self._generation = 0
+
+    def _next_generation(self) -> int:
+        self._generation += 1
+        return self._generation
 
     # ----------------------------------------------------------- queries
 
@@ -83,8 +88,10 @@ class RunService:
             replay = self._replay(request_id, fingerprint)
             if replay is not None:
                 return replay.snapshot()
-            if scenario not in SUPPORTED_SCENARIOS:
-                raise InvalidRequest(f"Сценарий {scenario!r} не поддерживается в MVP.")
+            if scenario not in KNOWN_SCENARIOS:
+                raise InvalidRequest(f"Сценарий {scenario!r} неизвестен.")
+            if scenario not in self._environment.supported_scenarios():
+                raise ScenarioUnavailable(f"Среда пока не поддерживает сценарий {scenario!r}.")
             current = self._current
             if current is not None and current.status.is_active:
                 raise RunConflict("Другой прогон ещё активен.")
@@ -96,6 +103,7 @@ class RunService:
                 planner_mode="llm" if self._environment.llm_available() else "fallback",
                 map_id=self._maps.load().map_id, base=self._settings.base,
                 battery_initial=self._settings.battery_initial,
+                generation=self._next_generation(),
             )
             # новая память исследователя на каждый прогон: фабрика создаёт свежие объекты
             self._controllers[mission.run_id] = self._controller_factory(mission)

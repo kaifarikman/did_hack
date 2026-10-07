@@ -107,11 +107,13 @@ class Mission:
         map_id: str | None,
         base: Point,
         battery_initial: float,
+        generation: int = 1,
     ) -> None:
         self._lock = threading.RLock()
         self.run_id = run_id
         self.scenario = scenario
         self.seed = seed
+        self.generation = generation  # поколение прогона: наблюдения и ответы других поколений отбрасываются
         self._judge_mode = judge_mode
         self._planner_mode = planner_mode
         self._map_id = map_id

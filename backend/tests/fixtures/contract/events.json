@@ -1,0 +1,14 @@
+{
+  "contract_version": "2.0",
+  "description": "Разрешённые события поколения 3; последний элемент — повторная доставка, ядро учитывает её один раз.",
+  "events": [
+    {"sequence": 1, "kind": "collision", "simulation_time_s": 30.1, "robot_id": "robot_1", "generation": 3,
+     "position": {"position_x_m": 0.4, "position_y_m": 1.1}, "battery_after": 41.0},
+    {"sequence": 2, "kind": "hazard_hit", "simulation_time_s": 44.0, "robot_id": "robot_1", "generation": 3,
+     "position": {"position_x_m": 1.0, "position_y_m": -0.6}, "battery_after": 36.5},
+    {"sequence": 3, "kind": "sample_collected", "simulation_time_s": 51.2, "robot_id": "robot_1", "generation": 3,
+     "position": null, "battery_after": 33.0},
+    {"sequence": 2, "kind": "hazard_hit", "simulation_time_s": 44.0, "robot_id": "robot_1", "generation": 3,
+     "position": {"position_x_m": 1.0, "position_y_m": -0.6}, "battery_after": 36.5}
+  ]
+}

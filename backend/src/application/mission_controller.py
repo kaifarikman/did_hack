@@ -7,10 +7,12 @@ from __future__ import annotations
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 
+from application.event_feed import EventFeed
 from application.motion import MotionExecutor, MotionState
 from application.navigation_service import NavigationService
 from application.ports import (
-    Clock, JournalStore, JudgeClient, ObservationSource, Planner, PlannerError, SimulationControl,
+    Clock, EventSource, JournalStore, JudgeClient, JudgeReply, MapMode, ObservationSource, OperationOutcome,
+    Planner, PlannerError, ResetRequest, ScoreSource, SimulationControl,
 )
 from application.validation import GoalVerdict, validate_subgoal
 from domain.energy import TerrainEstimator, TravelSegment
@@ -19,7 +21,7 @@ from domain.geometry import Point, distance_m, normalize_angle
 from domain.hypotheses import Hypothesis, HypothesisBook, HypothesisStatus
 from domain.journal import JournalDraft, JournalKind
 from domain.mission import Mission, MissionError, TerrainEstimateView
-from domain.observations import Observation
+from domain.observations import DEFAULT_ROBOT_ID, LocalizationStatus, Observation
 from domain.policy import decide_subgoal
 from domain.search import SignalSearch
 from domain.settings import MissionSettings
@@ -39,6 +41,10 @@ class ControllerPorts:
     journal: JournalStore
     navigation: NavigationService
     clock: Clock
+    events: EventSource | None = None
+    score: ScoreSource | None = None
+    map_mode: MapMode = MapMode.STATIC
+    robot_id: str = DEFAULT_ROBOT_ID
 
 
 class MissionController:
@@ -70,6 +76,8 @@ class MissionController:
         self._return_estimate_at: Point | None = None
         self._return_estimate_revision = -1
         self._published_terrain_revision = -1
+        self._localization_lost_since_s: float | None = None
+        self._events: EventFeed | None = None
 
     # ---------------------------------------------------------------- tick
 
@@ -108,13 +116,26 @@ class MissionController:
 
     def _reset_and_start(self) -> None:
         self._ports.motion.stop()
+        request = ResetRequest(
+            self._mission.scenario, self._mission.seed, self._mission.generation,
+            self._ports.map_mode, (self._ports.robot_id,),
+        )
         try:
-            self._ports.simulation.reset(self._mission.scenario, self._mission.seed)
+            ack = self._ports.simulation.reset(request)
         except Exception as error:  # отказ сброса любого рода: робот остановлен, прогон failed
             self._ports.motion.stop()
             self._fail("reset_failed", f"Сброс симуляции не удался: {error}", retryable=True)
             return
+        if not ack.matches(request):
+            self._fail(
+                "reset_mismatch",
+                f"Среда подтвердила другой прогон: {ack.scenario}/{ack.seed}, поколение {ack.generation}.",
+                retryable=True,
+            )
+            return
         self._reset_done_at_s = self._ports.clock.monotonic_s()
+        if self._ports.events is not None:
+            self._events = EventFeed(self._ports.events, self._mission.generation, self._ports.robot_id)
         if self._mission.stop_requested:
             self._finish_stop()
             return
@@ -152,12 +173,20 @@ class MissionController:
         clock = self._ports.clock
         observation = self._ports.observations.latest()
         started = self._reset_done_at_s or clock.monotonic_s()
-        from_previous_run = observation is not None and observation.received_monotonic_s < started
-        if observation is None or from_previous_run:
+        from_previous_run = observation is not None and (
+            observation.received_monotonic_s < started
+            or (observation.generation is not None and observation.generation != self._mission.generation)
+            or observation.robot_id != self._ports.robot_id
+        )
+        lost = observation is not None and observation.localization is LocalizationStatus.LOST
+        if observation is None or from_previous_run or lost:
             self._ports.motion.stop()
-            if clock.monotonic_s() - started > STARTUP_OBSERVATION_GRACE_S:
+            if lost:
+                self._lose_localization()
+            elif clock.monotonic_s() - started > STARTUP_OBSERVATION_GRACE_S:
                 self._fail("observations_stale", "Нет свежих наблюдений после сброса.", True)
             return None
+        self._localization_lost_since_s = None
         if clock.monotonic_s() - observation.received_monotonic_s > self._settings.observation_max_age_s:
             self._fail("observations_stale", "Наблюдения устарели; движение остановлено.", True)
             return None
@@ -169,6 +198,16 @@ class MissionController:
             return None
         return observation
 
+    def _lose_localization(self) -> None:
+        """Потеря позы — критический отказ движения: стоим и ждём восстановления ограниченное время."""
+        now = self._ports.clock.monotonic_s()
+        if self._localization_lost_since_s is None:
+            self._localization_lost_since_s = now
+            self._goal = None
+            self._log(JournalKind.ERROR, "Локализация потеряна", "Движение остановлено до восстановления позы.")
+        elif now - self._localization_lost_since_s > self._settings.localization_recovery_s:
+            self._fail("localization_lost", "Поза не восстановилась; движение прекращено.", True)
+
     # ------------------------------------------------------------ ingestion
 
     def _ingest(self, observation: Observation) -> None:
@@ -179,7 +218,15 @@ class MissionController:
         )
         if observation.sample_signal is not None:
             self._search.record_signal(pose.point, observation.sample_signal)
-        segment = self._segment.add(observation, self._ports.clock.monotonic_s(), self._settings)
+        penalty = observation.penalty_recent
+        for event in self._events.poll() if self._events else ():
+            penalty = penalty or event.kind.is_penalty
+            if event.kind.is_penalty:
+                self._log(
+                    JournalKind.OBSERVATION, f"Событие судьи: {event.kind.value}",
+                    f"Событие №{event.sequence}; расход рядом не считается чистой стоимостью грунта.",
+                )
+        segment = self._segment.add(observation, self._ports.clock.monotonic_s(), penalty)
         if segment is not None:
             self._estimator.record(segment)
         if self._estimator.revision != self._published_terrain_revision:
@@ -270,7 +317,7 @@ class MissionController:
             self._goal = None
 
     def _finish_mission(self, observation: Observation) -> None:
-        reply = self._ports.judge.finish()
+        reply = self._reconcile_finish(self._ports.judge.finish())
         mission = self._mission
         if mission.samples_collected == 0:
             self._fail("no_confirmed_sample", "Возврат без подтверждённого образца; успех не засчитан.")
@@ -286,6 +333,28 @@ class MissionController:
             f"Судья подтвердил возврат; образцов: {mission.samples_collected}, "
             f"батарея {observation.battery_remaining:.1f}.",
         )
+
+    def _reconcile_finish(self, reply: JudgeReply) -> JudgeReply:
+        """Неизвестный исход finish сверяется с публичным счётом; без подтверждения успеха нет."""
+        if reply.outcome is not OperationOutcome.UNKNOWN:
+            return reply
+        score = self._ports.score.score() if self._ports.score else None
+        if score is not None and score.finished and score.finish_success is not None:
+            self._log(
+                JournalKind.DECISION, "Исход finish сверен со счётом",
+                f"Ответ судьи не получен; публичный счёт: finish_success={score.finish_success}.",
+            )
+            return JudgeReply(score.finish_success, "сверено со счётом")
+        return JudgeReply(False, f"исход finish неизвестен: {reply.message}", OperationOutcome.UNKNOWN)
+
+    def _reconcile_collect(self, reply: JudgeReply) -> JudgeReply:
+        """Неизвестный исход collect: засчитываем только рост публичного счёта, повтор не делаем вслепую."""
+        if reply.outcome is not OperationOutcome.UNKNOWN:
+            return reply
+        score = self._ports.score.score() if self._ports.score else None
+        if score is not None and score.collected > self._mission.samples_collected:
+            return JudgeReply(True, "сверено со счётом: сбор засчитан")
+        return reply
 
     # ------------------------------------------------------------ decisions
 
@@ -426,9 +495,15 @@ class MissionController:
     def _collect(self, observation: Observation, goal: Subgoal) -> None:
         self._ports.motion.stop()
         self._mission.set_goal(goal)
-        reply = self._ports.judge.collect()
+        reply = self._reconcile_collect(self._ports.judge.collect())
         position = observation.pose.point
-        if reply.success:
+        if reply.outcome is OperationOutcome.UNKNOWN:
+            self._search.record_collect_attempt(position)
+            self._log(
+                JournalKind.OUTCOME, "Исход сбора неизвестен",
+                f"Судья не ответил, счёт не подтвердил сбор; попытка учтена как неуспешная. {reply.message}".strip(),
+            )
+        elif reply.success:
             sample = self._mission.add_collected_sample(position)
             self._search.reset_after_collect()
             self._log(
@@ -546,7 +621,7 @@ class _SegmentAccumulator:
         self._idle_s = 0.0
         self._penalty = False
 
-    def add(self, observation: Observation, now_s: float, settings: MissionSettings) -> TravelSegment | None:
+    def add(self, observation: Observation, now_s: float, penalty: bool) -> TravelSegment | None:
         if self._start is None:
             self._reset(observation, now_s)
             self._last, self._last_time_s = observation, now_s
@@ -556,7 +631,7 @@ class _SegmentAccumulator:
         self._rotation += abs(normalize_angle(observation.pose.heading_rad - self._last.pose.heading_rad))
         if step < self.IDLE_STEP_M:
             self._idle_s += now_s - self._last_time_s
-        self._penalty = self._penalty or observation.penalty_recent
+        self._penalty = self._penalty or penalty
         self._last, self._last_time_s = observation, now_s
         if self._distance < 0.3:
             return None

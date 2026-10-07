@@ -22,6 +22,8 @@ class OccupancyGrid:
         height: int,
         origin: Pose,
         cells: Sequence[int],
+        revision: int = 0,
+        frame_id: str = "world",
     ) -> None:
         if resolution_m <= 0 or width <= 0 or height <= 0:
             raise ValueError("размеры и разрешение карты должны быть положительными")
@@ -33,6 +35,8 @@ class OccupancyGrid:
         self.height = height
         self.origin = origin
         self.cells = tuple(cells)
+        self.revision = revision  # растёт при каждом изменении карты (SLAM); статичная карта — 0
+        self.frame_id = frame_id  # система координат клеток; агент работает только в world
 
     def index(self, column: int, row: int) -> int:
         return row * self.width + column

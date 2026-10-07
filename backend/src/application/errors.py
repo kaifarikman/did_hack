@@ -25,3 +25,9 @@ class RunConflict(ApplicationError):
 class EnvironmentNotReady(ApplicationError):
     code = "environment_not_ready"
     retryable = True
+
+
+class ScenarioUnavailable(ApplicationError):
+    """Профиль известен, но текущая среда его не применяет: повтор без смены среды не поможет."""
+
+    code = "scenario_unavailable"

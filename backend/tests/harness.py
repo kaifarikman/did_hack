@@ -23,7 +23,8 @@ def make_mission(run_id: str = "run-1") -> Mission:
 
 
 def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=None, mission=None,
-                    settings: MissionSettings = SETTINGS, simulation=None, estimator=None, judge=None):
+                    settings: MissionSettings = SETTINGS, simulation=None, estimator=None, judge=None,
+                    events=None, score=None):
     journal = journal or InMemoryJournal()
     mission = mission or make_mission()
     estimator = estimator or TerrainEstimator()
@@ -36,6 +37,8 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
         journal=journal,
         navigation=NavigationService(build_arena(), estimator, settings),
         clock=clock,
+        events=events,
+        score=score,
     )
     controller = MissionController(mission, ports, settings, estimator, SignalSearch(), HypothesisBook())
     return controller, mission, journal

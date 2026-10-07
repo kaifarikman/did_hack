@@ -14,6 +14,7 @@ class MissionSettings:
     robot_radius_m: float = 0.11
     clearance_margin_m: float = 0.10
     observation_max_age_s: float = 1.0
+    localization_recovery_s: float = 5.0
     arrival_tolerance_m: float = 0.12
     base_tolerance_m: float = 0.25
     collect_signal_threshold: float = 0.8

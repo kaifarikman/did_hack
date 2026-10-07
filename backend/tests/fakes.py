@@ -5,10 +5,11 @@ import math
 import random
 from dataclasses import dataclass, field
 
-from application.ports import JudgeReply, PlannerError
+from application.ports import JudgeReply, OperationOutcome, PlannerError, PublicScore, ResetAck, ResetRequest
+from domain.events import EventKind, PublicEvent
 from domain.geometry import Point, Pose, distance_m
 from domain.grid import OccupancyGrid
-from domain.observations import Observation
+from domain.observations import LocalizationStatus, Observation
 from domain.subgoals import PlanningContext, Subgoal
 
 
@@ -60,6 +61,8 @@ class SimWorld:
         self.reset_calls = 0
         self.penalty = False
         self.frozen = False  # заморозить датчики (имитация потери odom)
+        self.generation: int | None = None
+        self.localization = LocalizationStatus.OK
         self._apply_reset()
 
     def _apply_reset(self) -> None:
@@ -68,13 +71,18 @@ class SimWorld:
         self.remaining = list(self._initial_samples)
         self.collected = 0
         self.finished = False
+        self.finish_success: bool | None = None
+        self.events: list[PublicEvent] = []
         self.linear = self.angular = 0.0
         self.last_received_s = self.clock.now_s
 
     # SimulationControl
-    def reset(self, scenario: str, seed: int) -> None:
+    def reset(self, request: ResetRequest) -> ResetAck:
         self.reset_calls += 1
+        self.last_reset = request
+        self.generation = request.generation
         self._apply_reset()
+        return ResetAck(request.generation, request.scenario, request.seed, request.map_mode, request.robot_ids)
 
     # VelocityDrive
     def command(self, linear_mps: float, angular_radps: float) -> None:
@@ -109,7 +117,20 @@ class SimWorld:
         return Observation(
             simulation_time_s=self.clock.now_s, pose=self.pose, battery_remaining=self.battery,
             sample_signal=signal, received_monotonic_s=self.last_received_s, penalty_recent=self.penalty,
+            generation=self.generation, localization=self.localization,
         )
+
+    # EventSource
+    def emit(self, kind: EventKind) -> None:
+        self.events.append(PublicEvent(len(self.events) + 1, kind, self.clock.now_s, generation=self.generation,
+                                       position=self.pose.point, battery_after=self.battery))
+
+    def events_after(self, sequence: int) -> list[PublicEvent]:
+        return [event for event in self.events if event.sequence > sequence]
+
+    # ScoreSource
+    def score(self) -> PublicScore:
+        return PublicScore(self.collected, self.finished, self.finish_success, self.clock.now_s)
 
     # JudgeClient
     def collect(self) -> JudgeReply:
@@ -117,17 +138,37 @@ class SimWorld:
             if distance_m(self.pose.point, sample) < 0.30:
                 self.remaining.remove(sample)
                 self.collected += 1
+                self.emit(EventKind.SAMPLE_COLLECTED)
                 return JudgeReply(True)
+        self.emit(EventKind.FALSE_COLLECT)
         return JudgeReply(False, "false_collect")
 
     def finish(self) -> JudgeReply:
         self.finished = True
         at_base = distance_m(self.pose.point, self.start.point) < 0.5
-        return JudgeReply(at_base and self.battery > 0)
+        self.finish_success = at_base and self.battery > 0
+        return JudgeReply(self.finish_success)
+
+
+class TimeoutJudge:
+    """Судья выполняет операцию, но ответ теряется: исход для ядра неизвестен."""
+
+    def __init__(self, world: SimWorld) -> None:
+        self._world = world
+        self.collect_calls = 0
+
+    def collect(self) -> JudgeReply:
+        self.collect_calls += 1
+        self._world.collect()
+        return JudgeReply(False, "судья не ответил вовремя", OperationOutcome.UNKNOWN)
+
+    def finish(self) -> JudgeReply:
+        self._world.finish()
+        return JudgeReply(False, "судья не ответил вовремя", OperationOutcome.UNKNOWN)
 
 
 class FailingResetSimulation:
-    def reset(self, scenario: str, seed: int) -> None:
+    def reset(self, request: ResetRequest) -> ResetAck:
         raise RuntimeError("ROS не перезапустился")
 
 
@@ -156,9 +197,13 @@ class FakeEnvironment:
     judge_mode: str = "local"
     ros: bool = True
     llm: bool = False
+    scenarios: tuple[str, ...] = ("easy",)
 
     def ros_connected(self) -> bool:
         return self.ros
+
+    def supported_scenarios(self) -> tuple[str, ...]:
+        return self.scenarios
 
     def llm_available(self) -> bool:
         return self.llm
