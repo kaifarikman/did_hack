@@ -98,6 +98,7 @@ class TerrainEstimator:
         self._z = uncertainty_z
         self._records: list[SegmentRecord] = []
         self._regime: dict[Bucket, tuple[int, int]] = {}  # bucket -> (номер режима, первый sequence)
+        self._previous_starts: dict[Bucket, list[int]] = {}
         self._sequence = 0
         self._estimates: dict[Bucket, TerrainEstimate] = {}
         self._rotation_energy = prior_rotation_energy_per_rad
@@ -183,10 +184,29 @@ class TerrainEstimator:
 
     def open_regime(self, bucket: Bucket, from_sequence: int) -> None:
         """Новый режим корзины: отрезки с sequence < from_sequence больше не влияют на её оценку."""
-        number, _ = self._regime.get(bucket, (0, 0))
+        number, start = self._regime.get(bucket, (0, 0))
+        self._previous_starts.setdefault(bucket, []).append(start)
         self._regime[bucket] = (number + 1, from_sequence)
         self._sequence += 1  # версия модели растёт: маршруты и запас пересчитываются
         self._solve()
+
+    def restore_previous_regime(self, bucket: Bucket) -> None:
+        """Изменение не подтвердилось: прежние отрезки снова участвуют в оценке (номер режима растёт)."""
+        starts = self._previous_starts.get(bucket)
+        if not starts:
+            return
+        number, _ = self._regime[bucket]
+        self._regime[bucket] = (number + 1, starts.pop())
+        self._sequence += 1
+        self._solve()
+
+    def prediction_for(self, segment: TravelSegment) -> tuple[tuple[tuple[Bucket, float], ...], float]:
+        """Разложение отрезка и прогноз падения батареи по модели до его учёта."""
+        path = segment.path if len(segment.path) >= 2 else (segment.start, segment.end)
+        pieces = self.split(path)
+        draft = SegmentRecord(0, pieces, segment.battery_drop, segment.rotation_rad, segment.duration_s,
+                              segment.simulation_time_s)
+        return pieces, self.predicted_drop(draft)
 
     def regime_of(self, bucket: Bucket) -> int:
         return self._regime.get(bucket, (0, 0))[0]

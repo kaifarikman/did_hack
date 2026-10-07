@@ -14,7 +14,7 @@ PATH_STEP_M = 0.02
 
 
 class SegmentAccumulator:
-    def __init__(self, min_length_m: float = 0.5, max_duration_s: float = 30.0) -> None:
+    def __init__(self, min_length_m: float = 0.3, max_duration_s: float = 30.0) -> None:
         self._min_length_m = min_length_m
         self._max_duration_s = max_duration_s
         self._last: Observation | None = None

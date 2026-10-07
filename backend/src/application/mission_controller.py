@@ -217,8 +217,6 @@ class MissionController:
         self._mission.update_telemetry(
             observation.simulation_time_s, pose, observation.battery_remaining, observation.sample_signal
         )
-        if observation.sample_signal is not None:
-            self._search.record_signal(pose.point, observation.sample_signal)
         penalty = observation.penalty_recent
         for event in self._events.poll() if self._events else ():
             penalty = penalty or event.kind.is_penalty
@@ -226,12 +224,43 @@ class MissionController:
                 self._log(
                     JournalKind.OBSERVATION, f"Событие судьи: {event.kind.value}",
                     f"Событие №{event.sequence}; расход рядом не считается чистой стоимостью грунта.",
+                    evidence=(f"event-{event.sequence}",),
                 )
+            self._write(*self._research.record_event(event, pose.point, observation.localization_error_m))
         self._write(*self._research.observe(observation, self._ports.clock.monotonic_s(), penalty))
+        if observation.sample_signal is not None and self._research.sensor.quality > 0:
+            self._search.record_signal(pose.point, observation.sample_signal)
+        for change in self._research.take_changes():
+            self._react_to_change(change, observation)
         if self._research.revision != self._published_terrain_revision:
             self._published_terrain_revision = self._research.revision
             self._mission.set_terrain(self._research.terrain_views())
         self._refresh_return_estimate(observation)
+
+    def _react_to_change(self, change, observation: Observation) -> None:
+        """Изменение модели прерывает маршрут, который оно затрагивает: план строится заново."""
+        goal = self._goal
+        path = self._mission.snapshot().planned_path
+        affected = goal is not None and (
+            (change.bucket is not None and any(self._estimator.bucket_of(p) == change.bucket for p in path))
+            or (change.hazard is not None and self._research.hazards.crossings(observation.pose.point, path) > 0)
+            or (change.bucket is None and change.hazard is None)
+        )
+        if not affected:
+            self._log(
+                JournalKind.DECISION, "Модель обновлена",
+                f"{change.cause}; текущий маршрут не затронут, запас возврата пересчитывается.",
+                detection_id=change.detection_id,
+            )
+            return
+        self._ports.motion.stop()
+        self._goal = None
+        self._log(
+            JournalKind.DECISION, "Перепланирование",
+            f"{change.cause}: прежний маршрут к {goal.kind.value} построен по устаревшей модели и прерван; "
+            "следующее решение использует новую оценку.",
+            detection_id=change.detection_id,
+        )
 
     def _refresh_return_estimate(self, observation: Observation) -> None:
         position = observation.pose.point
@@ -291,7 +320,7 @@ class MissionController:
         if goal.kind is GoalKind.RETURN:
             self._finish_mission(observation)
         elif goal.hypothesis_id is not None:
-            self._conclude_experiment(goal.hypothesis_id)
+            self._conclude_experiment(goal.hypothesis_id, observation)
 
     def _on_stuck(self, observation: Observation) -> None:
         self._replans += 1
@@ -361,12 +390,17 @@ class MissionController:
 
     def _verdict(self, observation: Observation, goal: Subgoal) -> GoalVerdict:
         if goal.kind is GoalKind.COLLECT:
+            if not self._research.sensor.usable_for_collect:
+                return GoalVerdict(False, "датчик образцов неисправен: сбор вслепую запрещён")
             if self._search.total_collect_attempts >= self._settings.max_collect_attempts:
                 return GoalVerdict(False, "исчерпан общий лимит неудачных попыток сбора")
             if self._search.collect_attempts_near(observation.pose.point) >= 2:
                 return GoalVerdict(False, "исчерпан лимит попыток сбора в этой области")
+        signal = observation.sample_signal
+        if signal is not None and self._search.local_signal() is not None:
+            signal = self._search.local_signal()  # решение о сборе — по сглаженному сигналу в этой точке
         return validate_subgoal(
-            goal, observation.pose.point, observation.battery_remaining, observation.sample_signal,
+            goal, observation.pose.point, observation.battery_remaining, signal,
             self._ports.navigation, self._settings,
         )
 
@@ -386,12 +420,18 @@ class MissionController:
         refine: list = []
         best, center = self._search.best_signal or 0.0, self._search.best_point
         if center is not None and best >= settings.approach_signal_threshold:
-            fine = best >= settings.refine_signal_threshold
-            for step in ((settings.refine_step_m,) if fine else (2 * settings.refine_step_m, settings.refine_step_m)):
+            if best >= settings.collect_signal_threshold:
+                steps = (settings.refine_step_m / 2,)
+            elif best >= settings.refine_signal_threshold:
+                steps = (settings.refine_step_m, settings.refine_step_m / 2)
+            else:
+                steps = (2 * settings.refine_step_m, settings.refine_step_m)
+            for step in steps:
                 refine = self._search.refine_candidates(center, step, navigation.is_reachable)
                 if refine:
                     break
         tail = self._ports.journal.tail(self._mission.run_id, 5)
+        sensor = self._research.sensor
         return PlanningContext(
             run_id=self._mission.run_id,
             pose=pose,
@@ -410,7 +450,14 @@ class MissionController:
             candidates=tuple(candidates),
             refine_candidates=tuple(refine),
             at_signal_peak=self._search.at_peak(pose.point),
+            local_signal=self._search.local_signal(),
             target_samples=settings.target_samples,
+            sensor_state=sensor.state.value,
+            sensor_quality=sensor.quality,
+            sensor_unusable_s=(
+                0.0 if sensor.unusable_since_s is None or observation.simulation_time_s is None
+                else observation.simulation_time_s - sensor.unusable_since_s
+            ),
             terrain=tuple(
                 TerrainView(center, radius, energy, confidence)
                 for _, center, radius, energy, confidence in self._estimator.regions()
@@ -535,6 +582,7 @@ class MissionController:
                 f"Судья не ответил, счёт не подтвердил сбор; попытка учтена как неуспешная. {reply.message}".strip(),
             )
         elif reply.success:
+            self._research.note_collect()
             sample = self._mission.add_collected_sample(position)
             self._search.reset_after_collect()
             self._log(
@@ -561,9 +609,29 @@ class MissionController:
         if not verdict.accepted:
             self._write(*self._research.defer(proposal.hypothesis, verdict.reason))
             return False
-        self._write(*self._research.start(proposal.hypothesis))
+        self._write(*self._research.start(proposal.hypothesis, verdict.route.energy))
         self._apply_goal(observation, proposal.goal, verdict)
         return True
 
-    def _conclude_experiment(self, hypothesis_id: str) -> None:
-        self._write(*self._research.conclude(hypothesis_id))
+    def _conclude_experiment(self, hypothesis_id: str, observation: Observation) -> None:
+        before = self._return_estimate
+        notes = self._research.conclude(hypothesis_id)
+        self._write(*notes)
+        if not any(note.conclusion for note in notes):
+            return
+        after = self._ports.navigation.return_energy(observation.pose.point)
+        self._return_estimate, self._return_estimate_at = after, observation.pose.point
+        self._return_estimate_revision = self._research.revision
+        self._mission.set_return_estimate(after)
+        hypothesis = self._research.hypotheses.find(hypothesis_id)
+        self._log(
+            JournalKind.DECISION, "Вывод учтён в решении",
+            f"Оценка возврата {_format_energy(before)} → {_format_energy(after)} ед.; следующие маршруты и "
+            f"проверка запаса используют обновлённую ячейку {hypothesis.bucket if hypothesis else ''}.",
+            hypothesis_id=hypothesis_id,
+            detection_id=hypothesis.detection_id if hypothesis else None,
+        )
+
+
+def _format_energy(value: float | None) -> str:
+    return "нет оценки" if value is None else f"{value:.1f}"

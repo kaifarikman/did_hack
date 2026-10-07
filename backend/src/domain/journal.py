@@ -24,6 +24,10 @@ class JournalDraft:
     expected: str | None = None
     observed: str | None = None
     conclusion: str | None = None
+    experiment_id: str | None = None
+    detection_id: str | None = None  # обнаружение изменения: связывает причину, модель и план
+    plan_id: str | None = None
+    evidence: tuple[str, ...] = ()  # идентификаторы исходных измерений/событий, например "segment-12"
 
 
 @dataclass(frozen=True)

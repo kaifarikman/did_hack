@@ -9,6 +9,7 @@ from application.research import TerrainResearch
 from application.planner import FallbackPlanner, ResilientPlanner
 from application.run_service import RunService
 from domain.energy import TerrainEstimator
+from domain.hazards import HazardMap
 from domain.hypotheses import HypothesisBook
 from domain.mission import Mission
 from domain.navigation import StuckDetector
@@ -29,6 +30,7 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
     journal = journal or InMemoryJournal()
     mission = mission or make_mission()
     estimator = estimator or TerrainEstimator()
+    hazards = HazardMap()
     ports = ControllerPorts(
         observations=world,
         motion=MotionExecutor(world, StuckDetector(), settings.arrival_tolerance_m),
@@ -36,12 +38,13 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
         simulation=simulation or world,
         planner=planner or ResilientPlanner(None, FallbackPlanner(settings)),
         journal=journal,
-        navigation=NavigationService(build_arena(), estimator, settings),
+        navigation=NavigationService(build_arena(), estimator, settings, hazards),
         clock=clock,
         events=events,
         score=score,
     )
-    controller = MissionController(mission, ports, settings, TerrainResearch(estimator, HypothesisBook()), SignalSearch(),
+    research = TerrainResearch(estimator, HypothesisBook(), hazards=hazards)
+    controller = MissionController(mission, ports, settings, research, SignalSearch(),
                                    planner_executor or SynchronousExecutor())
     return controller, mission, journal
 

@@ -1,0 +1,1964 @@
+{
+ "note": "подменная среда backend/tests/fakes.py; пороги провизорные до записей A",
+ "detectors": {
+  "k0.75_h5_p2": {
+   "options": {
+    "drift": 0.75,
+    "threshold": 5.0,
+    "min_passes": 2
+   },
+   "summary": {
+    "unchanged_runs": 30,
+    "terrain_false_alarms": 2,
+    "terrain_false_alarms_refuted_by_check": 2,
+    "sensor_false_alarms": 0,
+    "mean_collected_unchanged": 2.9,
+    "terrain_up": {
+     "observable": 10,
+     "detected": 10,
+     "correct_direction": 10,
+     "median_delay_s": 24.700000000000003,
+     "median_zone_travel_before_detection_m": 1.7850000000000001,
+     "false_before_change": 0
+    },
+    "terrain_down": {
+     "observable": 10,
+     "detected": 7,
+     "correct_direction": 7,
+     "median_delay_s": 6.3,
+     "median_zone_travel_before_detection_m": 0.53,
+     "false_before_change": 3
+    }
+   },
+   "unchanged": [
+    {
+     "profile": "easy",
+     "seed": 1,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 2,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 3,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 4,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 5,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 7,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 8,
+     "status": "failed",
+     "collected": 0,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 9,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 10,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 1,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 2,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 3,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 4,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 5,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 7,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 8,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 9,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 10,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 1,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 2,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 3,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 4,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 5,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 7,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 8,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 9,
+     "status": "completed",
+     "collected": 6,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 10,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    }
+   ],
+   "changed": [
+    {
+     "direction": "up",
+     "seed": 1,
+     "observable": true,
+     "contact_m": 10.22,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.35,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 2,
+     "observable": true,
+     "contact_m": 16.2,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 34.8,
+     "zone_travel_before_detection_m": 2.45,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 3,
+     "observable": true,
+     "contact_m": 17.38,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.3,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 4,
+     "observable": true,
+     "contact_m": 12.12,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.28,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 5,
+     "observable": true,
+     "contact_m": 16.85,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 34.6,
+     "zone_travel_before_detection_m": 2.67,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 6,
+     "observable": true,
+     "contact_m": 13.16,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 34.6,
+     "zone_travel_before_detection_m": 2.56,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 7,
+     "observable": true,
+     "contact_m": 10.36,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.21,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 8,
+     "observable": true,
+     "contact_m": 10.89,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.25,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 9,
+     "observable": true,
+     "contact_m": 16.92,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 33.7,
+     "zone_travel_before_detection_m": 2.22,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 10,
+     "observable": true,
+     "contact_m": 15.34,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 34.6,
+     "zone_travel_before_detection_m": 2.67,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 1,
+     "observable": true,
+     "contact_m": 18.29,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 2,
+     "observable": true,
+     "contact_m": 24.18,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 3.9,
+     "zone_travel_before_detection_m": 0.44,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 3,
+     "observable": true,
+     "contact_m": 19.6,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 109.0,
+     "zone_travel_before_detection_m": 6.68,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 4,
+     "observable": true,
+     "contact_m": 16.68,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 5,
+     "observable": true,
+     "contact_m": 22.13,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 5.6,
+     "zone_travel_before_detection_m": 0.53,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 6,
+     "observable": true,
+     "contact_m": 17.79,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 6.3,
+     "zone_travel_before_detection_m": 0.53,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 7,
+     "observable": true,
+     "contact_m": 14.3,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 30.7,
+     "zone_travel_before_detection_m": 0.51,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 8,
+     "observable": true,
+     "contact_m": 17.95,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 9,
+     "observable": true,
+     "contact_m": 22.39,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 32.8,
+     "zone_travel_before_detection_m": 1.14,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 10,
+     "observable": true,
+     "contact_m": 21.15,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 3.5,
+     "zone_travel_before_detection_m": 0.52,
+     "false_before_change": 0
+    }
+   ]
+  },
+  "k0.5_h4_p1": {
+   "options": {
+    "drift": 0.5,
+    "threshold": 4.0,
+    "min_passes": 1
+   },
+   "summary": {
+    "unchanged_runs": 30,
+    "terrain_false_alarms": 10,
+    "terrain_false_alarms_refuted_by_check": 6,
+    "sensor_false_alarms": 0,
+    "mean_collected_unchanged": 3.03,
+    "terrain_up": {
+     "observable": 10,
+     "detected": 10,
+     "correct_direction": 10,
+     "median_delay_s": 23.45,
+     "median_zone_travel_before_detection_m": 1.7850000000000001,
+     "false_before_change": 0
+    },
+    "terrain_down": {
+     "observable": 10,
+     "detected": 7,
+     "correct_direction": 7,
+     "median_delay_s": 6.3,
+     "median_zone_travel_before_detection_m": 0.53,
+     "false_before_change": 5
+    }
+   },
+   "unchanged": [
+    {
+     "profile": "easy",
+     "seed": 1,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 2,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 3,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 4,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 5,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 7,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 8,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 2,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 9,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 10,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 1,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 2,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 3,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 4,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 2,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 5,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 7,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 8,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 2,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 9,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 10,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 1,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 2,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 3,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 4,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 5,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 7,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 8,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 9,
+     "status": "completed",
+     "collected": 6,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 10,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    }
+   ],
+   "changed": [
+    {
+     "direction": "up",
+     "seed": 1,
+     "observable": true,
+     "contact_m": 12.91,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.35,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 2,
+     "observable": true,
+     "contact_m": 15.9,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 34.8,
+     "zone_travel_before_detection_m": 2.45,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 3,
+     "observable": true,
+     "contact_m": 17.38,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.3,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 4,
+     "observable": true,
+     "contact_m": 11.78,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.28,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 5,
+     "observable": true,
+     "contact_m": 18.5,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 31.2,
+     "zone_travel_before_detection_m": 2.36,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 6,
+     "observable": true,
+     "contact_m": 14.35,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 31.2,
+     "zone_travel_before_detection_m": 2.35,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 7,
+     "observable": true,
+     "contact_m": 14.34,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.21,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 8,
+     "observable": true,
+     "contact_m": 12.13,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.25,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 9,
+     "observable": true,
+     "contact_m": 17.17,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 33.7,
+     "zone_travel_before_detection_m": 2.22,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 10,
+     "observable": true,
+     "contact_m": 17.69,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 31.2,
+     "zone_travel_before_detection_m": 2.37,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 1,
+     "observable": true,
+     "contact_m": 17.6,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 2
+    },
+    {
+     "direction": "down",
+     "seed": 2,
+     "observable": true,
+     "contact_m": 25.15,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 3.9,
+     "zone_travel_before_detection_m": 0.44,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 3,
+     "observable": true,
+     "contact_m": 21.14,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 32.2,
+     "zone_travel_before_detection_m": 2.84,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 4,
+     "observable": true,
+     "contact_m": 16.68,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 5,
+     "observable": true,
+     "contact_m": 24.38,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 5.6,
+     "zone_travel_before_detection_m": 0.53,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 6,
+     "observable": true,
+     "contact_m": 17.91,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 6.3,
+     "zone_travel_before_detection_m": 0.53,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 7,
+     "observable": true,
+     "contact_m": 15.48,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 30.7,
+     "zone_travel_before_detection_m": 0.51,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 8,
+     "observable": true,
+     "contact_m": 17.39,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 2
+    },
+    {
+     "direction": "down",
+     "seed": 9,
+     "observable": true,
+     "contact_m": 19.6,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 18.1,
+     "zone_travel_before_detection_m": 0.9,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 10,
+     "observable": true,
+     "contact_m": 22.68,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 3.5,
+     "zone_travel_before_detection_m": 0.52,
+     "false_before_change": 0
+    }
+   ]
+  },
+  "k0.5_h4_p2": {
+   "options": {
+    "drift": 0.5,
+    "threshold": 4.0,
+    "min_passes": 2
+   },
+   "summary": {
+    "unchanged_runs": 30,
+    "terrain_false_alarms": 6,
+    "terrain_false_alarms_refuted_by_check": 5,
+    "sensor_false_alarms": 0,
+    "mean_collected_unchanged": 2.9,
+    "terrain_up": {
+     "observable": 10,
+     "detected": 10,
+     "correct_direction": 10,
+     "median_delay_s": 23.45,
+     "median_zone_travel_before_detection_m": 1.7850000000000001,
+     "false_before_change": 0
+    },
+    "terrain_down": {
+     "observable": 10,
+     "detected": 7,
+     "correct_direction": 7,
+     "median_delay_s": 6.3,
+     "median_zone_travel_before_detection_m": 0.53,
+     "false_before_change": 3
+    }
+   },
+   "unchanged": [
+    {
+     "profile": "easy",
+     "seed": 1,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 2,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 3,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 4,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 5,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 7,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 8,
+     "status": "failed",
+     "collected": 0,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 9,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "easy",
+     "seed": 10,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 1,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 2,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 3,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 4,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 5,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 7,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 8,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 2,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 9,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "medium",
+     "seed": 10,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 1,
+     "status": "completed",
+     "collected": 3,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 2,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 3,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 4,
+     "status": "completed",
+     "collected": 5,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 5,
+     "status": "completed",
+     "collected": 1,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 6,
+     "status": "completed",
+     "collected": 2,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 7,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 8,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 9,
+     "status": "completed",
+     "collected": 6,
+     "terrain_alarms": 0,
+     "terrain_alarms_refuted": 0,
+     "sensor_alarms": 0
+    },
+    {
+     "profile": "hard",
+     "seed": 10,
+     "status": "completed",
+     "collected": 4,
+     "terrain_alarms": 1,
+     "terrain_alarms_refuted": 1,
+     "sensor_alarms": 0
+    }
+   ],
+   "changed": [
+    {
+     "direction": "up",
+     "seed": 1,
+     "observable": true,
+     "contact_m": 12.91,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.35,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 2,
+     "observable": true,
+     "contact_m": 15.9,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 34.8,
+     "zone_travel_before_detection_m": 2.45,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 3,
+     "observable": true,
+     "contact_m": 17.38,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.3,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 4,
+     "observable": true,
+     "contact_m": 11.78,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.28,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 5,
+     "observable": true,
+     "contact_m": 17.02,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 31.2,
+     "zone_travel_before_detection_m": 2.36,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 6,
+     "observable": true,
+     "contact_m": 14.35,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 31.2,
+     "zone_travel_before_detection_m": 2.35,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 7,
+     "observable": true,
+     "contact_m": 14.34,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.21,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 8,
+     "observable": true,
+     "contact_m": 12.13,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 15.7,
+     "zone_travel_before_detection_m": 1.25,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 9,
+     "observable": true,
+     "contact_m": 17.17,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 33.7,
+     "zone_travel_before_detection_m": 2.22,
+     "false_before_change": 0
+    },
+    {
+     "direction": "up",
+     "seed": 10,
+     "observable": true,
+     "contact_m": 17.69,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 31.2,
+     "zone_travel_before_detection_m": 2.37,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 1,
+     "observable": true,
+     "contact_m": 18.29,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 2,
+     "observable": true,
+     "contact_m": 25.15,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 3.9,
+     "zone_travel_before_detection_m": 0.44,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 3,
+     "observable": true,
+     "contact_m": 21.14,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 32.2,
+     "zone_travel_before_detection_m": 2.84,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 4,
+     "observable": true,
+     "contact_m": 16.68,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 5,
+     "observable": true,
+     "contact_m": 24.38,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 5.6,
+     "zone_travel_before_detection_m": 0.53,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 6,
+     "observable": true,
+     "contact_m": 17.91,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 6.3,
+     "zone_travel_before_detection_m": 0.53,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 7,
+     "observable": true,
+     "contact_m": 15.48,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 30.7,
+     "zone_travel_before_detection_m": 0.51,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 8,
+     "observable": true,
+     "contact_m": 17.95,
+     "detected": false,
+     "correct_direction": false,
+     "delay_s": null,
+     "zone_travel_before_detection_m": null,
+     "false_before_change": 1
+    },
+    {
+     "direction": "down",
+     "seed": 9,
+     "observable": true,
+     "contact_m": 22.39,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 32.8,
+     "zone_travel_before_detection_m": 1.14,
+     "false_before_change": 0
+    },
+    {
+     "direction": "down",
+     "seed": 10,
+     "observable": true,
+     "contact_m": 22.68,
+     "detected": true,
+     "correct_direction": true,
+     "delay_s": 3.5,
+     "zone_travel_before_detection_m": 0.52,
+     "false_before_change": 0
+    }
+   ]
+  }
+ },
+ "sensor": {
+  "all_runs": [
+   {
+    "mode": "noisy",
+    "seed": 1,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.8,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.9,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 1
+   },
+   {
+    "mode": "noisy",
+    "seed": 2,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.9,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.9,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "noisy",
+    "seed": 3,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.9,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.8,
+    "false_collects_during_fault": 1,
+    "status": "failed",
+    "collected": 0
+   },
+   {
+    "mode": "noisy",
+    "seed": 4,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.8,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 5.0,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "noisy",
+    "seed": 5,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 1.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.5,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 5
+   },
+   {
+    "mode": "noisy",
+    "seed": 6,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.7,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.5,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 1
+   },
+   {
+    "mode": "noisy",
+    "seed": 7,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 1.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.9,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 1
+   },
+   {
+    "mode": "noisy",
+    "seed": 8,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.6,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.8,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "noisy",
+    "seed": 9,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 1.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.8,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 4
+   },
+   {
+    "mode": "noisy",
+    "seed": 10,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 0.9,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.9,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "stuck",
+    "seed": 1,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "stuck",
+    "seed": 2,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "stuck",
+    "seed": 3,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "failed",
+    "collected": 0
+   },
+   {
+    "mode": "stuck",
+    "seed": 4,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "stuck",
+    "seed": 5,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 4
+   },
+   {
+    "mode": "stuck",
+    "seed": 6,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "stuck",
+    "seed": 7,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 7.6,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 2,
+    "status": "completed",
+    "collected": 1
+   },
+   {
+    "mode": "stuck",
+    "seed": 8,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "stuck",
+    "seed": 9,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "stuck",
+    "seed": 10,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 4.2,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "dropout",
+    "seed": 1,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "dropout",
+    "seed": 2,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "dropout",
+    "seed": 3,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "failed",
+    "collected": 0
+   },
+   {
+    "mode": "dropout",
+    "seed": 4,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "dropout",
+    "seed": 5,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 4
+   },
+   {
+    "mode": "dropout",
+    "seed": 6,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 4
+   },
+   {
+    "mode": "dropout",
+    "seed": 7,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 2
+   },
+   {
+    "mode": "dropout",
+    "seed": 8,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "dropout",
+    "seed": 9,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 3
+   },
+   {
+    "mode": "dropout",
+    "seed": 10,
+    "fault_applied": true,
+    "detected": true,
+    "delay_s": 2.1,
+    "recovery_confirmed": true,
+    "recovery_delay_s": 4.1,
+    "false_collects_during_fault": 0,
+    "status": "completed",
+    "collected": 4
+   }
+  ],
+  "summary": {
+   "noisy": {
+    "runs": 10,
+    "detected": 10,
+    "median_delay_s": 0.9,
+    "recovery_confirmed": 10,
+    "false_collects_during_fault": 1
+   },
+   "stuck": {
+    "runs": 10,
+    "detected": 10,
+    "median_delay_s": 4.2,
+    "recovery_confirmed": 10,
+    "false_collects_during_fault": 2
+   },
+   "dropout": {
+    "runs": 10,
+    "detected": 10,
+    "median_delay_s": 2.1,
+    "recovery_confirmed": 10,
+    "false_collects_during_fault": 0
+   }
+  }
+ }
+}

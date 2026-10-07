@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from domain.energy import TerrainEstimator
 from domain.geometry import Point, distance_m
 from domain.grid import OccupancyGrid
+from domain.hazards import HazardMap
 from domain.pathfinding import find_path, path_length_m, reachable_cells
 from domain.settings import MissionSettings
 
@@ -18,24 +19,28 @@ class Route:
 
 
 class NavigationService:
-    def __init__(self, grid: OccupancyGrid, estimator: TerrainEstimator, settings: MissionSettings) -> None:
+    def __init__(self, grid: OccupancyGrid, estimator: TerrainEstimator, settings: MissionSettings,
+                 hazards: HazardMap | None = None) -> None:
         self._grid = grid
         self._estimator = estimator
         self._settings = settings
+        self._hazards = hazards or HazardMap()
         self._blocked = grid.inflated_blocked(settings.clearance_m)
 
     def _terrain_multiplier(self, point: Point) -> float:
-        """Маршрут предпочитает дешёвые участки: стоимость относительно номинальной."""
-        return self._estimator.estimate_at(point).energy_per_m / self._settings.nominal_energy_per_m
+        """Маршрут предпочитает дешёвые участки и обходит наблюдаемые опасности."""
+        terrain = self._estimator.estimate_at(point).energy_per_m / self._settings.nominal_energy_per_m
+        return terrain * self._hazards.cost_multiplier(point)
 
     def route(self, start: Point, goal: Point) -> Route | None:
         waypoints = find_path(self._grid, self._blocked, start, goal, self._terrain_multiplier)
         if waypoints is None:
             return None
+        penalty = self._hazards.expected_penalty * self._hazards.crossings(start, waypoints)
         return Route(
             tuple(waypoints),
             path_length_m(start, waypoints),
-            self._estimator.path_energy(start, waypoints, self._settings.return_safety_factor),
+            self._estimator.path_energy(start, waypoints, self._settings.return_safety_factor) + penalty,
         )
 
     def return_energy(self, start: Point) -> float | None:

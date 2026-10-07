@@ -22,6 +22,7 @@ def _entry_to_record(entry: JournalEntry) -> dict:
 def _record_to_entry(record: dict) -> JournalEntry:
     sequence = record.pop("sequence")
     record["kind"] = JournalKind(record["kind"])
+    record["evidence"] = tuple(record.get("evidence", ()))
     return JournalEntry(sequence, JournalDraft(**record))
 
 

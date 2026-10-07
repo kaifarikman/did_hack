@@ -76,7 +76,7 @@ def test_peak_detection_and_repeated_targets_are_excluded():
 
 def test_mission_collects_several_samples_and_continues_after_collect():
     clock = FakeClock()
-    samples = [Point(-0.8, -0.5), Point(0.2, 0.6), Point(-1.2, 1.2), Point(0.6, -1.4), Point(1.5, 0.3)]
+    samples = [Point(-0.9, -0.6), Point(0.4, 1.0), Point(-1.6, 1.6), Point(1.0, -1.7), Point(2.4, 0.3)]
     world = SimWorld(clock, samples, seed=5, rotation_energy_per_rad=0.1)
     controller, mission, journal = make_controller(world, clock, settings=settings_for_profile("medium", SETTINGS))
     run_ticks(controller, world, mission, max_ticks=40000)

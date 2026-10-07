@@ -32,6 +32,8 @@ POLICIES = {  # переопределения MissionSettings при табли
     "safety_1.15": {"return_safety_factor": 1.15},
     "price_0.08": {"energy_price": 0.08},
     "reserve_2": {"return_reserve": 2.0},
+    "collect_0.85": {"collect_signal_threshold": 0.85},
+    "collect_0.75": {"collect_signal_threshold": 0.75},
 }
 
 

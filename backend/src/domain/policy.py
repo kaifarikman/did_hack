@@ -19,13 +19,25 @@ def decide_subgoal(context: PlanningContext, settings: MissionSettings) -> Subgo
     if context.decisions_since_improvement >= settings.stall_decisions:
         return Subgoal(GoalKind.RETURN, context.base, "Сигнал давно не улучшался.")
 
+    if context.sensor_quality <= 0:
+        if context.sensor_unusable_s >= settings.sensor_wait_s:
+            return Subgoal(GoalKind.RETURN, context.base,
+                           f"Датчик образцов непригоден {context.sensor_unusable_s:.0f} с: поиск без сигнала бесполезен.")
+        nearby = min(context.candidates, key=lambda c: c.energy_to or 0.0, default=None)
+        if nearby is None:
+            return Subgoal(GoalKind.RETURN, context.base, "Датчик образцов непригоден, кандидатов нет.")
+        return Subgoal(GoalKind.EXPLORE, nearby.point,
+                       "Проверка датчика: короткий переезд, сбор вслепую не делается до восстановления.")
+
+    noisy = context.sensor_quality < 1.0
     attempts_allowed = (
         context.total_collect_attempts < settings.max_collect_attempts
-        and context.collect_attempts_here < 2
+        and context.collect_attempts_here < (1 if noisy else 2)
     )
-    signal = context.sample_signal
+    signal = context.local_signal if context.local_signal is not None else context.sample_signal
     strong = signal is not None and signal >= settings.collect_signal_threshold
-    if strong and attempts_allowed and (context.at_signal_peak or not context.refine_candidates):
+    peak_ok = context.at_signal_peak or (not context.refine_candidates and not noisy)
+    if strong and attempts_allowed and peak_ok:
         return Subgoal(
             GoalKind.COLLECT, None,
             f"Сигнал {signal:.2f} выше порога сбора {settings.collect_signal_threshold:.2f} "

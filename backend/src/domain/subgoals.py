@@ -61,7 +61,11 @@ class PlanningContext:
     candidates: tuple[Candidate, ...] = ()
     refine_candidates: tuple[Candidate, ...] = ()  # пробы вокруг робота при сильном сигнале
     at_signal_peak: bool = False  # сигнал здесь не ниже соседних измерений: место для попытки сбора
+    local_signal: float | None = None  # среднее последних показаний в текущей точке (сглаживает шум)
     target_samples: int = 3  # сколько образцов может быть в профиле (публичное правило)
+    sensor_state: str = "ok"  # ok | suspected | degraded | recovering
+    sensor_quality: float = 1.0  # 0 — сигналом пользоваться нельзя
+    sensor_unusable_s: float = 0.0  # сколько секунд сигнал непригоден
     terrain: tuple[TerrainView, ...] = ()
     recent_signals: tuple[tuple[Point, float], ...] = ()
     journal_tail: tuple[str, ...] = field(default_factory=tuple)

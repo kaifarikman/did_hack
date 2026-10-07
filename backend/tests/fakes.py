@@ -14,6 +14,11 @@ from domain.observations import LocalizationStatus, Observation
 from domain.subgoals import PlanningContext, Subgoal
 
 
+def signal_strength(distance: float) -> float:
+    """Чистый сигнал как у локального судьи: exp(−d / 1.5)."""
+    return math.exp(-distance / 1.5)
+
+
 class SynchronousExecutor(Executor):
     """Выполняет задачу сразу: ответ планировщика детерминированно готов к следующему тику."""
 
@@ -97,6 +102,7 @@ class SimWorld:
         self.hazards = list(self._initial_hazards)
         self.pending_changes = list(self._schedule)
         self.applied_changes: list[tuple[float, str]] = []  # закрытый журнал для оценки в тестах
+        self.zone_travel: list[tuple[float, int, float]] = []  # (время, индекс зоны, путь) — для оценщика
         self.reset_at_s = self.clock.now_s
         self.signal_noise = self.base_signal_noise
         self.sensor_mode = "ok"
@@ -151,6 +157,9 @@ class SimWorld:
         step = self.linear * dt_s
         new = Pose(self.pose.x_m + step * math.cos(heading), self.pose.y_m + step * math.sin(heading), heading)
         spent = step * self.energy_per_m_at(new.point) + abs(self.angular * dt_s) * self.rotation_energy_per_rad
+        for index, zone in enumerate(self.zones):
+            if step > 0 and distance_m(new.point, zone.center) <= zone.radius_m:
+                self.zone_travel.append((self.clock.now_s, index, step))
         self.battery = max(0.0, self.battery - spent)
         self.pose = new
         self._check_hazards()
@@ -165,10 +174,12 @@ class SimWorld:
         self._inside_hazard = inside
 
     def _sensor_reading(self) -> float | None:
-        nearest = min((distance_m(self.pose.point, s) for s in self.remaining), default=None)
-        if nearest is None or self.sensor_mode == "dropout":
+        if self.sensor_mode == "dropout":
             return None
-        value = min(1.0, max(0.0, 1 - nearest / 1.5 + self.random.gauss(0, self.signal_noise)))
+        nearest = min((distance_m(self.pose.point, s) for s in self.remaining), default=None)
+        if nearest is None:
+            return 0.0  # как локальный судья: образцов не осталось — сигнал 0, а не пропадание
+        value = min(1.0, max(0.0, signal_strength(nearest) + self.random.gauss(0, self.signal_noise)))
         if self.sensor_mode == "stuck":
             if self._stuck_signal is None:
                 self._stuck_signal = value
@@ -421,7 +432,7 @@ class TeamRobot:
 
     def latest(self) -> Observation:
         nearest = min((distance_m(self.pose.point, s) for s in self.world.remaining), default=None)
-        signal = None if nearest is None else min(1.0, max(0.0, 1 - nearest / 1.5 + self.random.gauss(0, 0.02)))
+        signal = 0.0 if nearest is None else min(1.0, max(0.0, signal_strength(nearest) + self.random.gauss(0, 0.02)))
         return Observation(self.world.clock.now_s, self.pose, self.battery, signal, self.last_received_s,
                            robot_id=self.robot_id, generation=self.generation)
 

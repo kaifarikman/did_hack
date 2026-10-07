@@ -153,7 +153,9 @@ class SignalSearch:
         return (direction[0] * gradient[0] + direction[1] * gradient[1]) / magnitude
 
     def _excluded(self, point: Point) -> bool:
-        near_failed = any(distance_m(point, p) < 0.3 for p in self._failed_collect_points)
+        # неудачный сбор доказывает лишь отсутствие образца ближе 0.30 м к точке попытки;
+        # образец может лежать чуть дальше, поэтому исключаем только саму точку
+        near_failed = any(distance_m(point, p) < 0.15 for p in self._failed_collect_points)
         return near_failed or self.repeats_near(point) >= self._max_repeats
 
     def rank_candidates(

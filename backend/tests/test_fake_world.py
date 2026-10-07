@@ -75,4 +75,4 @@ def test_team_world_collects_each_sample_once():
     first, second = team.robots["robot_1"].collect(), team.robots["robot_2"].collect()
     assert first.success and not second.success
     assert team.total_collected == 1 and team.collected_by == {"robot_1": 1, "robot_2": 0}
-    assert team.robots["robot_2"].latest().sample_signal is None
+    assert team.robots["robot_2"].latest().sample_signal == 0.0  # образцов не осталось

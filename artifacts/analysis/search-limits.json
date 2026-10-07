@@ -10,11 +10,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 1.75,
+     "completed": 10,
+     "mean_collected": 1.92,
      "median_collected": 2.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 15.11
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 19.49
     },
     "all_runs": [
      {
@@ -22,20 +22,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 12.66,
-      "simulated_s": 325.2
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
      },
      {
       "profile": "easy",
@@ -44,28 +44,28 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 8.47,
-      "simulated_s": 333.5
+      "battery_left": 8.6,
+      "simulated_s": 354.9
      },
      {
       "profile": "easy",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 1,
+      "collected": 2,
       "false_collects": 0,
-      "battery_left": 10.16,
-      "simulated_s": 321.0
+      "battery_left": 16.17,
+      "simulated_s": 332.6
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -73,9 +73,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
      },
      {
       "profile": "easy",
@@ -84,18 +84,18 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 20.72,
-      "simulated_s": 290.3
+      "battery_left": 28.47,
+      "simulated_s": 247.3
      },
      {
       "profile": "easy",
       "seed": 8,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "battery_left": 12.65,
+      "simulated_s": 306.8
      },
      {
       "profile": "easy",
@@ -104,8 +104,8 @@
       "error": null,
       "collected": 1,
       "false_collects": 0,
-      "battery_left": 11.88,
-      "simulated_s": 298.0
+      "battery_left": 19.08,
+      "simulated_s": 258.7
      },
      {
       "profile": "easy",
@@ -114,28 +114,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 2,
-      "battery_left": 31.92,
-      "simulated_s": 214.1
+      "battery_left": 30.34,
+      "simulated_s": 200.5
      },
      {
       "profile": "easy",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "battery_left": 9.65,
+      "simulated_s": 329.8
      },
      {
       "profile": "easy",
       "seed": 12,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 12.22,
-      "simulated_s": 281.4
+      "battery_left": 16.37,
+      "simulated_s": 215.6
      }
     ]
    },
@@ -147,11 +147,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 1.75,
+     "completed": 10,
+     "mean_collected": 1.92,
      "median_collected": 2.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 15.11
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 19.43
     },
     "all_runs": [
      {
@@ -159,20 +159,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 12.66,
-      "simulated_s": 325.2
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
      },
      {
       "profile": "easy",
@@ -181,28 +181,28 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 8.47,
-      "simulated_s": 333.5
+      "battery_left": 8.6,
+      "simulated_s": 354.9
      },
      {
       "profile": "easy",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 1,
+      "collected": 2,
       "false_collects": 0,
-      "battery_left": 10.16,
-      "simulated_s": 321.0
+      "battery_left": 16.17,
+      "simulated_s": 332.6
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -210,9 +210,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
      },
      {
       "profile": "easy",
@@ -221,18 +221,18 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 20.72,
-      "simulated_s": 290.3
+      "battery_left": 28.47,
+      "simulated_s": 247.3
      },
      {
       "profile": "easy",
       "seed": 8,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "battery_left": 12.0,
+      "simulated_s": 311.5
      },
      {
       "profile": "easy",
@@ -241,8 +241,8 @@
       "error": null,
       "collected": 1,
       "false_collects": 0,
-      "battery_left": 11.88,
-      "simulated_s": 298.0
+      "battery_left": 19.08,
+      "simulated_s": 258.7
      },
      {
       "profile": "easy",
@@ -251,28 +251,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 2,
-      "battery_left": 31.92,
-      "simulated_s": 214.1
+      "battery_left": 30.34,
+      "simulated_s": 200.5
      },
      {
       "profile": "easy",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "battery_left": 9.65,
+      "simulated_s": 329.8
      },
      {
       "profile": "easy",
       "seed": 12,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 12.22,
-      "simulated_s": 281.4
+      "battery_left": 16.37,
+      "simulated_s": 215.6
      }
     ]
    },
@@ -284,11 +284,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 1.75,
+     "completed": 10,
+     "mean_collected": 1.92,
      "median_collected": 2.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 15.11
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 19.43
     },
     "all_runs": [
      {
@@ -296,20 +296,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 12.66,
-      "simulated_s": 325.2
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
      },
      {
       "profile": "easy",
@@ -318,28 +318,28 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 8.47,
-      "simulated_s": 333.5
+      "battery_left": 8.6,
+      "simulated_s": 354.9
      },
      {
       "profile": "easy",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 1,
+      "collected": 2,
       "false_collects": 0,
-      "battery_left": 10.16,
-      "simulated_s": 321.0
+      "battery_left": 16.17,
+      "simulated_s": 332.6
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -347,9 +347,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
      },
      {
       "profile": "easy",
@@ -358,18 +358,18 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 20.72,
-      "simulated_s": 290.3
+      "battery_left": 28.47,
+      "simulated_s": 247.3
      },
      {
       "profile": "easy",
       "seed": 8,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "battery_left": 12.0,
+      "simulated_s": 311.5
      },
      {
       "profile": "easy",
@@ -378,8 +378,8 @@
       "error": null,
       "collected": 1,
       "false_collects": 0,
-      "battery_left": 11.88,
-      "simulated_s": 298.0
+      "battery_left": 19.08,
+      "simulated_s": 258.7
      },
      {
       "profile": "easy",
@@ -388,28 +388,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 2,
-      "battery_left": 31.92,
-      "simulated_s": 214.1
+      "battery_left": 30.34,
+      "simulated_s": 200.5
      },
      {
       "profile": "easy",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "battery_left": 9.65,
+      "simulated_s": 329.8
      },
      {
       "profile": "easy",
       "seed": 12,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 12.22,
-      "simulated_s": 281.4
+      "battery_left": 16.37,
+      "simulated_s": 215.6
      }
     ]
    }
@@ -424,10 +424,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 2.92,
+     "mean_collected": 3.17,
      "median_collected": 3.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 11.17
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 11.71
     },
     "all_runs": [
      {
@@ -435,10 +435,10 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.03,
-      "simulated_s": 347.3
+      "battery_left": 20.79,
+      "simulated_s": 304.1
      },
      {
       "profile": "medium",
@@ -446,39 +446,39 @@
       "status": "completed",
       "error": null,
       "collected": 4,
-      "false_collects": 0,
-      "battery_left": 9.25,
-      "simulated_s": 369.7
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
      },
      {
       "profile": "medium",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 2,
-      "battery_left": 10.21,
-      "simulated_s": 305.3
+      "battery_left": 7.3,
+      "simulated_s": 406.1
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 18.58,
-      "simulated_s": 303.4
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 343.9
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 0,
-      "battery_left": 5.57,
-      "simulated_s": 361.6
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
      },
      {
       "profile": "medium",
@@ -486,9 +486,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 2,
-      "battery_left": 11.91,
-      "simulated_s": 269.9
+      "false_collects": 0,
+      "battery_left": 7.58,
+      "simulated_s": 325.5
      },
      {
       "profile": "medium",
@@ -496,29 +496,29 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 15.83,
-      "simulated_s": 320.1
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 5.3,
-      "simulated_s": 261.1
+      "battery_left": 10.68,
+      "simulated_s": 324.5
      },
      {
       "profile": "medium",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 10.42,
-      "simulated_s": 351.8
+      "battery_left": 9.35,
+      "simulated_s": 371.4
      },
      {
       "profile": "medium",
@@ -527,8 +527,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.85,
-      "simulated_s": 339.4
+      "battery_left": 10.14,
+      "simulated_s": 336.7
      },
      {
       "profile": "medium",
@@ -537,18 +537,18 @@
       "error": null,
       "collected": 4,
       "false_collects": 0,
-      "battery_left": 13.0,
-      "simulated_s": 346.6
+      "battery_left": 11.79,
+      "simulated_s": 325.4
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.04,
-      "simulated_s": 315.0
+      "battery_left": 13.81,
+      "simulated_s": 341.5
      }
     ]
    },
@@ -561,10 +561,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 2.92,
+     "mean_collected": 3.17,
      "median_collected": 3.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 11.17
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 10.94
     },
     "all_runs": [
      {
@@ -572,10 +572,10 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.03,
-      "simulated_s": 347.3
+      "battery_left": 11.56,
+      "simulated_s": 373.1
      },
      {
       "profile": "medium",
@@ -583,39 +583,39 @@
       "status": "completed",
       "error": null,
       "collected": 4,
-      "false_collects": 0,
-      "battery_left": 9.25,
-      "simulated_s": 369.7
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
      },
      {
       "profile": "medium",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 2,
-      "battery_left": 10.21,
-      "simulated_s": 305.3
+      "battery_left": 7.3,
+      "simulated_s": 406.1
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 18.58,
-      "simulated_s": 303.4
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 343.9
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 0,
-      "battery_left": 5.57,
-      "simulated_s": 361.6
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
      },
      {
       "profile": "medium",
@@ -623,9 +623,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 2,
-      "battery_left": 11.91,
-      "simulated_s": 269.9
+      "false_collects": 0,
+      "battery_left": 7.58,
+      "simulated_s": 325.5
      },
      {
       "profile": "medium",
@@ -633,29 +633,29 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 15.83,
-      "simulated_s": 320.1
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 5.3,
-      "simulated_s": 261.1
+      "battery_left": 10.68,
+      "simulated_s": 324.5
      },
      {
       "profile": "medium",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 10.42,
-      "simulated_s": 351.8
+      "battery_left": 9.35,
+      "simulated_s": 371.4
      },
      {
       "profile": "medium",
@@ -664,8 +664,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.85,
-      "simulated_s": 339.4
+      "battery_left": 10.14,
+      "simulated_s": 336.7
      },
      {
       "profile": "medium",
@@ -674,18 +674,18 @@
       "error": null,
       "collected": 4,
       "false_collects": 0,
-      "battery_left": 13.0,
-      "simulated_s": 346.6
+      "battery_left": 11.79,
+      "simulated_s": 325.4
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.04,
-      "simulated_s": 315.0
+      "battery_left": 13.81,
+      "simulated_s": 341.5
      }
     ]
    },
@@ -698,10 +698,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 2.92,
+     "mean_collected": 3.17,
      "median_collected": 3.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 11.17
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 10.94
     },
     "all_runs": [
      {
@@ -709,10 +709,10 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.03,
-      "simulated_s": 347.3
+      "battery_left": 11.56,
+      "simulated_s": 373.1
      },
      {
       "profile": "medium",
@@ -720,39 +720,39 @@
       "status": "completed",
       "error": null,
       "collected": 4,
-      "false_collects": 0,
-      "battery_left": 9.25,
-      "simulated_s": 369.7
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
      },
      {
       "profile": "medium",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 2,
-      "battery_left": 10.21,
-      "simulated_s": 305.3
+      "battery_left": 7.3,
+      "simulated_s": 406.1
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 18.58,
-      "simulated_s": 303.4
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 343.9
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 0,
-      "battery_left": 5.57,
-      "simulated_s": 361.6
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
      },
      {
       "profile": "medium",
@@ -760,9 +760,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 2,
-      "battery_left": 11.91,
-      "simulated_s": 269.9
+      "false_collects": 0,
+      "battery_left": 7.58,
+      "simulated_s": 325.5
      },
      {
       "profile": "medium",
@@ -770,29 +770,29 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 15.83,
-      "simulated_s": 320.1
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 5.3,
-      "simulated_s": 261.1
+      "battery_left": 10.68,
+      "simulated_s": 324.5
      },
      {
       "profile": "medium",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 10.42,
-      "simulated_s": 351.8
+      "battery_left": 9.35,
+      "simulated_s": 371.4
      },
      {
       "profile": "medium",
@@ -801,8 +801,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.85,
-      "simulated_s": 339.4
+      "battery_left": 10.14,
+      "simulated_s": 336.7
      },
      {
       "profile": "medium",
@@ -811,18 +811,18 @@
       "error": null,
       "collected": 4,
       "false_collects": 0,
-      "battery_left": 13.0,
-      "simulated_s": 346.6
+      "battery_left": 11.79,
+      "simulated_s": 325.4
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.04,
-      "simulated_s": 315.0
+      "battery_left": 13.81,
+      "simulated_s": 341.5
      }
     ]
    }
@@ -837,10 +837,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 3.92,
+     "mean_collected": 3.83,
      "median_collected": 4.0,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 9.52
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 11.57
     },
     "all_runs": [
      {
@@ -849,49 +849,49 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "false_collects": 1,
+      "battery_left": 8.62,
+      "simulated_s": 309.2
      },
      {
       "profile": "hard",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "battery_left": 10.21,
+      "simulated_s": 287.3
      },
      {
       "profile": "hard",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 10.67,
-      "simulated_s": 306.3
+      "battery_left": 15.22,
+      "simulated_s": 335.5
      },
      {
       "profile": "hard",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 17.63,
-      "simulated_s": 255.0
+      "battery_left": 31.8,
+      "simulated_s": 216.0
      },
      {
       "profile": "hard",
@@ -899,69 +899,69 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 9.61,
-      "simulated_s": 265.0
+      "false_collects": 2,
+      "battery_left": 10.39,
+      "simulated_s": 250.4
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 8.16,
-      "simulated_s": 389.4
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
      },
      {
       "profile": "hard",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 8.55,
-      "simulated_s": 331.6
+      "battery_left": 8.97,
+      "simulated_s": 332.5
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 12.16,
-      "simulated_s": 334.6
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
      },
      {
       "profile": "hard",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 6,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "battery_left": 4.62,
+      "simulated_s": 362.3
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.03,
-      "simulated_s": 365.3
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
      }
     ]
    },
@@ -974,10 +974,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 3.92,
+     "mean_collected": 3.83,
      "median_collected": 4.0,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 9.52
+     "mean_false_collects": 1.25,
+     "mean_battery_left": 11.09
     },
     "all_runs": [
      {
@@ -986,49 +986,49 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "false_collects": 1,
+      "battery_left": 8.62,
+      "simulated_s": 309.2
      },
      {
       "profile": "hard",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "battery_left": 10.21,
+      "simulated_s": 287.3
      },
      {
       "profile": "hard",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 10.67,
-      "simulated_s": 306.3
+      "battery_left": 15.22,
+      "simulated_s": 335.5
      },
      {
       "profile": "hard",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 0,
-      "battery_left": 17.63,
-      "simulated_s": 255.0
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 25.96,
+      "simulated_s": 262.0
      },
      {
       "profile": "hard",
@@ -1036,69 +1036,69 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 9.61,
-      "simulated_s": 265.0
+      "false_collects": 2,
+      "battery_left": 10.39,
+      "simulated_s": 250.4
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 8.16,
-      "simulated_s": 389.4
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
      },
      {
       "profile": "hard",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 8.55,
-      "simulated_s": 331.6
+      "battery_left": 8.97,
+      "simulated_s": 332.5
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 12.16,
-      "simulated_s": 334.6
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
      },
      {
       "profile": "hard",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 6,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "battery_left": 4.62,
+      "simulated_s": 362.3
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.03,
-      "simulated_s": 365.3
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
      }
     ]
    },
@@ -1111,10 +1111,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 3.92,
+     "mean_collected": 3.83,
      "median_collected": 4.0,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 9.52
+     "mean_false_collects": 1.25,
+     "mean_battery_left": 10.61
     },
     "all_runs": [
      {
@@ -1123,49 +1123,49 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "false_collects": 1,
+      "battery_left": 8.62,
+      "simulated_s": 309.2
      },
      {
       "profile": "hard",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "battery_left": 10.21,
+      "simulated_s": 287.3
      },
      {
       "profile": "hard",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 10.67,
-      "simulated_s": 306.3
+      "battery_left": 15.22,
+      "simulated_s": 335.5
      },
      {
       "profile": "hard",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 0,
-      "battery_left": 17.63,
-      "simulated_s": 255.0
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 20.28,
+      "simulated_s": 302.5
      },
      {
       "profile": "hard",
@@ -1173,69 +1173,69 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 9.61,
-      "simulated_s": 265.0
+      "false_collects": 2,
+      "battery_left": 10.39,
+      "simulated_s": 250.4
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 8.16,
-      "simulated_s": 389.4
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
      },
      {
       "profile": "hard",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 8.55,
-      "simulated_s": 331.6
+      "battery_left": 8.97,
+      "simulated_s": 332.5
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 12.16,
-      "simulated_s": 334.6
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
      },
      {
       "profile": "hard",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 6,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "battery_left": 4.62,
+      "simulated_s": 362.3
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.03,
-      "simulated_s": 365.3
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
      }
     ]
    }
@@ -1247,11 +1247,11 @@
     "overrides": {},
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 1.75,
+     "completed": 10,
+     "mean_collected": 1.92,
      "median_collected": 2.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 15.11
+     "mean_false_collects": 0.5,
+     "mean_battery_left": 19.43
     },
     "all_runs": [
      {
@@ -1259,20 +1259,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 12.66,
-      "simulated_s": 325.2
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
      },
      {
       "profile": "easy",
@@ -1281,28 +1281,28 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 8.47,
-      "simulated_s": 333.5
+      "battery_left": 8.6,
+      "simulated_s": 354.9
      },
      {
       "profile": "easy",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 1,
+      "collected": 2,
       "false_collects": 0,
-      "battery_left": 10.16,
-      "simulated_s": 321.0
+      "battery_left": 16.17,
+      "simulated_s": 332.6
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -1310,9 +1310,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 19.38,
+      "simulated_s": 285.6
      },
      {
       "profile": "easy",
@@ -1321,18 +1321,18 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 20.72,
-      "simulated_s": 290.3
+      "battery_left": 28.47,
+      "simulated_s": 247.3
      },
      {
       "profile": "easy",
       "seed": 8,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "battery_left": 12.0,
+      "simulated_s": 311.5
      },
      {
       "profile": "easy",
@@ -1341,8 +1341,8 @@
       "error": null,
       "collected": 1,
       "false_collects": 0,
-      "battery_left": 11.88,
-      "simulated_s": 298.0
+      "battery_left": 19.08,
+      "simulated_s": 258.7
      },
      {
       "profile": "easy",
@@ -1351,28 +1351,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 2,
-      "battery_left": 31.92,
-      "simulated_s": 214.1
+      "battery_left": 30.34,
+      "simulated_s": 200.5
      },
      {
       "profile": "easy",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "battery_left": 9.65,
+      "simulated_s": 329.8
      },
      {
       "profile": "easy",
       "seed": 12,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 12.22,
-      "simulated_s": 281.4
+      "battery_left": 16.37,
+      "simulated_s": 215.6
      }
     ]
    },
@@ -1382,11 +1382,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 1.75,
-     "median_collected": 2.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 15.09
+     "completed": 9,
+     "mean_collected": 2,
+     "median_collected": 2.5,
+     "mean_false_collects": 1,
+     "mean_battery_left": 17.0
     },
     "all_runs": [
      {
@@ -1394,20 +1394,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 15.6,
-      "simulated_s": 293.6
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
      },
      {
       "profile": "easy",
@@ -1416,28 +1416,28 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 9.09,
-      "simulated_s": 328.6
+      "battery_left": 7.02,
+      "simulated_s": 366.7
      },
      {
       "profile": "easy",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 0,
-      "battery_left": 9.05,
-      "simulated_s": 320.2
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 27.35,
+      "simulated_s": 248.4
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -1445,9 +1445,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 11.32,
+      "simulated_s": 336.9
      },
      {
       "profile": "easy",
@@ -1456,28 +1456,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 20.72,
-      "simulated_s": 290.3
+      "battery_left": 17.76,
+      "simulated_s": 319.5
      },
      {
       "profile": "easy",
       "seed": 8,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "battery_left": 12.0,
+      "simulated_s": 311.5
      },
      {
       "profile": "easy",
       "seed": 9,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
-      "false_collects": 0,
-      "battery_left": 11.88,
-      "simulated_s": 298.0
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 2,
+      "battery_left": 8.45,
+      "simulated_s": 296.2
      },
      {
       "profile": "easy",
@@ -1486,8 +1486,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 2,
-      "battery_left": 31.55,
-      "simulated_s": 217.7
+      "battery_left": 30.34,
+      "simulated_s": 200.5
      },
      {
       "profile": "easy",
@@ -1495,19 +1495,19 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "false_collects": 2,
+      "battery_left": 8.48,
+      "simulated_s": 305.3
      },
      {
       "profile": "easy",
       "seed": 12,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 9.85,
-      "simulated_s": 298.1
+      "battery_left": 8.19,
+      "simulated_s": 276.9
      }
     ]
    },
@@ -1517,11 +1517,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 1.67,
-     "median_collected": 2.0,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 13.53
+     "completed": 10,
+     "mean_collected": 2.17,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.33,
+     "mean_battery_left": 20.73
     },
     "all_runs": [
      {
@@ -1529,20 +1529,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 1,
-      "battery_left": 11.52,
-      "simulated_s": 294.8
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 30.42,
+      "simulated_s": 225.6
      },
      {
       "profile": "easy",
@@ -1551,28 +1551,28 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 8.47,
-      "simulated_s": 333.5
+      "battery_left": 8.6,
+      "simulated_s": 354.9
      },
      {
       "profile": "easy",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 0,
-      "battery_left": 10.16,
-      "simulated_s": 321.0
+      "collected": 3,
+      "false_collects": 1,
+      "battery_left": 29.21,
+      "simulated_s": 238.0
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -1580,9 +1580,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 8.85,
+      "simulated_s": 338.8
      },
      {
       "profile": "easy",
@@ -1591,58 +1591,58 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 26.14,
-      "simulated_s": 256.4
+      "battery_left": 38.83,
+      "simulated_s": 161.1
      },
      {
       "profile": "easy",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 28.11,
+      "simulated_s": 245.9
      },
      {
       "profile": "easy",
       "seed": 9,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
-      "false_collects": 0,
-      "battery_left": 10.86,
-      "simulated_s": 305.7
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 2,
+      "battery_left": 8.45,
+      "simulated_s": 296.2
      },
      {
       "profile": "easy",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 2,
-      "battery_left": 9.66,
-      "simulated_s": 381.2
+      "collected": 1,
+      "false_collects": 4,
+      "battery_left": 22.35,
+      "simulated_s": 292.1
      },
      {
       "profile": "easy",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "collected": 3,
+      "false_collects": 1,
+      "battery_left": 16.41,
+      "simulated_s": 272.2
      },
      {
       "profile": "easy",
       "seed": 12,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 12.22,
-      "simulated_s": 281.4
+      "battery_left": 16.37,
+      "simulated_s": 215.6
      }
     ]
    },
@@ -1652,11 +1652,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
+     "completed": 9,
      "mean_collected": 1.83,
      "median_collected": 2.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 14.84
+     "mean_false_collects": 0.83,
+     "mean_battery_left": 17.38
     },
     "all_runs": [
      {
@@ -1664,20 +1664,20 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.48,
-      "simulated_s": 299.2
+      "battery_left": 14.59,
+      "simulated_s": 276.8
      },
      {
       "profile": "easy",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 12.66,
-      "simulated_s": 325.2
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 32.02,
+      "simulated_s": 215.3
      },
      {
       "profile": "easy",
@@ -1686,8 +1686,8 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 9.09,
-      "simulated_s": 328.6
+      "battery_left": 7.02,
+      "simulated_s": 366.7
      },
      {
       "profile": "easy",
@@ -1696,18 +1696,18 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 8.97,
-      "simulated_s": 329.8
+      "battery_left": 16.17,
+      "simulated_s": 332.6
      },
      {
       "profile": "easy",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 10.91,
-      "simulated_s": 292.4
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.53,
+      "simulated_s": 253.1
      },
      {
       "profile": "easy",
@@ -1715,9 +1715,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 16.51,
-      "simulated_s": 317.5
+      "false_collects": 2,
+      "battery_left": 12.37,
+      "simulated_s": 312.8
      },
      {
       "profile": "easy",
@@ -1726,28 +1726,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 20.72,
-      "simulated_s": 290.3
+      "battery_left": 28.47,
+      "simulated_s": 247.3
      },
      {
       "profile": "easy",
       "seed": 8,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 18.4,
-      "simulated_s": 241.4
+      "battery_left": 12.0,
+      "simulated_s": 311.5
      },
      {
       "profile": "easy",
       "seed": 9,
-      "status": "completed",
-      "error": null,
-      "collected": 1,
-      "false_collects": 0,
-      "battery_left": 11.88,
-      "simulated_s": 298.0
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 4,
+      "battery_left": 11.74,
+      "simulated_s": 306.5
      },
      {
       "profile": "easy",
@@ -1756,28 +1756,298 @@
       "error": null,
       "collected": 3,
       "false_collects": 2,
-      "battery_left": 31.55,
-      "simulated_s": 217.7
+      "battery_left": 30.34,
+      "simulated_s": 200.5
      },
      {
       "profile": "easy",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.02,
-      "simulated_s": 317.3
+      "battery_left": 9.11,
+      "simulated_s": 333.1
      },
      {
       "profile": "easy",
       "seed": 12,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 8.19,
+      "simulated_s": 276.9
+     }
+    ]
+   },
+   "collect_0.85": {
+    "overrides": {
+     "collect_signal_threshold": 0.85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 10,
+     "mean_collected": 1.92,
+     "median_collected": 2.0,
+     "mean_false_collects": 0,
+     "mean_battery_left": 17.43
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 14.59,
+      "simulated_s": 276.8
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 14.15,
+      "simulated_s": 356.9
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 13.15,
+      "simulated_s": 320.2
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 25.13,
+      "simulated_s": 267.4
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.11,
+      "simulated_s": 315.0
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
       "status": "completed",
       "error": null,
       "collected": 1,
       "false_collects": 0,
-      "battery_left": 9.85,
-      "simulated_s": 298.1
+      "battery_left": 9.49,
+      "simulated_s": 378.1
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 36.85,
+      "simulated_s": 182.5
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 12.0,
+      "simulated_s": 311.5
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 23.08,
+      "simulated_s": 276.6
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 17.18,
+      "simulated_s": 304.0
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 16.37,
+      "simulated_s": 215.6
+     }
+    ]
+   },
+   "collect_0.75": {
+    "overrides": {
+     "collect_signal_threshold": 0.75
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 9,
+     "mean_collected": 2.08,
+     "median_collected": 3.0,
+     "mean_false_collects": 1.58,
+     "mean_battery_left": 25.51
+    },
+    "all_runs": [
+     {
+      "profile": "easy",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 18.04,
+      "simulated_s": 265.9
+     },
+     {
+      "profile": "easy",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 28.9,
+      "simulated_s": 240.5
+     },
+     {
+      "profile": "easy",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 20.43,
+      "simulated_s": 297.6
+     },
+     {
+      "profile": "easy",
+      "seed": 4,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 4,
+      "battery_left": 39.83,
+      "simulated_s": 159.1
+     },
+     {
+      "profile": "easy",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 26.32,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 35.6,
+      "simulated_s": 178.2
+     },
+     {
+      "profile": "easy",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 33.49,
+      "simulated_s": 205.9
+     },
+     {
+      "profile": "easy",
+      "seed": 8,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 14.68,
+      "simulated_s": 290.9
+     },
+     {
+      "profile": "easy",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 19.08,
+      "simulated_s": 258.7
+     },
+     {
+      "profile": "easy",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 3,
+      "battery_left": 29.92,
+      "simulated_s": 231.5
+     },
+     {
+      "profile": "easy",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 23.46,
+      "simulated_s": 250.6
+     },
+     {
+      "profile": "easy",
+      "seed": 12,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 0,
+      "battery_left": 16.37,
+      "simulated_s": 215.6
      }
     ]
    }
@@ -1788,10 +2058,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 2.92,
+     "mean_collected": 3.17,
      "median_collected": 3.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 11.17
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 10.94
     },
     "all_runs": [
      {
@@ -1799,10 +2069,10 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 13.03,
-      "simulated_s": 347.3
+      "battery_left": 11.56,
+      "simulated_s": 373.1
      },
      {
       "profile": "medium",
@@ -1810,39 +2080,39 @@
       "status": "completed",
       "error": null,
       "collected": 4,
-      "false_collects": 0,
-      "battery_left": 9.25,
-      "simulated_s": 369.7
+      "false_collects": 2,
+      "battery_left": 13.04,
+      "simulated_s": 321.8
      },
      {
       "profile": "medium",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 2,
-      "battery_left": 10.21,
-      "simulated_s": 305.3
+      "battery_left": 7.3,
+      "simulated_s": 406.1
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 18.58,
-      "simulated_s": 303.4
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 343.9
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 0,
-      "battery_left": 5.57,
-      "simulated_s": 361.6
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
      },
      {
       "profile": "medium",
@@ -1850,9 +2120,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 2,
-      "battery_left": 11.91,
-      "simulated_s": 269.9
+      "false_collects": 0,
+      "battery_left": 7.58,
+      "simulated_s": 325.5
      },
      {
       "profile": "medium",
@@ -1860,29 +2130,29 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 15.83,
-      "simulated_s": 320.1
+      "false_collects": 2,
+      "battery_left": 10.84,
+      "simulated_s": 360.8
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 5.3,
-      "simulated_s": 261.1
+      "battery_left": 10.68,
+      "simulated_s": 324.5
      },
      {
       "profile": "medium",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 10.42,
-      "simulated_s": 351.8
+      "battery_left": 9.35,
+      "simulated_s": 371.4
      },
      {
       "profile": "medium",
@@ -1891,8 +2161,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 14.85,
-      "simulated_s": 339.4
+      "battery_left": 10.14,
+      "simulated_s": 336.7
      },
      {
       "profile": "medium",
@@ -1901,18 +2171,18 @@
       "error": null,
       "collected": 4,
       "false_collects": 0,
-      "battery_left": 13.0,
-      "simulated_s": 346.6
+      "battery_left": 11.79,
+      "simulated_s": 325.4
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.04,
-      "simulated_s": 315.0
+      "battery_left": 13.81,
+      "simulated_s": 341.5
      }
     ]
    },
@@ -1923,10 +2193,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 3,
+     "mean_collected": 3.25,
      "median_collected": 3.0,
-     "mean_false_collects": 0.5,
-     "mean_battery_left": 9.51
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 10.17
     },
     "all_runs": [
      {
@@ -1934,10 +2204,10 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 2,
       "false_collects": 0,
-      "battery_left": 13.03,
-      "simulated_s": 347.3
+      "battery_left": 11.78,
+      "simulated_s": 259.1
      },
      {
       "profile": "medium",
@@ -1945,39 +2215,39 @@
       "status": "completed",
       "error": null,
       "collected": 4,
-      "false_collects": 0,
-      "battery_left": 8.86,
-      "simulated_s": 357.8
+      "false_collects": 2,
+      "battery_left": 8.18,
+      "simulated_s": 364.6
      },
      {
       "profile": "medium",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 2,
-      "battery_left": 9.41,
-      "simulated_s": 311.4
+      "battery_left": 16.43,
+      "simulated_s": 328.8
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 2,
-      "battery_left": 12.09,
-      "simulated_s": 289.8
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 343.9
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 0,
-      "battery_left": 5.57,
-      "simulated_s": 361.6
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
      },
      {
       "profile": "medium",
@@ -1985,9 +2255,9 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 2,
-      "battery_left": 11.91,
-      "simulated_s": 269.9
+      "false_collects": 0,
+      "battery_left": 7.58,
+      "simulated_s": 325.5
      },
      {
       "profile": "medium",
@@ -1995,29 +2265,29 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 8.45,
-      "simulated_s": 373.2
+      "false_collects": 2,
+      "battery_left": 9.76,
+      "simulated_s": 369.0
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 6.34,
-      "simulated_s": 266.5
+      "battery_left": 10.68,
+      "simulated_s": 324.5
      },
      {
       "profile": "medium",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 10.42,
-      "simulated_s": 351.8
+      "battery_left": 5.81,
+      "simulated_s": 338.4
      },
      {
       "profile": "medium",
@@ -2026,8 +2296,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 8.62,
-      "simulated_s": 382.9
+      "battery_left": 5.7,
+      "simulated_s": 356.0
      },
      {
       "profile": "medium",
@@ -2036,18 +2306,18 @@
       "error": null,
       "collected": 4,
       "false_collects": 0,
-      "battery_left": 13.0,
-      "simulated_s": 346.6
+      "battery_left": 11.79,
+      "simulated_s": 325.4
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.43,
-      "simulated_s": 310.1
+      "battery_left": 9.06,
+      "simulated_s": 366.5
      }
     ]
    },
@@ -2057,11 +2327,11 @@
     },
     "summary": {
      "runs": 12,
-     "completed": 12,
-     "mean_collected": 2.83,
-     "median_collected": 3.0,
-     "mean_false_collects": 0.5,
-     "mean_battery_left": 10.58
+     "completed": 11,
+     "mean_collected": 3.33,
+     "median_collected": 4.0,
+     "mean_false_collects": 1.08,
+     "mean_battery_left": 10.92
     },
     "all_runs": [
      {
@@ -2069,80 +2339,80 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 2,
       "false_collects": 0,
-      "battery_left": 12.8,
-      "simulated_s": 347.8
+      "battery_left": 9.67,
+      "simulated_s": 261.8
      },
      {
       "profile": "medium",
       "seed": 2,
-      "status": "completed",
-      "error": null,
-      "collected": 4,
-      "false_collects": 0,
-      "battery_left": 9.25,
-      "simulated_s": 369.7
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
+      "false_collects": 4,
+      "battery_left": 19.86,
+      "simulated_s": 307.4
      },
      {
       "profile": "medium",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 2,
-      "battery_left": 10.21,
-      "simulated_s": 305.3
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 8.47,
+      "simulated_s": 328.8
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 12.96,
-      "simulated_s": 275.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 12.52,
+      "simulated_s": 324.0
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 5.58,
-      "simulated_s": 358.7
+      "battery_left": 19.32,
+      "simulated_s": 312.9
      },
      {
       "profile": "medium",
       "seed": 6,
       "status": "completed",
       "error": null,
-      "collected": 1,
-      "false_collects": 2,
-      "battery_left": 16.05,
-      "simulated_s": 232.2
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 7.15,
+      "simulated_s": 288.8
      },
      {
       "profile": "medium",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 3,
-      "false_collects": 0,
-      "battery_left": 15.83,
-      "simulated_s": 320.1
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 9.0,
+      "simulated_s": 354.2
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 5.3,
-      "simulated_s": 261.1
+      "battery_left": 10.02,
+      "simulated_s": 315.2
      },
      {
       "profile": "medium",
@@ -2151,38 +2421,38 @@
       "error": null,
       "collected": 4,
       "false_collects": 0,
-      "battery_left": 8.4,
-      "simulated_s": 331.4
+      "battery_left": 6.14,
+      "simulated_s": 364.6
      },
      {
       "profile": "medium",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 3,
-      "false_collects": 0,
-      "battery_left": 14.86,
-      "simulated_s": 333.7
+      "collected": 4,
+      "false_collects": 1,
+      "battery_left": 6.5,
+      "simulated_s": 376.9
      },
      {
       "profile": "medium",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 3,
-      "false_collects": 1,
-      "battery_left": 9.25,
-      "simulated_s": 369.6
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 15.74,
+      "simulated_s": 293.6
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.43,
-      "simulated_s": 310.1
+      "battery_left": 6.67,
+      "simulated_s": 355.2
      }
     ]
    },
@@ -2193,10 +2463,145 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 2.92,
+     "mean_collected": 3.17,
      "median_collected": 3.0,
-     "mean_false_collects": 0.42,
-     "mean_battery_left": 10.73
+     "mean_false_collects": 0.67,
+     "mean_battery_left": 11.01
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 11.56,
+      "simulated_s": 373.1
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 12.1,
+      "simulated_s": 328.4
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 16.43,
+      "simulated_s": 328.8
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 8.6,
+      "simulated_s": 343.9
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 16.62,
+      "simulated_s": 335.0
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 5.79,
+      "simulated_s": 339.4
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 9.76,
+      "simulated_s": 369.0
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 10.68,
+      "simulated_s": 324.5
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 9.63,
+      "simulated_s": 341.6
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 0,
+      "battery_left": 5.33,
+      "simulated_s": 357.3
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 11.79,
+      "simulated_s": 325.4
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "collect_0.85": {
+    "overrides": {
+     "collect_signal_threshold": 0.85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.5,
+     "median_collected": 3.0,
+     "mean_false_collects": 0,
+     "mean_battery_left": 13.54
     },
     "all_runs": [
      {
@@ -2206,18 +2611,18 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 13.03,
-      "simulated_s": 347.3
+      "battery_left": 8.33,
+      "simulated_s": 301.0
      },
      {
       "profile": "medium",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 9.25,
-      "simulated_s": 369.7
+      "battery_left": 15.59,
+      "simulated_s": 318.7
      },
      {
       "profile": "medium",
@@ -2225,39 +2630,39 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 2,
-      "battery_left": 10.21,
-      "simulated_s": 305.3
+      "false_collects": 0,
+      "battery_left": 7.15,
+      "simulated_s": 412.0
      },
      {
       "profile": "medium",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 1,
-      "battery_left": 18.58,
-      "simulated_s": 303.4
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 4.53,
+      "simulated_s": 349.5
      },
      {
       "profile": "medium",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.57,
-      "simulated_s": 361.6
+      "battery_left": 28.11,
+      "simulated_s": 247.9
      },
      {
       "profile": "medium",
       "seed": 6,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 2,
-      "battery_left": 11.91,
-      "simulated_s": 269.9
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 9.57,
+      "simulated_s": 347.6
      },
      {
       "profile": "medium",
@@ -2266,28 +2671,28 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 15.83,
-      "simulated_s": 320.1
+      "battery_left": 10.73,
+      "simulated_s": 354.9
      },
      {
       "profile": "medium",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 3,
       "false_collects": 0,
-      "battery_left": 6.34,
-      "simulated_s": 266.5
+      "battery_left": 10.68,
+      "simulated_s": 324.5
      },
      {
       "profile": "medium",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 10.42,
-      "simulated_s": 351.8
+      "battery_left": 24.71,
+      "simulated_s": 272.9
      },
      {
       "profile": "medium",
@@ -2296,8 +2701,143 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 8.62,
-      "simulated_s": 382.9
+      "battery_left": 13.6,
+      "simulated_s": 358.7
+     },
+     {
+      "profile": "medium",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 15.68,
+      "simulated_s": 296.8
+     },
+     {
+      "profile": "medium",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 13.81,
+      "simulated_s": 341.5
+     }
+    ]
+   },
+   "collect_0.75": {
+    "overrides": {
+     "collect_signal_threshold": 0.75
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.75,
+     "median_collected": 3.0,
+     "mean_false_collects": 4.17,
+     "mean_battery_left": 13.19
+    },
+    "all_runs": [
+     {
+      "profile": "medium",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 12.49,
+      "simulated_s": 360.6
+     },
+     {
+      "profile": "medium",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 5,
+      "battery_left": 21.94,
+      "simulated_s": 293.4
+     },
+     {
+      "profile": "medium",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 12.25,
+      "simulated_s": 367.2
+     },
+     {
+      "profile": "medium",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 3,
+      "battery_left": 10.66,
+      "simulated_s": 308.8
+     },
+     {
+      "profile": "medium",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 5,
+      "battery_left": 8.54,
+      "simulated_s": 407.1
+     },
+     {
+      "profile": "medium",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 4,
+      "battery_left": 11.58,
+      "simulated_s": 345.0
+     },
+     {
+      "profile": "medium",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 9.28,
+      "simulated_s": 336.1
+     },
+     {
+      "profile": "medium",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 5,
+      "battery_left": 30.34,
+      "simulated_s": 231.2
+     },
+     {
+      "profile": "medium",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 5,
+      "battery_left": 10.37,
+      "simulated_s": 323.6
+     },
+     {
+      "profile": "medium",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 10.33,
+      "simulated_s": 322.6
      },
      {
       "profile": "medium",
@@ -2305,19 +2845,19 @@
       "status": "completed",
       "error": null,
       "collected": 4,
-      "false_collects": 0,
-      "battery_left": 13.0,
-      "simulated_s": 346.6
+      "false_collects": 5,
+      "battery_left": 13.54,
+      "simulated_s": 342.2
      },
      {
       "profile": "medium",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 0,
-      "battery_left": 6.04,
-      "simulated_s": 315.0
+      "collected": 3,
+      "false_collects": 4,
+      "battery_left": 6.94,
+      "simulated_s": 320.1
      }
     ]
    }
@@ -2328,10 +2868,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 3.92,
+     "mean_collected": 3.83,
      "median_collected": 4.0,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 9.52
+     "mean_false_collects": 1.25,
+     "mean_battery_left": 11.09
     },
     "all_runs": [
      {
@@ -2340,49 +2880,49 @@
       "status": "completed",
       "error": null,
       "collected": 3,
-      "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "false_collects": 1,
+      "battery_left": 8.62,
+      "simulated_s": 309.2
      },
      {
       "profile": "hard",
       "seed": 2,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "battery_left": 10.21,
+      "simulated_s": 287.3
      },
      {
       "profile": "hard",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 10.67,
-      "simulated_s": 306.3
+      "battery_left": 15.22,
+      "simulated_s": 335.5
      },
      {
       "profile": "hard",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 12.16,
+      "simulated_s": 370.1
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
-      "false_collects": 0,
-      "battery_left": 17.63,
-      "simulated_s": 255.0
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 25.96,
+      "simulated_s": 262.0
      },
      {
       "profile": "hard",
@@ -2390,69 +2930,69 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 9.61,
-      "simulated_s": 265.0
+      "false_collects": 2,
+      "battery_left": 10.39,
+      "simulated_s": 250.4
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 8.16,
-      "simulated_s": 389.4
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 8.94,
+      "simulated_s": 362.2
      },
      {
       "profile": "hard",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 8.55,
-      "simulated_s": 331.6
+      "battery_left": 8.97,
+      "simulated_s": 332.5
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 12.16,
-      "simulated_s": 334.6
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 8.25,
+      "simulated_s": 353.9
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
      },
      {
       "profile": "hard",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 6,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "battery_left": 4.62,
+      "simulated_s": 362.3
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.03,
-      "simulated_s": 365.3
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
      }
     ]
    },
@@ -2463,10 +3003,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 3.83,
+     "mean_collected": 3.67,
      "median_collected": 3.5,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 8.12
+     "mean_false_collects": 1.83,
+     "mean_battery_left": 9.3
     },
     "all_runs": [
      {
@@ -2476,8 +3016,8 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "battery_left": 9.14,
+      "simulated_s": 303.0
      },
      {
       "profile": "hard",
@@ -2486,18 +3026,18 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "battery_left": 5.76,
+      "simulated_s": 299.3
      },
      {
       "profile": "hard",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 5,
       "false_collects": 0,
-      "battery_left": 10.67,
-      "simulated_s": 306.3
+      "battery_left": 10.74,
+      "simulated_s": 332.8
      },
      {
       "profile": "hard",
@@ -2505,19 +3045,19 @@
       "status": "completed",
       "error": null,
       "collected": 6,
-      "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "false_collects": 2,
+      "battery_left": 10.24,
+      "simulated_s": 385.6
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 8.7,
-      "simulated_s": 321.9
+      "battery_left": 22.94,
+      "simulated_s": 286.0
      },
      {
       "profile": "hard",
@@ -2525,69 +3065,69 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 5.36,
-      "simulated_s": 285.0
+      "false_collects": 2,
+      "battery_left": 4.99,
+      "simulated_s": 271.5
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 2,
-      "battery_left": 7.94,
-      "simulated_s": 372.4
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 9.06,
+      "simulated_s": 385.2
      },
      {
       "profile": "hard",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 7.75,
-      "simulated_s": 337.0
+      "battery_left": 7.62,
+      "simulated_s": 344.1
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 4,
+      "collected": 6,
       "false_collects": 2,
-      "battery_left": 9.07,
-      "simulated_s": 358.3
+      "battery_left": 7.17,
+      "simulated_s": 381.2
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
      },
      {
       "profile": "hard",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "collected": 3,
+      "false_collects": 6,
+      "battery_left": 7.28,
+      "simulated_s": 360.4
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.55,
-      "simulated_s": 359.5
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 6.4,
+      "simulated_s": 381.4
      }
     ]
    },
@@ -2598,10 +3138,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 4,
-     "median_collected": 4.5,
-     "mean_false_collects": 0.25,
-     "mean_battery_left": 10.52
+     "mean_collected": 3.58,
+     "median_collected": 4.0,
+     "mean_false_collects": 2.08,
+     "mean_battery_left": 8.77
     },
     "all_runs": [
      {
@@ -2609,10 +3149,10 @@
       "seed": 1,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "battery_left": 15.27,
+      "simulated_s": 254.6
      },
      {
       "profile": "hard",
@@ -2620,39 +3160,39 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "false_collects": 4,
+      "battery_left": 5.67,
+      "simulated_s": 317.9
      },
      {
       "profile": "hard",
       "seed": 3,
       "status": "completed",
       "error": null,
-      "collected": 4,
-      "false_collects": 1,
-      "battery_left": 10.84,
-      "simulated_s": 296.8
+      "collected": 6,
+      "false_collects": 3,
+      "battery_left": 7.06,
+      "simulated_s": 412.9
      },
      {
       "profile": "hard",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "collected": 4,
+      "false_collects": 4,
+      "battery_left": 10.18,
+      "simulated_s": 392.3
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 2,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 17.63,
-      "simulated_s": 255.0
+      "battery_left": 9.92,
+      "simulated_s": 388.6
      },
      {
       "profile": "hard",
@@ -2660,69 +3200,69 @@
       "status": "completed",
       "error": null,
       "collected": 2,
-      "false_collects": 0,
-      "battery_left": 9.61,
-      "simulated_s": 265.0
+      "false_collects": 4,
+      "battery_left": 9.22,
+      "simulated_s": 299.3
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 9.87,
-      "simulated_s": 375.6
+      "collected": 2,
+      "false_collects": 3,
+      "battery_left": 6.56,
+      "simulated_s": 367.3
      },
      {
       "profile": "hard",
       "seed": 8,
       "status": "completed",
       "error": null,
-      "collected": 3,
-      "false_collects": 0,
-      "battery_left": 18.68,
-      "simulated_s": 263.2
+      "collected": 4,
+      "false_collects": 1,
+      "battery_left": 5.6,
+      "simulated_s": 346.3
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 12.16,
-      "simulated_s": 334.6
+      "collected": 6,
+      "false_collects": 0,
+      "battery_left": 6.67,
+      "simulated_s": 390.1
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 11.34,
+      "simulated_s": 355.2
      },
      {
       "profile": "hard",
       "seed": 11,
       "status": "completed",
       "error": null,
-      "collected": 6,
-      "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "collected": 5,
+      "false_collects": 2,
+      "battery_left": 8.59,
+      "simulated_s": 372.0
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.03,
-      "simulated_s": 365.3
+      "collected": 3,
+      "false_collects": 2,
+      "battery_left": 9.11,
+      "simulated_s": 328.5
      }
     ]
    },
@@ -2733,10 +3273,10 @@
     "summary": {
      "runs": 12,
      "completed": 12,
-     "mean_collected": 4,
-     "median_collected": 4.0,
-     "mean_false_collects": 0.33,
-     "mean_battery_left": 8.45
+     "mean_collected": 4.08,
+     "median_collected": 4.5,
+     "mean_false_collects": 1.42,
+     "mean_battery_left": 10.41
     },
     "all_runs": [
      {
@@ -2745,9 +3285,144 @@
       "status": "completed",
       "error": null,
       "collected": 3,
+      "false_collects": 1,
+      "battery_left": 8.62,
+      "simulated_s": 309.2
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 335.1
+      "battery_left": 6.62,
+      "simulated_s": 315.9
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 10.74,
+      "simulated_s": 332.8
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 10.24,
+      "simulated_s": 385.6
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 2,
+      "battery_left": 25.96,
+      "simulated_s": 262.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 4.94,
+      "simulated_s": 272.1
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 9.83,
+      "simulated_s": 343.8
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 6.0,
+      "simulated_s": 356.0
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 7,
+      "false_collects": 4,
+      "battery_left": 5.79,
+      "simulated_s": 363.7
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 2,
+      "battery_left": 10.22,
+      "simulated_s": 362.6
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
+      "collected": 5,
+      "false_collects": 0,
+      "battery_left": 16.48,
+      "simulated_s": 312.3
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 2,
+      "battery_left": 9.48,
+      "simulated_s": 365.6
+     }
+    ]
+   },
+   "collect_0.85": {
+    "overrides": {
+     "collect_signal_threshold": 0.85
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 11,
+     "mean_collected": 2.83,
+     "median_collected": 2.5,
+     "mean_false_collects": 0,
+     "mean_battery_left": 11.54
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 8.47,
+      "simulated_s": 305.9
      },
      {
       "profile": "hard",
@@ -2756,8 +3431,8 @@
       "error": null,
       "collected": 2,
       "false_collects": 0,
-      "battery_left": 5.4,
-      "simulated_s": 242.6
+      "battery_left": 4.51,
+      "simulated_s": 330.4
      },
      {
       "profile": "hard",
@@ -2766,48 +3441,48 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 10.67,
-      "simulated_s": 306.3
+      "battery_left": 8.85,
+      "simulated_s": 354.2
      },
      {
       "profile": "hard",
       "seed": 4,
       "status": "completed",
       "error": null,
-      "collected": 6,
+      "collected": 4,
       "false_collects": 0,
-      "battery_left": 6.47,
-      "simulated_s": 372.9
+      "battery_left": 12.96,
+      "simulated_s": 367.7
      },
      {
       "profile": "hard",
       "seed": 5,
       "status": "completed",
       "error": null,
-      "collected": 3,
+      "collected": 1,
       "false_collects": 0,
-      "battery_left": 9.37,
-      "simulated_s": 315.8
+      "battery_left": 23.51,
+      "simulated_s": 279.4
      },
      {
       "profile": "hard",
       "seed": 6,
-      "status": "completed",
-      "error": null,
-      "collected": 2,
+      "status": "failed",
+      "error": "no_confirmed_sample",
+      "collected": 0,
       "false_collects": 0,
-      "battery_left": 5.36,
-      "simulated_s": 285.0
+      "battery_left": 22.05,
+      "simulated_s": 218.7
      },
      {
       "profile": "hard",
       "seed": 7,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 8.16,
-      "simulated_s": 389.4
+      "collected": 6,
+      "false_collects": 0,
+      "battery_left": 11.14,
+      "simulated_s": 381.6
      },
      {
       "profile": "hard",
@@ -2816,28 +3491,163 @@
       "error": null,
       "collected": 3,
       "false_collects": 0,
-      "battery_left": 7.75,
-      "simulated_s": 337.0
+      "battery_left": 12.65,
+      "simulated_s": 278.1
      },
      {
       "profile": "hard",
       "seed": 9,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 2,
-      "battery_left": 12.16,
-      "simulated_s": 334.6
+      "collected": 4,
+      "false_collects": 0,
+      "battery_left": 9.66,
+      "simulated_s": 404.5
      },
      {
       "profile": "hard",
       "seed": 10,
       "status": "completed",
       "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 6.59,
+      "simulated_s": 308.8
+     },
+     {
+      "profile": "hard",
+      "seed": 11,
+      "status": "completed",
+      "error": null,
       "collected": 5,
       "false_collects": 0,
-      "battery_left": 12.33,
-      "simulated_s": 286.3
+      "battery_left": 8.2,
+      "simulated_s": 409.4
+     },
+     {
+      "profile": "hard",
+      "seed": 12,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 0,
+      "battery_left": 9.86,
+      "simulated_s": 356.4
+     }
+    ]
+   },
+   "collect_0.75": {
+    "overrides": {
+     "collect_signal_threshold": 0.75
+    },
+    "summary": {
+     "runs": 12,
+     "completed": 12,
+     "mean_collected": 2.75,
+     "median_collected": 2.0,
+     "mean_false_collects": 4.08,
+     "mean_battery_left": 13.41
+    },
+    "all_runs": [
+     {
+      "profile": "hard",
+      "seed": 1,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.84,
+      "simulated_s": 255.0
+     },
+     {
+      "profile": "hard",
+      "seed": 2,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 0,
+      "battery_left": 10.21,
+      "simulated_s": 287.3
+     },
+     {
+      "profile": "hard",
+      "seed": 3,
+      "status": "completed",
+      "error": null,
+      "collected": 3,
+      "false_collects": 6,
+      "battery_left": 23.63,
+      "simulated_s": 285.2
+     },
+     {
+      "profile": "hard",
+      "seed": 4,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 11.55,
+      "simulated_s": 370.1
+     },
+     {
+      "profile": "hard",
+      "seed": 5,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 6,
+      "battery_left": 31.74,
+      "simulated_s": 219.0
+     },
+     {
+      "profile": "hard",
+      "seed": 6,
+      "status": "completed",
+      "error": null,
+      "collected": 2,
+      "false_collects": 2,
+      "battery_left": 6.46,
+      "simulated_s": 267.9
+     },
+     {
+      "profile": "hard",
+      "seed": 7,
+      "status": "completed",
+      "error": null,
+      "collected": 6,
+      "false_collects": 4,
+      "battery_left": 13.42,
+      "simulated_s": 359.6
+     },
+     {
+      "profile": "hard",
+      "seed": 8,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 4,
+      "battery_left": 13.22,
+      "simulated_s": 290.3
+     },
+     {
+      "profile": "hard",
+      "seed": 9,
+      "status": "completed",
+      "error": null,
+      "collected": 4,
+      "false_collects": 6,
+      "battery_left": 7.91,
+      "simulated_s": 412.4
+     },
+     {
+      "profile": "hard",
+      "seed": 10,
+      "status": "completed",
+      "error": null,
+      "collected": 1,
+      "false_collects": 6,
+      "battery_left": 9.69,
+      "simulated_s": 308.3
      },
      {
       "profile": "hard",
@@ -2845,19 +3655,19 @@
       "status": "completed",
       "error": null,
       "collected": 6,
-      "false_collects": 0,
-      "battery_left": 9.79,
-      "simulated_s": 371.5
+      "false_collects": 3,
+      "battery_left": 8.17,
+      "simulated_s": 373.0
      },
      {
       "profile": "hard",
       "seed": 12,
       "status": "completed",
       "error": null,
-      "collected": 5,
-      "false_collects": 0,
-      "battery_left": 8.55,
-      "simulated_s": 359.5
+      "collected": 2,
+      "false_collects": 6,
+      "battery_left": 14.04,
+      "simulated_s": 364.1
      }
     ]
    }

@@ -89,6 +89,10 @@ def entry_json(entry: JournalEntry) -> dict:
         "expected": draft.expected,
         "observed": draft.observed,
         "conclusion": draft.conclusion,
+        "experiment_id": draft.experiment_id,
+        "detection_id": draft.detection_id,
+        "plan_id": draft.plan_id,
+        "evidence": list(draft.evidence),
     }
 
 
