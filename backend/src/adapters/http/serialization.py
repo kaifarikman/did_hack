@@ -70,6 +70,41 @@ def snapshot_json(snapshot: MissionSnapshot) -> dict:
         "target_samples": snapshot.target_samples,
         "plan": plan_json(snapshot),
         "research": research_json(snapshot),
+        "team": team_json(snapshot),
+    }
+
+
+def team_json(snapshot: MissionSnapshot) -> dict | None:
+    team = snapshot.team
+    if team is None:
+        return None
+    return {
+        "outcome": team.outcome,
+        "samples_collected": team.samples_collected,
+        "coordinated": team.coordinated,
+        "lost_robots": list(team.lost_robots),
+        "robots": [
+            {
+                "robot_id": robot.robot_id,
+                "status": robot.status.value,
+                "robot_pose": None if robot.pose is None else {**point_json(robot.pose.point), "heading_rad": robot.pose.heading_rad},
+                "battery_remaining": _number(robot.battery_remaining),
+                "samples_collected": robot.samples_collected,
+                "current_goal": None if robot.current_goal is None else {
+                    "kind": robot.current_goal.kind.value,
+                    "target": None if robot.current_goal.target is None else point_json(robot.current_goal.target),
+                    "reason": robot.current_goal.reason,
+                },
+                "trajectory": [point_json(p) for p in robot.trajectory],
+                "planned_path": [point_json(p) for p in robot.planned_path],
+                "reservation": None if robot.reservation is None else point_json(robot.reservation),
+                "last_error": None if robot.last_error is None else {
+                    "code": robot.last_error.code, "message": robot.last_error.message,
+                    "retryable": robot.last_error.retryable,
+                },
+            }
+            for robot in team.robots
+        ],
     }
 
 
@@ -149,6 +184,7 @@ def entry_json(entry: JournalEntry) -> dict:
         "detection_id": draft.detection_id,
         "plan_id": draft.plan_id,
         "evidence": list(draft.evidence),
+        "robot_id": draft.robot_id,
     }
 
 

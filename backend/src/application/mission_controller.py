@@ -5,12 +5,13 @@
 from __future__ import annotations
 
 from concurrent.futures import Executor, ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from application.event_feed import EventFeed
 from application.motion import MotionExecutor, MotionState
 from application.plan_execution import NothingValid, PlanExecutor, Waiting
 from application.research import TerrainResearch
+from application.team import RobotLink
 from application.navigation_service import NavigationService
 from application.ports import (
     Clock, EventSource, JournalStore, JudgeClient, JudgeReply, MapMode, ObservationSource, OperationOutcome,
@@ -29,6 +30,7 @@ from domain.settings import MissionSettings
 from domain.subgoals import GoalKind, PlanningContext, Subgoal, TerrainView
 
 STARTUP_OBSERVATION_GRACE_S = 5.0
+LOST_ROBOT_CODES = frozenset({"observations_stale", "observations_incomplete", "localization_lost", "stuck_returning"})
 RETURN_ESTIMATE_REFRESH_M = 0.25
 
 
@@ -46,6 +48,7 @@ class ControllerPorts:
     score: ScoreSource | None = None
     map_mode: MapMode = MapMode.STATIC
     robot_id: str = DEFAULT_ROBOT_ID
+    coordination: RobotLink | None = None  # команда роботов: брони, обмен знаниями, разъезд
 
 
 class MissionController:
@@ -86,6 +89,7 @@ class MissionController:
         self._map_missing_since_s: float | None = None
         self._seen_map_revision: int | None = None
         self._last_pose_point: Point | None = None
+        self._yield_since_s: float | None = None
         self._events: EventFeed | None = None
 
     # ---------------------------------------------------------------- tick
@@ -107,6 +111,8 @@ class MissionController:
         if not self._map_ready():
             return
         self._check_map_change(observation)
+        if self._yield_to_partner(observation):
+            return
         pose = observation.pose
         motion_state = self._ports.motion.step(pose, self._ports.clock.monotonic_s())
         if motion_state is MotionState.MOVING:
@@ -117,6 +123,53 @@ class MissionController:
             self._on_stuck(observation)
         else:
             self._decide(observation)
+
+    # ------------------------------------------------------------ команда
+
+    def _coordinate(self, observation: Observation) -> None:
+        link = self._ports.coordination
+        if link is None:
+            return
+        now = self._ports.clock.monotonic_s()
+        link.report_pose(observation.pose, now)
+        if observation.sample_signal is not None and self._research.sensor.quality > 0:
+            link.share_signal(observation.pose.point, observation.sample_signal, observation.simulation_time_s)
+        for shared in link.partner_signals():
+            self._search.record_shared(shared.point, shared.signal)
+        for point in link.partner_collects():
+            self._search.forget_near(point)
+            self._plans.invalidate("партнёр собрал образец: сигнал рядом относится к другому образцу")
+            self._log(JournalKind.OBSERVATION, "Партнёр собрал образец",
+                      f"Сбор партнёра у ({point.x_m:.2f}, {point.y_m:.2f}): история сигнала рядом забыта.")
+        for robot_id in link.newly_lost(now):
+            self._log(JournalKind.DECISION, "Партнёр потерян",
+                      f"Нет наблюдений {robot_id}: его брони освобождены, продолжаем со своим запасом энергии.")
+
+    def _yield_to_partner(self, observation: Observation) -> bool:
+        """Ближе безопасного расстояния уступает робот с меньшим приоритетом; ожидание ограничено."""
+        link = self._ports.coordination
+        if link is None or self._goal is None:
+            self._yield_since_s = None
+            return False
+        now = self._ports.clock.monotonic_s()
+        partner = link.must_yield(observation.pose.point, now)
+        if partner is None:
+            self._yield_since_s = None
+            return False
+        if self._yield_since_s is None:
+            self._yield_since_s = now
+            self._log(JournalKind.DECISION, "Уступаем дорогу", f"{partner} ближе безопасного расстояния: пауза без отмены пути.")
+        if now - self._yield_since_s > self._settings.yield_max_s:
+            self._yield_since_s = None
+            self._ports.motion.stop()
+            link.release()
+            self._plans.step_finished(False)
+            self._goal = None
+            self._log(JournalKind.DECISION, "Взаимная блокировка",
+                      f"Ожидание {partner} дольше {self._settings.yield_max_s:.0f} с: цель отдана, выбираем другую.")
+            return True
+        self._ports.motion.hold()
+        return True
 
     # ------------------------------------------------------------ карта
 
@@ -177,14 +230,18 @@ class MissionController:
         self._write(JournalDraft(kind, title, detail, self._simulation_time_s, **fields))
 
     def _write(self, *drafts: JournalDraft) -> None:
+        team = self._ports.coordination is not None
         for draft in drafts:
+            if team and draft.robot_id is None:
+                draft = replace(draft, robot_id=self._ports.robot_id)
             self._ports.journal.append(self._mission.run_id, draft)
 
     def _reset_and_start(self) -> None:
         self._ports.motion.stop()
+        link = self._ports.coordination
         request = ResetRequest(
             self._mission.scenario, self._mission.seed, self._mission.generation,
-            self._ports.map_mode, (self._ports.robot_id,),
+            self._ports.map_mode, link.team_ids if link else (self._ports.robot_id,),
         )
         try:
             ack = self._ports.simulation.reset(request)
@@ -224,7 +281,17 @@ class MissionController:
         except InvalidTransition:
             return
         self._mission.set_goal(None)
+        self._leave_team()
         self._log(JournalKind.DECISION, "Миссия остановлена", "Stop прервал исполнение; это не успешное завершение.")
+
+    def _leave_team(self, lost: bool = False) -> None:
+        link = self._ports.coordination
+        if link is None:
+            return
+        if lost:
+            link.mark_lost()  # партнёр узнает о потере и не будет ждать этого робота
+        else:
+            link.finish()
 
     def abort(self, message: str) -> None:
         self._fail("internal_error", message)
@@ -233,6 +300,7 @@ class MissionController:
         self._ports.motion.stop()
         self._mission.fail(MissionError(code, message, retryable))
         self._mission.set_goal(None)
+        self._leave_team(lost=code in LOST_ROBOT_CODES)
         self._log(JournalKind.ERROR, code, message)
 
     def _fresh_observation(self) -> Observation | None:
@@ -298,6 +366,7 @@ class MissionController:
             self._search.record_signal(pose.point, observation.sample_signal)
         for change in self._research.take_changes():
             self._react_to_change(change, observation)
+        self._coordinate(observation)
         self._publish_research()
         if self._research.revision != self._published_terrain_revision:
             self._published_terrain_revision = self._research.revision
@@ -415,6 +484,8 @@ class MissionController:
         self._replans = 0
         if goal is None:
             return
+        if self._ports.coordination is not None and goal.kind is not GoalKind.RETURN:
+            self._ports.coordination.release()
         self._plans.step_finished(True)
         self._publish_plan()
         if goal.kind is GoalKind.RETURN:
@@ -451,15 +522,18 @@ class MissionController:
     def _finish_mission(self, observation: Observation) -> None:
         reply = self._reconcile_finish(self._ports.judge.finish())
         mission = self._mission
-        if mission.samples_collected == 0:
+        solo = self._ports.coordination is None
+        if solo and mission.samples_collected == 0:
             self._fail("no_confirmed_sample", "Возврат без подтверждённого образца; успех не засчитан.")
             return
         try:
-            mission.complete(reply.success)
+            # в команде возврат без своего сбора допустим: общий успех требует сбора хотя бы одним роботом
+            mission.complete(reply.success, require_sample=solo)
         except InvalidTransition as error:
             self._fail("finish_rejected", f"Завершение не принято: {error}. {reply.message}".strip())
             return
         mission.set_goal(None)
+        self._leave_team()
         self._log(
             JournalKind.OUTCOME, "Миссия завершена",
             f"Судья подтвердил возврат; образцов: {mission.samples_collected}, "
@@ -498,6 +572,11 @@ class MissionController:
                 return GoalVerdict(False, "исчерпан общий лимит неудачных попыток сбора")
             if self._search.collect_attempts_near(observation.pose.point) >= 2:
                 return GoalVerdict(False, "исчерпан лимит попыток сбора в этой области")
+        link = self._ports.coordination
+        if link is not None and goal.kind in (GoalKind.EXPLORE, GoalKind.APPROACH) and goal.target is not None:
+            holder = link.conflict(goal.target, self._ports.clock.monotonic_s())
+            if holder is not None:
+                return GoalVerdict(False, f"область цели забронирована {holder}")
         signal = observation.sample_signal
         if signal is not None and self._search.local_signal() is not None:
             signal = self._search.local_signal()  # решение о сборе — по сглаженному сигналу в этой точке
@@ -658,6 +737,12 @@ class MissionController:
         self._goal = goal
         if goal.kind is not GoalKind.RETURN and goal.target is not None:
             self._search.note_target(goal.target)
+        link = self._ports.coordination
+        if link is not None:
+            if goal.kind is GoalKind.RETURN:
+                link.release()
+            elif goal.target is not None:
+                link.claim(goal.target, self._ports.clock.monotonic_s())
         mission.set_goal(goal, verdict.route.waypoints)
         self._ports.motion.follow(list(verdict.route.waypoints))
         self._log(
@@ -684,6 +769,8 @@ class MissionController:
             self._research.note_collect()
             sample = self._mission.add_collected_sample(position)
             self._search.reset_after_collect()
+            if self._ports.coordination is not None:
+                self._ports.coordination.share_collect(position, observation.simulation_time_s)
             self._plans.invalidate("образец собран: сигнал теперь относится к другому образцу")
             self._log(
                 JournalKind.OUTCOME, "Образец собран",

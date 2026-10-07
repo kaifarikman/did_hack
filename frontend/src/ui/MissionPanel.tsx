@@ -34,16 +34,19 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
   const [scenario, setScenario] = useState<Scenario>("easy");
   const [missionText, setMissionText] = useState("");
   const [mapMode, setMapMode] = useState<MapMode>("static");
+  const [robotCount, setRobotCount] = useState(1);
   const { snapshot, health, command } = view;
   const supported = health?.supported_scenarios ?? ["easy"];
   const mapModes = health?.supported_map_modes ?? ["static"];
+  const robotCounts = health?.supported_robot_counts ?? [1];
   const seed = Number(seedText);
   const seedValid = seedText.trim() !== "" && Number.isInteger(seed);
   const startReason =
     startDisabledReason(view) ??
     (seedValid ? null : "seed должен быть целым числом") ??
     (supported.includes(scenario) ? null : `профиль ${scenario} не поддерживается средой`) ??
-    (mapModes.includes(mapMode) ? null : "режим карты не поддерживается средой");
+    (mapModes.includes(mapMode) ? null : "режим карты не поддерживается средой") ??
+    (robotCounts.includes(robotCount) ? null : "столько роботов среда не поднимает");
   const stopReason = stopDisabledReason(view);
   const ratio = snapshot === null ? null : batteryRatio(snapshot.battery_remaining, snapshot.battery_initial);
   const outcome = snapshot === null ? "none" : outcomeKind(snapshot.status);
@@ -158,6 +161,17 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           </select>
         </label>
         <label className="seed-field">
+          Роботов
+          <select value={robotCount} onChange={(event) => setRobotCount(Number(event.target.value))}>
+            {[1, 2].map((count) => (
+              <option key={count} value={count} disabled={!robotCounts.includes(count)}>
+                {count}
+                {robotCounts.includes(count) ? "" : " (нет в среде)"}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="seed-field">
           seed
           <input
             type="text"
@@ -172,7 +186,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           className="button-primary"
           disabled={startReason !== null}
           aria-describedby="command-hint"
-          onClick={() => void controller.startRun(seed, scenario, missionText, mapMode)}
+          onClick={() => void controller.startRun(seed, scenario, missionText, mapMode, robotCount)}
         >
           Start
         </button>

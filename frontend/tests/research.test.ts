@@ -73,3 +73,22 @@ describe("подписи карты", () => {
     expect(terrainLabel({ ...base, energy_per_m: 1, std_energy_per_m: null, regime: 0, last_measured_s: null })).toBe("1.0/м");
   });
 });
+
+import stateTeamPartial from "../src/adapters/fixture/examples/state-team-partial.json";
+import stateSlamRunning from "../src/adapters/fixture/examples/state-slam-running.json";
+
+describe("fixtures команды и SLAM", () => {
+  it("частичный результат команды: исходы роботов видны отдельно", () => {
+    const snapshot = parseSnapshot(structuredClone(stateTeamPartial));
+    expect(snapshot.team?.robots.map((robot) => robot.robot_id)).toEqual(["robot_1", "robot_2"]);
+    expect(snapshot.team?.lost_robots).toEqual(["robot_2"]);
+    expect(["partial", "failed"]).toContain(snapshot.team?.outcome);
+    expect(snapshot.status).toBe("failed");
+  });
+
+  it("SLAM: режим карты и версия карты в идентификаторе", () => {
+    const snapshot = parseSnapshot(structuredClone(stateSlamRunning));
+    expect(snapshot.map_mode).toBe("slam");
+    expect(snapshot.map_id).toMatch(/#r\d+$/);
+  });
+});

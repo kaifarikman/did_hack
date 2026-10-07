@@ -105,6 +105,32 @@ class MissionSnapshot:
     plan_statuses: tuple[StepStatus, ...] = ()
     plan_revision_reason: str | None = None
     research: "ResearchView" = None  # type: ignore[assignment]
+    team: "TeamView | None" = None
+
+
+@dataclass(frozen=True)
+class RobotView:
+    robot_id: str
+    status: MissionStatus
+    pose: Pose | None
+    battery_remaining: float | None
+    samples_collected: int
+    current_goal: Subgoal | None
+    trajectory: tuple[Point, ...]
+    planned_path: tuple[Point, ...]
+    reservation: Point | None
+    last_error: MissionError | None
+
+
+@dataclass(frozen=True)
+class TeamView:
+    """Команда роботов: отдельные исходы и общий результат (успех/частичный/провал/идёт)."""
+
+    robots: tuple[RobotView, ...]
+    outcome: str  # running | success | partial | failed | stopped
+    samples_collected: int
+    coordinated: bool
+    lost_robots: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -154,6 +180,7 @@ class Mission:
         battery_initial: float,
         generation: int = 1,
         mission_text: str = "",
+        robot_id: str = "robot_1",
         target_samples: int | None = None,
         map_mode: str = "static",
     ) -> None:
@@ -163,6 +190,7 @@ class Mission:
         self.seed = seed
         self.generation = generation  # поколение прогона: наблюдения и ответы других поколений отбрасываются
         self.mission_text = mission_text
+        self.robot_id = robot_id
         self.map_mode = map_mode
         self.target_samples = target_samples
         self._plan: MissionPlan | None = None
@@ -229,12 +257,15 @@ class Mission:
         with self._lock:
             self._transition(MissionStatus.STOPPED)
 
-    def complete(self, finish_confirmed: bool) -> None:
-        """Успех только при подтверждённом сборе, положительной батарее и ответе судьи."""
+    def complete(self, finish_confirmed: bool, require_sample: bool = True) -> None:
+        """Успех только при подтверждённом сборе, положительной батарее и ответе судьи.
+
+        Член команды может вернуться без своего сбора: общий успех команды проверяется отдельно.
+        """
         with self._lock:
             if not finish_confirmed:
                 raise InvalidTransition("судья не подтвердил завершение")
-            if not self._collected:
+            if require_sample and not self._collected:
                 raise InvalidTransition("нет подтверждённого сбора")
             if self._battery is None or self._battery <= 0:
                 raise InvalidTransition("батарея не положительна")

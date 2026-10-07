@@ -9,7 +9,8 @@ import type {
   Point,
 } from "./contract";
 import { MAP_MODES, SCENARIOS, SENSOR_FAULTS, SENSOR_STATES, STEP_STATUSES } from "./contract";
-import type { HazardView, HypothesisView, MissionPlanView, ResearchView } from "./contract";
+import type { HazardView, HypothesisView, MissionPlanView, ResearchView, TeamView } from "./contract";
+import { TEAM_OUTCOMES } from "./contract";
 
 export class ContractError extends Error {
   constructor(message: string) {
@@ -206,6 +207,41 @@ const readResearch: Reader<ResearchView> = (value, path) => {
   };
 };
 
+const readTeam: Reader<TeamView> = (value, path) => {
+  const source = readObject(value, path);
+  return {
+    outcome: field(source, "outcome", path, enumReader(TEAM_OUTCOMES)),
+    samples_collected: field(source, "samples_collected", path, numberReader({ min: 0 }, true)),
+    coordinated: field(source, "coordinated", path, readBoolean),
+    lost_robots: field(source, "lost_robots", path, readStrings),
+    robots: field(
+      source,
+      "robots",
+      path,
+      arrayOf((item, itemPath) => {
+        const robot = readObject(item, itemPath);
+        return {
+          robot_id: field(robot, "robot_id", itemPath, readString),
+          status: field(robot, "status", itemPath, readRunStatus),
+          robot_pose: field(robot, "robot_pose", itemPath, nullable(readPose)),
+          battery_remaining: field(robot, "battery_remaining", itemPath, nullable(numberReader({ min: 0 }))),
+          samples_collected: field(robot, "samples_collected", itemPath, numberReader({ min: 0 }, true)),
+          current_goal: field(robot, "current_goal", itemPath, nullable(readGoal)),
+          trajectory: field(robot, "trajectory", itemPath, arrayOf(readPoint)),
+          planned_path: field(robot, "planned_path", itemPath, arrayOf(readPoint)),
+          reservation: field(robot, "reservation", itemPath, nullable(readPoint)),
+          last_error: field(robot, "last_error", itemPath, nullable(readErrorInfo)),
+        };
+      }),
+    ),
+  };
+};
+
+const readPose: Reader<{ position_x_m: number; position_y_m: number; heading_rad: number }> = (value, path) => {
+  const pose = readObject(value, path);
+  return { ...readPoint(pose, path), heading_rad: field(pose, "heading_rad", path, readNumber) };
+};
+
 export function parseSnapshot(raw: unknown): MissionSnapshot {
   const path = "state";
   const source = readObject(raw, path);
@@ -280,6 +316,7 @@ export function parseSnapshot(raw: unknown): MissionSnapshot {
     target_samples: optionalField(source, "target_samples", path, nullable(numberReader({ min: 1 }, true)), null),
     plan: optionalField(source, "plan", path, nullable(readPlan), null),
     research: optionalField(source, "research", path, nullable(readResearch), null),
+    team: optionalField(source, "team", path, nullable(readTeam), null),
   };
 }
 
@@ -296,6 +333,13 @@ export function parseHealth(raw: unknown): HealthStatus {
         ? ["easy"]
         : field(source, "supported_scenarios", path, arrayOf(enumReader(SCENARIOS))),
     supported_map_modes: optionalField(source, "supported_map_modes", path, arrayOf(enumReader(MAP_MODES)), ["static"]),
+    supported_robot_counts: optionalField(
+      source,
+      "supported_robot_counts",
+      path,
+      arrayOf(numberReader({ min: 1 }, true)),
+      [1],
+    ),
   };
 }
 

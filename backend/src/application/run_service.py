@@ -9,6 +9,8 @@ from typing import Callable
 from application.errors import EnvironmentNotReady, InvalidRequest, RunConflict, ScenarioUnavailable, UnknownRun
 from application.mission_controller import MissionController
 from application.ports import EnvironmentStatus, JournalStore, MapSource
+from application.team import RobotLink, TeamCoordinator
+from application.team_run import Run
 from domain.journal import JournalEntry
 from domain.mission import Mission, MissionSnapshot, MissionStatus
 from domain.profiles import PUBLIC_PROFILES
@@ -19,7 +21,8 @@ DEFAULT_MISSION_TEXT = "Собрать как можно больше образ
 MISSION_TEXT_MAX = 500
 JOURNAL_LIMIT_MAX = 200
 
-ControllerFactory = Callable[[Mission], MissionController]
+ControllerFactory = Callable[[Mission, "RobotLink | None"], MissionController]
+TEAM_ROBOT_IDS = ("robot_1", "robot_2")
 
 
 @dataclass(frozen=True)
@@ -47,9 +50,8 @@ class RunService:
         self._settings = settings
         self._id_factory = id_factory
         self._lock = threading.Lock()
-        self._missions: dict[str, Mission] = {}
-        self._controllers: dict[str, MissionController] = {}
-        self._current: Mission | None = None
+        self._runs: dict[str, Run] = {}
+        self._current: Run | None = None
         self._commands: dict[str, tuple[tuple, str]] = {}
         self._generation = 0
 
@@ -78,7 +80,7 @@ class RunService:
     def journal_page(self, run_id: str, after_sequence: int, limit: int) -> JournalPage:
         if after_sequence < 0 or not 1 <= limit <= JOURNAL_LIMIT_MAX:
             raise InvalidRequest("after_sequence >= 0, limit от 1 до 200")
-        if run_id not in self._missions:
+        if run_id not in self._runs:
             raise UnknownRun(f"Прогон {run_id} неизвестен.")
         entries, has_more = self._journal.read(run_id, after_sequence, limit)
         return JournalPage(run_id, entries, entries[-1].sequence if entries else after_sequence, has_more)
@@ -86,11 +88,11 @@ class RunService:
     # ---------------------------------------------------------- commands
 
     def start_run(self, request_id: str, scenario: str, seed: int, mission_text: str | None = None,
-                  map_mode: str = "static") -> MissionSnapshot:
+                  map_mode: str = "static", robot_count: int = 1, coordinated: bool = True) -> MissionSnapshot:
         text = (mission_text or "").strip() or DEFAULT_MISSION_TEXT
         if len(text) > MISSION_TEXT_MAX:
             raise InvalidRequest(f"Текст миссии длиннее {MISSION_TEXT_MAX} символов.")
-        fingerprint = ("start", scenario, seed, text, map_mode)
+        fingerprint = ("start", scenario, seed, text, map_mode, robot_count, coordinated)
         with self._lock:
             replay = self._replay(request_id, fingerprint)
             if replay is not None:
@@ -100,8 +102,12 @@ class RunService:
             if scenario not in self._environment.supported_scenarios():
                 raise ScenarioUnavailable(f"Среда пока не поддерживает сценарий {scenario!r}.")
             current = self._current
-            if current is not None and current.status.is_active:
+            if current is not None and current.is_active:
                 raise RunConflict("Другой прогон ещё активен.")
+            if robot_count not in (1, 2):
+                raise InvalidRequest("robot_count: 1 или 2.")
+            if robot_count not in self._environment.supported_robot_counts():
+                raise ScenarioUnavailable(f"Среда пока не поддерживает {robot_count} роботов.")
             if map_mode not in ("static", "slam"):
                 raise InvalidRequest(f"Режим карты {map_mode!r} неизвестен.")
             if map_mode not in self._environment.supported_map_modes():
@@ -109,23 +115,32 @@ class RunService:
             # в SLAM карты в начале может не быть: робот ждёт её сам, а не отказывает старту
             if not self._environment.ros_connected() or (map_mode == "static" and self._maps.load() is None):
                 raise EnvironmentNotReady("Ожидаются наблюдения ROS и карта.")
-            mission = Mission(
-                run_id=self._id_factory(), scenario=scenario, seed=seed,
-                judge_mode=self._settings.judge_mode,
-                planner_mode="llm" if self._environment.llm_available() else "fallback",
-                map_id=self._map_id(), base=self._settings.base,
-                battery_initial=self._settings.battery_initial,
-                generation=self._next_generation(),
-                mission_text=text,
-                target_samples=PUBLIC_PROFILES[scenario].sample_count,
-                map_mode=map_mode,
-            )
+            run_id, generation = self._id_factory(), self._next_generation()
+            robot_ids = TEAM_ROBOT_IDS[:robot_count]
+            missions = [
+                Mission(
+                    run_id=run_id, scenario=scenario, seed=seed,
+                    judge_mode=self._settings.judge_mode,
+                    planner_mode="llm" if self._environment.llm_available() else "fallback",
+                    map_id=self._map_id(), base=self._settings.base,
+                    battery_initial=self._settings.battery_initial,
+                    generation=generation, mission_text=text,
+                    target_samples=PUBLIC_PROFILES[scenario].sample_count,
+                    map_mode=map_mode, robot_id=robot_id,
+                )
+                for robot_id in robot_ids
+            ]
+            coordinator = TeamCoordinator(robot_ids, independent=not coordinated) if robot_count > 1 else None
             # новая память исследователя на каждый прогон: фабрика создаёт свежие объекты
-            self._controllers[mission.run_id] = self._controller_factory(mission)
-            self._missions[mission.run_id] = mission
-            self._current = mission
-            self._commands[request_id] = (fingerprint, mission.run_id)
-            return mission.snapshot()
+            controllers = [
+                self._controller_factory(mission, coordinator.link(mission.robot_id) if coordinator else None)
+                for mission in missions
+            ]
+            run = Run(missions, controllers, coordinator)
+            self._runs[run_id] = run
+            self._current = run
+            self._commands[request_id] = (fingerprint, run_id)
+            return run.snapshot()
 
     def stop_run(self, request_id: str, run_id: str) -> MissionSnapshot:
         fingerprint = ("stop", run_id)
@@ -133,37 +148,32 @@ class RunService:
             replay = self._replay(request_id, fingerprint)
             if replay is not None:
                 return replay.snapshot()
-            mission = self._missions.get(run_id)
-            if mission is None:
+            run = self._runs.get(run_id)
+            if run is None:
                 raise UnknownRun(f"Прогон {run_id} неизвестен.")
-            if mission is not self._current:
+            if run is not self._current:
                 raise RunConflict(f"Прогон {run_id} не является текущим.")
-            mission.request_stop()
+            run.request_stop()
             self._commands[request_id] = (fingerprint, run_id)
-            return mission.snapshot()
+            return run.snapshot()
 
     def _map_id(self) -> str | None:
         grid = self._maps.load()
         return grid.versioned_id if grid else None
 
-    def _replay(self, request_id: str, fingerprint: tuple) -> Mission | None:
+    def _replay(self, request_id: str, fingerprint: tuple) -> Run | None:
         known = self._commands.get(request_id)
         if known is None:
             return None
         if known[0] != fingerprint:
             raise RunConflict("request_id уже использован с другим телом запроса.")
-        return self._missions[known[1]]
+        return self._runs[known[1]]
 
     # -------------------------------------------------------------- tick
 
     def tick(self) -> None:
         """Один шаг контроллера текущего прогона; вызывается циклом исполнения."""
         current = self._current
-        if current is None or current.status.is_terminal:
+        if current is None or current.is_terminal:
             return
-        controller = self._controllers[current.run_id]
-        try:
-            controller.tick()
-        except Exception as error:  # неожиданный сбой: робот должен остановиться, прогон — failed
-            controller.abort(f"Внутренняя ошибка: {type(error).__name__}")
-            raise
+        current.tick()  # неожиданный сбой робота: он остановлен и failed, исключение уходит в цикл

@@ -47,6 +47,7 @@ class _Environment:
     judge_mode: str = "local"
     scenarios: tuple[str, ...] = LEGACY_SCENARIOS
     map_modes: tuple[str, ...] = ("static",)
+    robot_counts: tuple[int, ...] = (1,)
 
     def ros_connected(self) -> bool:
         return self.runtime.bridge.ros_connected()
@@ -59,6 +60,9 @@ class _Environment:
 
     def supported_map_modes(self) -> tuple[str, ...]:
         return self.map_modes
+
+    def supported_robot_counts(self) -> tuple[int, ...]:
+        return self.robot_counts
 
 
 class _LazyMap:
@@ -85,17 +89,20 @@ def create_default_app() -> FastAPI:
         # адаптер A подтверждает ResetRequest сам; профили перечисляет среда
         simulation, scenarios = supervisor, tuple(os.environ.get("SUPPORTED_SCENARIOS", "easy").split(","))
         map_modes = tuple(os.environ.get("SUPPORTED_MAP_MODES", "static").split(","))
+        robot_counts = tuple(int(n) for n in os.environ.get("SUPPORTED_ROBOT_COUNTS", "1").split(","))
     else:
         # Супервизор MVP принимает только seed: обёртка честно отклоняет medium/hard, SLAM и второго робота.
         simulation, scenarios = LegacySimulationControl(supervisor), LEGACY_SCENARIOS
-        map_modes = ("static",)
-    environment = _Environment(runtime, llm_config is not None, settings.judge_mode, scenarios, map_modes)
+        map_modes, robot_counts = ("static",), (1,)
+    environment = _Environment(runtime, llm_config is not None, settings.judge_mode, scenarios, map_modes,
+                               robot_counts)
     # События и счёт подключаются, когда мост A их реализует (контракт 2.0); иначе ядро работает как в MVP.
     events = bridge if hasattr(bridge, "events_after") else None
     score = bridge if hasattr(bridge, "score") else None
     clock = _MonotonicClock()
 
-    def build_controller(mission: Mission) -> MissionController:
+    def build_controller(mission: Mission, link=None) -> MissionController:
+        # мост A пока один и адресует robot_1; второй робот подключается, когда A даст порты по robot_id
         run_settings = settings_for_profile(mission.scenario, settings)
         estimator, hazards = TerrainEstimator(), HazardMap()
         grid = maps.load()
@@ -107,6 +114,7 @@ def create_default_app() -> FastAPI:
             judge=bridge, simulation=simulation, planner=planner, journal=journal,
             navigation=NavigationService(grid, estimator, run_settings, hazards), clock=clock,
             events=events, score=score, map_mode=MapMode(mission.map_mode),
+            robot_id=mission.robot_id, coordination=link,
         )
         research = TerrainResearch(estimator, HypothesisBook(), hazards=hazards)
         return MissionController(mission, ports, run_settings, research, SignalSearch(),

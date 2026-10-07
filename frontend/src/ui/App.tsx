@@ -6,6 +6,7 @@ import { JournalPanel } from "./JournalPanel";
 import { MapView } from "./MapView";
 import { MissionPanel } from "./MissionPanel";
 import { ResearchPanel } from "./ResearchPanel";
+import { TeamPanel } from "./TeamPanel";
 import { useMission } from "./useMission";
 
 interface AppProps {
@@ -59,6 +60,7 @@ export function App({ controller, fixtureControls }: AppProps) {
         <MapView map={view.map} snapshot={view.snapshot} mapError={view.mapError} stale={stale} />
         <div className="side">
           <MissionPanel view={view} controller={controller} />
+          <TeamPanel snapshot={view.snapshot} />
           <ResearchPanel snapshot={view.snapshot} />
           <JournalPanel view={view} controller={controller} />
         </div>

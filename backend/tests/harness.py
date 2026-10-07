@@ -1,6 +1,8 @@
 """Сборка контроллера и сервиса прогона на двойниках."""
 from __future__ import annotations
 
+from dataclasses import replace
+
 from adapters.journal.memory import InMemoryJournal
 from application.mission_controller import ControllerPorts, MissionController
 from application.motion import MotionExecutor
@@ -67,10 +69,33 @@ def make_service(world: SimWorld, clock: FakeClock, journal=None, environment=No
     maps = StaticMap()
     counter = iter(range(1, 1000))
 
-    def factory(mission: Mission) -> MissionController:
+    def factory(mission: Mission, link=None) -> MissionController:
         controller, _, _ = make_controller(world, clock, journal=journal, mission=mission)
         return controller
 
     service = RunService(environment, maps, journal, factory, SETTINGS,
                          id_factory=ids or (lambda: f"run-{next(counter)}"))
     return service, environment, maps, journal
+
+
+def make_team_service(team, clock, journal=None, settings: MissionSettings = SETTINGS):
+    """Сервис прогона команды на TeamWorld: у каждого робота свои порты, координатор общий."""
+    journal = journal or InMemoryJournal()
+    environment = FakeEnvironment(robot_counts=(1, 2), scenarios=("easy", "medium", "hard"))
+    counter = iter(range(1, 1000))
+    controllers = {}
+
+    def factory(mission: Mission, link=None) -> MissionController:
+        robot = team.robots[mission.robot_id]
+        # у каждого робота своя база — его старт (второй старт — локальное допущение до ответа организаторов)
+        own = replace(settings, base=robot.start.point)
+        controller, _, _ = make_controller(robot, clock, journal=journal, mission=mission, settings=own,
+                                           simulation=team, events=robot, score=robot)
+        controller._ports.robot_id = mission.robot_id
+        controller._ports.coordination = link
+        controllers[mission.robot_id] = controller
+        return controller
+
+    service = RunService(environment, StaticMap(), journal, factory, settings,
+                         id_factory=lambda: f"team-{next(counter)}")
+    return service, journal, controllers

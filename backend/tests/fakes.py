@@ -300,6 +300,10 @@ class FakeEnvironment:
     llm: bool = False
     scenarios: tuple[str, ...] = ("easy",)
     map_modes: tuple[str, ...] = ("static",)
+    robot_counts: tuple[int, ...] = (1,)
+
+    def supported_robot_counts(self) -> tuple[int, ...]:
+        return self.robot_counts
 
     def ros_connected(self) -> bool:
         return self.ros
@@ -376,7 +380,10 @@ class TeamWorld:
     def __init__(self, clock: FakeClock, samples: list[Point], starts: dict[str, Pose], battery: float = 60.0,
                  seed: int = 0) -> None:
         self.clock = clock
+        self._initial_samples = list(samples)
         self.remaining = list(samples)
+        self.generation: int | None = None
+        self.reset_calls = 0
         self.collected_by: dict[str, int] = {robot_id: 0 for robot_id in starts}
         self.events: list[PublicEvent] = []
         self.robots = {
@@ -387,6 +394,18 @@ class TeamWorld:
     @property
     def total_collected(self) -> int:
         return sum(self.collected_by.values())
+
+    def reset(self, request: ResetRequest) -> ResetAck:
+        """Общий сброс команды: первый вызов поколения сбрасывает мир, повторные лишь подтверждают."""
+        if request.generation != self.generation:
+            self.generation = request.generation
+            self.remaining = list(self._initial_samples)
+            self.collected_by = {robot_id: 0 for robot_id in self.robots}
+            self.events = []
+            self.reset_calls += 1
+            for robot in self.robots.values():
+                robot.restart(request.generation)
+        return ResetAck(request.generation, request.scenario, request.seed, request.map_mode, request.robot_ids)
 
     def advance(self, dt_s: float = 0.1) -> None:
         self.clock.now_s += dt_s
@@ -415,6 +434,7 @@ class TeamRobot:
     def __init__(self, world: TeamWorld, robot_id: str, start: Pose, battery: float, rng: random.Random) -> None:
         self.world, self.robot_id, self.start = world, robot_id, start
         self.pose, self.battery, self.random = start, battery, rng
+        self.battery_initial = battery
         self.linear = self.angular = 0.0
         self.generation: int | None = None
         self.finished = False
@@ -430,9 +450,15 @@ class TeamRobot:
         self.battery = max(0.0, self.battery - step)
         self.last_received_s = self.world.clock.now_s
 
+    def restart(self, generation: int) -> None:
+        self.generation = generation
+        self.pose, self.battery = self.start, self.battery_initial
+        self.linear = self.angular = 0.0
+        self.finished = False
+        self.last_received_s = self.world.clock.now_s
+
     def reset(self, request: ResetRequest) -> ResetAck:
-        self.generation = request.generation
-        return ResetAck(request.generation, request.scenario, request.seed, request.map_mode, request.robot_ids)
+        return self.world.reset(request)
 
     def command(self, linear_mps: float, angular_radps: float) -> None:
         self.linear, self.angular = linear_mps, angular_radps
@@ -455,3 +481,6 @@ class TeamRobot:
 
     def events_after(self, sequence: int) -> list[PublicEvent]:
         return [event for event in self.world.events if event.sequence > sequence]
+
+    def score(self) -> PublicScore:
+        return PublicScore(self.world.collected_by[self.robot_id], self.finished, None, self.world.clock.now_s, self.robot_id)

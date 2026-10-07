@@ -14,7 +14,8 @@
       "experiment_id": null,
       "detection_id": null,
       "plan_id": null,
-      "evidence": []
+      "evidence": [],
+      "robot_id": null
     },
     {
       "sequence": 2,
@@ -29,7 +30,8 @@
       "experiment_id": null,
       "detection_id": null,
       "plan_id": null,
-      "evidence": []
+      "evidence": [],
+      "robot_id": null
     },
     {
       "sequence": 3,
@@ -44,7 +46,8 @@
       "experiment_id": null,
       "detection_id": null,
       "plan_id": null,
-      "evidence": []
+      "evidence": [],
+      "robot_id": null
     }
   ],
   "next_sequence": 3,

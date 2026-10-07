@@ -143,6 +143,32 @@ export interface MissionSnapshot {
   target_samples: number | null;
   plan: MissionPlanView | null;
   research: ResearchView | null;
+  /** Командный прогон; null у одного робота и у backend до 1.1. */
+  team: TeamView | null;
+}
+
+export interface TeamRobotView {
+  robot_id: string;
+  status: RunStatus;
+  robot_pose: RobotPose | null;
+  battery_remaining: number | null;
+  samples_collected: number;
+  current_goal: MissionGoal | null;
+  trajectory: Point[];
+  planned_path: Point[];
+  reservation: Point | null;
+  last_error: ErrorInfo | null;
+}
+
+export const TEAM_OUTCOMES = ["running", "success", "partial", "failed", "stopped"] as const;
+export type TeamOutcome = (typeof TEAM_OUTCOMES)[number];
+
+export interface TeamView {
+  outcome: TeamOutcome;
+  samples_collected: number;
+  coordinated: boolean;
+  lost_robots: string[];
+  robots: TeamRobotView[];
 }
 
 export interface HealthStatus {
@@ -154,6 +180,7 @@ export interface HealthStatus {
   supported_scenarios: Scenario[];
   /** static — готовая карта, slam — строится из наблюдений; у старого backend только static. */
   supported_map_modes: MapMode[];
+  supported_robot_counts: number[];
 }
 
 export interface MapOrigin {
@@ -200,6 +227,7 @@ export interface StartRunRequest {
   seed: number;
   mission_text?: string;
   map_mode?: MapMode;
+  robot_count?: number;
 }
 
 export interface StopRunRequest {

@@ -338,7 +338,13 @@ export class MissionController {
 
   // ---- команды ----
 
-  async startRun(seed: number, scenario: Scenario = "easy", missionText = "", mapMode: MapMode = "static"): Promise<void> {
+  async startRun(
+    seed: number,
+    scenario: Scenario = "easy",
+    missionText = "",
+    mapMode: MapMode = "static",
+    robotCount = 1,
+  ): Promise<void> {
     const snapshot = this.view.snapshot;
     if (snapshot === null || startDisabledReason(this.view) !== null) return;
     const requestId = this.generateId();
@@ -351,6 +357,7 @@ export class MissionController {
         seed,
         ...(missionText.trim() === "" ? {} : { mission_text: missionText.trim() }),
         ...(mapMode === "static" ? {} : { map_mode: mapMode }),
+        ...(robotCount === 1 ? {} : { robot_count: robotCount }),
       },
       baselineRunId: snapshot.run_id,
       stopRunId: null,

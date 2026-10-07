@@ -142,6 +142,9 @@ class EnvironmentStatus(Protocol):
     def supported_map_modes(self) -> tuple[str, ...]:
         """Режимы карты среды: static — готовая карта, slam — строится из наблюдений."""
 
+    def supported_robot_counts(self) -> tuple[int, ...]:
+        """Сколько роботов среда может поднять в одном прогоне."""
+
 
 class Planner(Protocol):
     """План из нескольких подцелей. Возвращает намерения, не скорости."""

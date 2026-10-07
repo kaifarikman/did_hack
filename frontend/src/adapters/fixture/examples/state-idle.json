@@ -29,5 +29,6 @@
   "target_samples": null,
   "plan": null,
   "research": null,
-  "map_mode": "static"
+  "map_mode": "static",
+  "team": null
 }

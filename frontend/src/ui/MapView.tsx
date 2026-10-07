@@ -20,6 +20,7 @@ const LEGEND: ReadonlyArray<{ label: string; color: string; shape: "square" | "l
   { label: "Оценка грунта (оценка агента, не истина; ± — неопределённость)", color: MAP_COLORS.terrain, shape: "ring" },
   { label: "Наблюдаемая опасность (по событиям, граница неизвестна)", color: MAP_COLORS.hazard, shape: "ring" },
   { label: "Следующие шаги плана", color: MAP_COLORS.planStep, shape: "ring" },
+  { label: "Второй робот команды и его бронь", color: MAP_COLORS.partner, shape: "square" },
   { label: "Препятствие", color: MAP_COLORS.obstacle, shape: "square" },
   { label: "Свободно", color: MAP_COLORS.free, shape: "square" },
   { label: "Неизвестно", color: MAP_COLORS.unknown, shape: "square" },

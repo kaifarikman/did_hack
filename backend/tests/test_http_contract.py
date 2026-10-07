@@ -69,7 +69,8 @@ def test_health_map_and_error_shape(stack):
     client, _, _, environment, maps = stack
     assert client.get("/api/v1/health").json() == {
         "status": "ready", "ros_connected": True, "judge_mode": "local", "llm_available": False,
-        "supported_scenarios": ["easy"], "supported_map_modes": ["static"]}
+        "supported_scenarios": ["easy"], "supported_map_modes": ["static"],
+        "supported_robot_counts": [1]}
     body = client.get("/api/v1/map").json()
     assert set(body) == set(example("map.json")) and len(body["cells"]) == body["width"] * body["height"]
     assert body["origin"].keys() == example("map.json")["origin"].keys()
@@ -101,7 +102,7 @@ def test_request_id_dedup_same_body_replays_and_different_body_conflicts(stack):
     first = start(client, "dup", seed=7).json()
     again = start(client, "dup", seed=7)
     assert again.status_code == 202 and again.json()["run_id"] == first["run_id"]
-    assert len(service._missions) == 1
+    assert len(service._runs) == 1
     clash = start(client, "dup", seed=8)
     assert clash.status_code == 409 and clash.json()["error"]["code"] == "run_conflict"
     stop = client.post(f"/api/v1/runs/{first['run_id']}/stop", json={"request_id": "dup"})

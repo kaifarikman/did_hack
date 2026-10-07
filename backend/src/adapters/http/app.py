@@ -26,6 +26,7 @@ class StartRunBody(BaseModel):
     seed: StrictInt
     mission_text: StrictStr | None = None
     map_mode: StrictStr = "static"
+    robot_count: StrictInt = 1
 
 
 class StopRunBody(BaseModel):
@@ -66,6 +67,7 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
             "llm_available": environment.llm_available(),
             "supported_scenarios": list(environment.supported_scenarios()),
             "supported_map_modes": list(environment.supported_map_modes()),
+            "supported_robot_counts": list(environment.supported_robot_counts()),
         }
 
     @app.get("/api/v1/state")
@@ -81,7 +83,8 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
 
     @app.post("/api/v1/runs", status_code=202)
     def start_run(body: StartRunBody) -> dict:
-        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed, body.mission_text, body.map_mode))
+        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed, body.mission_text, body.map_mode,
+                                                body.robot_count))
 
     @app.post("/api/v1/runs/{run_id}/stop", status_code=202)
     def stop_run(run_id: str, body: StopRunBody) -> dict:

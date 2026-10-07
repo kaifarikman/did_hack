@@ -49,6 +49,7 @@ export const readyHealth: HealthStatus = {
   llm_available: true,
   supported_scenarios: ["easy", "medium", "hard"],
   supported_map_modes: ["static", "slam"],
+  supported_robot_counts: [1, 2],
 };
 
 /** Виртуальные часы: время идёт только через advance. */

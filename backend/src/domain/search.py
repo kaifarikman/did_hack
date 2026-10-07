@@ -75,6 +75,17 @@ class SignalSearch:
             self._best_point = point
             self._decisions_since_improvement = 0
 
+    def record_shared(self, point: Point, signal: float) -> None:
+        """Измерение партнёра: уточняет прогноз, но не переносит сюда его точку максимума."""
+        self._history.append(_SignalSample(point, signal))
+
+    def forget_near(self, point: Point, radius_m: float = 1.0) -> None:
+        """Партнёр собрал образец здесь: сигнал вокруг относился к нему и больше не информативен."""
+        self._history = [sample for sample in self._history if distance_m(sample.point, point) > radius_m]
+        self._corrected_upto = min(self._corrected_upto, len(self._history))
+        if self._best_point is not None and distance_m(self._best_point, point) <= radius_m:
+            self._best_point, self._best_signal = None, None
+
     def recent_signals(self, limit: int = 10) -> tuple[tuple[Point, float], ...]:
         return tuple((s.point, s.signal) for s in self._history[-limit:])
 

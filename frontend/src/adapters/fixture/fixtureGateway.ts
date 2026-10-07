@@ -46,6 +46,7 @@ const FIXTURE_HEALTH: HealthStatus = {
   llm_available: true,
   supported_scenarios: ["easy"],
   supported_map_modes: ["static"],
+  supported_robot_counts: [1],
 };
 
 function clone<T>(value: T): T {
