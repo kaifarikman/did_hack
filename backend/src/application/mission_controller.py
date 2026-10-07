@@ -749,7 +749,8 @@ class MissionController:
             JournalKind.DECISION, f"Подцель: {goal.kind.value}",
             f"{goal.reason} Источник: {goal.source}. Расход по маршруту ≈ {verdict.route.energy:.1f}, "
             f"оценка возврата {self._return_estimate_or_conservative(observation.pose.point):.1f} "
-            f"(по {len(self._estimator.measured_buckets())} измеренным участкам).",
+            f"(по {len(self._estimator.measured_buckets())} измеренным участкам), батарея "
+            f"{observation.battery_remaining:.2f}.",
             hypothesis_id=goal.hypothesis_id, plan_id=goal.plan_id,
         )
 

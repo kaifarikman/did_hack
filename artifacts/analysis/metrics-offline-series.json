@@ -1,0 +1,885 @@
+{
+ "runs": [
+  {
+   "source": "artifacts/analysis/offline-series/easy-1",
+   "run_id": "easy-1",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 14.397643999903483,
+   "false_collects": 0,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 3
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 39,
+   "route_prediction_error_median": 0.735,
+   "route_predictions": 40,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/easy-2",
+   "run_id": "easy-2",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 32.02317441410282,
+   "false_collects": 0,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 36,
+   "route_prediction_error_median": 0.54,
+   "route_predictions": 32,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/easy-3",
+   "run_id": "easy-3",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 2,
+   "returned": true,
+   "battery_left": 8.601057558953176,
+   "false_collects": 0,
+   "hypotheses": 2,
+   "conclusions": {
+    "insufficient": 1,
+    "confirmed": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 36,
+   "route_prediction_error_median": 0.95,
+   "route_predictions": 37,
+   "judge": {
+    "collected": 2,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/easy-4",
+   "run_id": "easy-4",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 2,
+   "returned": true,
+   "battery_left": 16.17254491685442,
+   "false_collects": 0,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 42,
+   "route_prediction_error_median": 0.94,
+   "route_predictions": 39,
+   "judge": {
+    "collected": 2,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/easy-5",
+   "run_id": "easy-5",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 26.52764063798415,
+   "false_collects": 2,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 37,
+   "route_prediction_error_median": 0.73,
+   "route_predictions": 31,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/easy-6",
+   "run_id": "easy-6",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 2,
+   "returned": true,
+   "battery_left": 19.378058244104107,
+   "false_collects": 2,
+   "hypotheses": 2,
+   "conclusions": {
+    "confirmed": 2
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 49,
+   "route_prediction_error_median": 0.53,
+   "route_predictions": 46,
+   "judge": {
+    "collected": 2,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/hard-1",
+   "run_id": "hard-1",
+   "profile": "hard",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 4,
+   "returned": true,
+   "battery_left": 6.987564928342766,
+   "false_collects": 2,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 3
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 1
+   },
+   "replans": 2,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 56,
+   "route_prediction_error_median": 0.53,
+   "route_predictions": 53,
+   "judge": {
+    "collected": 4,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {
+     "hazard": {
+      "changed_at_s": 160.19999999999658,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "terrain_up": {
+      "changed_at_s": 190.19999999999487,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "sensor_noise": {
+      "changed_at_s": 250.19999999999146,
+      "detection_id": "sensor-1",
+      "observable": true,
+      "delay_s": 0.7
+     }
+    },
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/hard-2",
+   "run_id": "hard-2",
+   "profile": "hard",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 1,
+   "returned": true,
+   "battery_left": 25.701600463955078,
+   "false_collects": 0,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 2,
+    "insufficient": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 1
+   },
+   "replans": 2,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 37,
+   "route_prediction_error_median": 0.535,
+   "route_predictions": 40,
+   "judge": {
+    "collected": 1,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {
+     "hazard": {
+      "changed_at_s": 160.19999999999658,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "terrain_up": {
+      "changed_at_s": 190.19999999999487,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "sensor_noise": {
+      "changed_at_s": 250.19999999999146,
+      "detection_id": "sensor-1",
+      "observable": true,
+      "delay_s": 1.0
+     }
+    },
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/hard-3",
+   "run_id": "hard-3",
+   "profile": "hard",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 20.8094600521846,
+   "false_collects": 1,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 1
+   },
+   "replans": 2,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 60,
+   "route_prediction_error_median": 0.4,
+   "route_predictions": 55,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 1
+   },
+   "change_detection": {
+    "changes": {
+     "hazard": {
+      "changed_at_s": 160.19999999999658,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "terrain_up": {
+      "changed_at_s": 190.19999999999487,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "sensor_noise": {
+      "changed_at_s": 250.19999999999146,
+      "detection_id": "sensor-1",
+      "observable": true,
+      "delay_s": 0.8
+     }
+    },
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/hard-4",
+   "run_id": "hard-4",
+   "profile": "hard",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 4,
+   "returned": true,
+   "battery_left": 6.965736777582545,
+   "false_collects": 0,
+   "hypotheses": 1,
+   "conclusions": {
+    "refuted": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 1
+   },
+   "replans": 2,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 58,
+   "route_prediction_error_median": 0.75,
+   "route_predictions": 55,
+   "judge": {
+    "collected": 4,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {
+     "hazard": {
+      "changed_at_s": 160.19999999999658,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "terrain_up": {
+      "changed_at_s": 190.19999999999487,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "sensor_noise": {
+      "changed_at_s": 250.19999999999146,
+      "detection_id": "sensor-1",
+      "observable": true,
+      "delay_s": 0.7
+     }
+    },
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/hard-5",
+   "run_id": "hard-5",
+   "profile": "hard",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 4,
+   "returned": true,
+   "battery_left": 6.568411659067193,
+   "false_collects": 2,
+   "hypotheses": 1,
+   "conclusions": {
+    "confirmed": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 1
+   },
+   "replans": 2,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 68,
+   "route_prediction_error_median": 0.5,
+   "route_predictions": 62,
+   "judge": {
+    "collected": 4,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {
+     "hazard": {
+      "changed_at_s": 160.19999999999658,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "terrain_up": {
+      "changed_at_s": 190.19999999999487,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "sensor_noise": {
+      "changed_at_s": 250.19999999999146,
+      "detection_id": "sensor-1",
+      "observable": true,
+      "delay_s": 1.3
+     }
+    },
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/hard-6",
+   "run_id": "hard-6",
+   "profile": "hard",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 2,
+   "returned": true,
+   "battery_left": 11.050180619261287,
+   "false_collects": 4,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 2,
+    "refuted": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 1
+   },
+   "replans": 2,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 48,
+   "route_prediction_error_median": 0.565,
+   "route_predictions": 44,
+   "judge": {
+    "collected": 2,
+    "finish_success": true,
+    "false_collects": 4
+   },
+   "change_detection": {
+    "changes": {
+     "hazard": {
+      "changed_at_s": 160.19999999999658,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "terrain_up": {
+      "changed_at_s": 190.19999999999487,
+      "detection_id": null,
+      "observable": false,
+      "delay_s": null
+     },
+     "sensor_noise": {
+      "changed_at_s": 250.19999999999146,
+      "detection_id": "sensor-1",
+      "observable": true,
+      "delay_s": 1.3
+     }
+    },
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/medium-1",
+   "run_id": "medium-1",
+   "profile": "medium",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 1,
+   "returned": true,
+   "battery_left": 11.556879718961298,
+   "false_collects": 0,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 57,
+   "route_prediction_error_median": 0.56,
+   "route_predictions": 55,
+   "judge": {
+    "collected": 1,
+    "finish_success": true,
+    "false_collects": 0
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/medium-2",
+   "run_id": "medium-2",
+   "profile": "medium",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 4,
+   "returned": true,
+   "battery_left": 13.044761776004187,
+   "false_collects": 2,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 2,
+    "refuted": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 51,
+   "route_prediction_error_median": 0.9,
+   "route_predictions": 48,
+   "judge": {
+    "collected": 4,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/medium-3",
+   "run_id": "medium-3",
+   "profile": "medium",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 7.300510438084374,
+   "false_collects": 2,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 66,
+   "route_prediction_error_median": 0.575,
+   "route_predictions": 60,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/medium-4",
+   "run_id": "medium-4",
+   "profile": "medium",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 11.706122944007676,
+   "false_collects": 2,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 1,
+    "refuted": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 48,
+   "route_prediction_error_median": 0.65,
+   "route_predictions": 46,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/medium-5",
+   "run_id": "medium-5",
+   "profile": "medium",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 5,
+   "returned": true,
+   "battery_left": 16.62051255701413,
+   "false_collects": 2,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 59,
+   "route_prediction_error_median": 0.57,
+   "route_predictions": 51,
+   "judge": {
+    "collected": 5,
+    "finish_success": true,
+    "false_collects": 2
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  },
+  {
+   "source": "artifacts/analysis/offline-series/medium-6",
+   "run_id": "medium-6",
+   "profile": "medium",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 10.244927834735154,
+   "false_collects": 3,
+   "hypotheses": 3,
+   "conclusions": {
+    "confirmed": 1,
+    "refuted": 2
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 0,
+   "planner_requests": 51,
+   "route_prediction_error_median": 0.7,
+   "route_predictions": 49,
+   "judge": {
+    "collected": 3,
+    "finish_success": true,
+    "false_collects": 3
+   },
+   "change_detection": {
+    "changes": {},
+    "unmatched_detections": []
+   }
+  }
+ ],
+ "summary": {
+  "easy/static/x1": {
+   "runs": 6,
+   "returned": 6,
+   "statuses": {
+    "completed": 6
+   },
+   "collected_mean": 2.5,
+   "collected_median": 2.5,
+   "collected_min_max": [
+    2,
+    3
+   ],
+   "false_collects_mean": 0.67,
+   "conclusions": {
+    "confirmed": 6,
+    "insufficient": 1
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "route_prediction_error_median": 0.732,
+   "change_detection": {},
+   "unmatched_detections": 0
+  },
+  "hard/static/x1": {
+   "runs": 6,
+   "returned": 6,
+   "statuses": {
+    "completed": 6
+   },
+   "collected_mean": 3,
+   "collected_median": 3.5,
+   "collected_min_max": [
+    1,
+    4
+   ],
+   "false_collects_mean": 1.5,
+   "conclusions": {
+    "confirmed": 8,
+    "insufficient": 1,
+    "refuted": 2
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 6
+   },
+   "replans": 12,
+   "plans_llm": 0,
+   "route_prediction_error_median": 0.532,
+   "change_detection": {
+    "hazard": {
+     "applied": 6,
+     "observable": 0,
+     "detected": 0,
+     "detected_when_observable": 0,
+     "median_delay_s": null
+    },
+    "terrain_up": {
+     "applied": 6,
+     "observable": 0,
+     "detected": 0,
+     "detected_when_observable": 0,
+     "median_delay_s": null
+    },
+    "sensor_noise": {
+     "applied": 6,
+     "observable": 6,
+     "detected": 6,
+     "detected_when_observable": 6,
+     "median_delay_s": 0.9
+    }
+   },
+   "unmatched_detections": 0
+  },
+  "medium/static/x1": {
+   "runs": 6,
+   "returned": 6,
+   "statuses": {
+    "completed": 6
+   },
+   "collected_mean": 3.17,
+   "collected_median": 3.0,
+   "collected_min_max": [
+    1,
+    5
+   ],
+   "false_collects_mean": 1.83,
+   "conclusions": {
+    "confirmed": 4,
+    "refuted": 4
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "route_prediction_error_median": 0.613,
+   "change_detection": {},
+   "unmatched_detections": 0
+  }
+ }
+}

@@ -1,0 +1,1 @@
+{"run_id": "hard-3", "profile": "hard", "seed": 3, "map_mode": "static", "robot_count": 1, "planner": "fallback", "environment": "backend/tests/fakes.py (подменная среда, не Gazebo)", "commit": "73dbb70"}
