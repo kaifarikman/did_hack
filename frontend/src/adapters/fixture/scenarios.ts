@@ -170,6 +170,9 @@ export function buildScript(name: FixtureScenarioName): FixtureScript {
                 radius_m: 0.3,
                 energy_per_m: index >= 24 ? 2.0 : 2.1,
                 confidence: index >= 24 ? 0.7 : 0.4,
+                std_energy_per_m: index >= 24 ? 0.2 : 0.5,
+                regime: 0,
+                last_measured_s: index,
               },
             ]
           : [],
@@ -259,6 +262,10 @@ function buildJournal(
       expected: null,
       observed: null,
       conclusion: null,
+      experiment_id: null,
+      detection_id: null,
+      plan_id: null,
+      evidence: [],
     });
   }
   add(16, hypothesis);
@@ -271,6 +278,10 @@ function buildJournal(
     expected: null,
     observed: "Соседний участок: 1.4 ед./м.",
     conclusion: null,
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
   }));
   add(24, timed(24, {
     kind: "outcome",
@@ -280,6 +291,10 @@ function buildJournal(
     expected: null,
     observed: null,
     conclusion: "Участок возле базы дороже соседнего: оценка 2.0 ед./м против 1.4 ед./м.",
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
   }));
   add(marks.collectStart + 2, timed(marks.collectStart + 2, {
     kind: "outcome",
@@ -289,6 +304,10 @@ function buildJournal(
     expected: null,
     observed: null,
     conclusion: null,
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
   }));
   add(marks.returnStart + 1, timed(marks.returnStart + 1, {
     kind: "decision",
@@ -298,6 +317,10 @@ function buildJournal(
     expected: null,
     observed: null,
     conclusion: null,
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
   }));
   add(marks.returnStart + 3, timed(marks.returnStart + 3, {
     kind: "hypothesis",
@@ -307,6 +330,10 @@ function buildJournal(
     expected: "Расход на метр при возврате ниже 2.0 ед./м.",
     observed: null,
     conclusion: null,
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
   }));
   if (name === "failed") {
     add(marks.finalIndex, timed(marks.finalIndex, {
@@ -317,6 +344,10 @@ function buildJournal(
       expected: null,
       observed: null,
       conclusion: null,
+      experiment_id: null,
+      detection_id: null,
+      plan_id: null,
+      evidence: [],
     }));
   } else {
     add(marks.finalIndex, timed(marks.finalIndex, {
@@ -327,6 +358,10 @@ function buildJournal(
       expected: null,
       observed: null,
       conclusion: null,
+      experiment_id: null,
+      detection_id: null,
+      plan_id: null,
+      evidence: [],
     }));
   }
   return entries.sort((first, second) => first.atFrame - second.atFrame);

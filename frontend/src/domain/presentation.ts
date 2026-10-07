@@ -5,6 +5,9 @@ import type {
   MissionSnapshot,
   PlannerMode,
   RunStatus,
+  SensorFault,
+  SensorState,
+  StepStatus,
   TerrainEstimate,
 } from "./contract";
 import { ACTIVE_STATUSES, FINISHED_STATUSES } from "./contract";
@@ -144,4 +147,80 @@ export function outcomeKind(status: RunStatus): OutcomeKind {
     default:
       return "none";
   }
+}
+
+const STEP_STATUS_LABELS: Record<StepStatus, string> = {
+  pending: "ожидает",
+  active: "выполняется",
+  done: "выполнен",
+  rejected: "отклонён проверкой",
+  dropped: "снят при пересмотре",
+};
+
+const SENSOR_LABELS: Record<SensorState, string> = {
+  ok: "в норме",
+  suspected: "подозрение на неисправность",
+  degraded: "неисправен",
+  recovering: "восстанавливается",
+};
+
+const SENSOR_FAULT_LABELS: Record<SensorFault, string> = {
+  noise: "шум",
+  stuck: "залипание",
+  dropout: "нет сообщений",
+};
+
+const HYPOTHESIS_STATUS_LABELS: Record<string, string> = {
+  proposed: "предложена",
+  testing: "проверяется",
+  confirmed: "подтверждается измерениями",
+  refuted: "опровергнута",
+  deferred: "отложена",
+  unverified: "недостаточно данных",
+};
+
+export function stepStatusLabel(status: StepStatus): string {
+  return STEP_STATUS_LABELS[status];
+}
+
+export function sensorLabel(state: SensorState, fault: SensorFault | null): string {
+  return fault === null ? SENSOR_LABELS[state] : `${SENSOR_LABELS[state]} (${SENSOR_FAULT_LABELS[fault]})`;
+}
+
+export function sensorTone(state: SensorState): StatusTone {
+  return state === "ok" ? "success" : state === "degraded" ? "danger" : "warning";
+}
+
+export function hypothesisStatusLabel(status: string): string {
+  return HYPOTHESIS_STATUS_LABELS[status] ?? status;
+}
+
+/** Подпись оценки грунта: значение и неопределённость, если backend её передал. */
+export function terrainLabel(estimate: TerrainEstimate): string {
+  const spread = estimate.std_energy_per_m === null ? "" : `±${estimate.std_energy_per_m.toFixed(1)}`;
+  const regime = estimate.regime > 0 ? ` · режим ${estimate.regime}` : "";
+  return `${estimate.energy_per_m.toFixed(1)}${spread}/м${regime}`;
+}
+
+export interface LabelBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** Подписи без наложения: подпись, пересекающая уже размещённую, пропускается. */
+export function placeLabels<T extends LabelBox>(labels: readonly T[]): T[] {
+  const placed: T[] = [];
+  for (const label of labels) {
+    const overlaps = placed.some(
+      (other) =>
+        label.x < other.x + other.width &&
+        other.x < label.x + label.width &&
+        label.y < other.y + other.height &&
+        other.y < label.y + label.height,
+    );
+    if (!overlaps) placed.push(label);
+  }
+  return placed;
 }

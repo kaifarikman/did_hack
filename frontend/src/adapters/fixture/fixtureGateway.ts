@@ -169,6 +169,10 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
         expected: null,
         observed: null,
         conclusion: null,
+        experiment_id: null,
+        detection_id: null,
+        plan_id: null,
+        evidence: [],
       });
     }
     return clone(run.lastSnapshot);

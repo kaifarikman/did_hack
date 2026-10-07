@@ -32,6 +32,7 @@ const OUTCOME_TEXT: Record<Exclude<OutcomeKind, "none">, string> = {
 export function MissionPanel({ view, controller }: MissionPanelProps) {
   const [seedText, setSeedText] = useState("42");
   const [scenario, setScenario] = useState<Scenario>("easy");
+  const [missionText, setMissionText] = useState("");
   const { snapshot, health, command } = view;
   const supported = health?.supported_scenarios ?? ["easy"];
   const seed = Number(seedText);
@@ -83,7 +84,10 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
             <dt>Сигнал образца</dt>
             <dd>{formatSampleSignal(snapshot.sample_signal)}</dd>
             <dt>Подтверждённых сборов</dt>
-            <dd>{snapshot.samples_collected}</dd>
+            <dd>
+              {snapshot.samples_collected}
+              {snapshot.target_samples !== null && ` из возможных в профиле ${snapshot.target_samples}`}
+            </dd>
             <dt>Прогон</dt>
             <dd>
               {snapshot.run_id ?? "нет данных"}
@@ -91,6 +95,10 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
               {snapshot.seed !== null && ` · seed ${snapshot.seed}`}
             </dd>
           </dl>
+
+          {snapshot.mission_text !== "" && (
+            <p className="mission-text"><strong>Миссия:</strong> {snapshot.mission_text}</p>
+          )}
 
           <div className="goal">
             <h3>Текущая цель</h3>
@@ -112,6 +120,16 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
         </>
       )}
 
+      <label className="mission-field">
+        Текст миссии (необязательно)
+        <textarea
+          rows={2}
+          maxLength={500}
+          value={missionText}
+          placeholder="Собрать как можно больше образцов и вернуться на базу"
+          onChange={(event) => setMissionText(event.target.value)}
+        />
+      </label>
       <div className="controls">
         <label className="seed-field">
           Профиль
@@ -139,7 +157,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           className="button-primary"
           disabled={startReason !== null}
           aria-describedby="command-hint"
-          onClick={() => void controller.startRun(seed, scenario)}
+          onClick={() => void controller.startRun(seed, scenario, missionText)}
         >
           Start
         </button>

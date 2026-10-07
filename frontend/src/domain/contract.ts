@@ -50,6 +50,66 @@ export interface TerrainEstimate {
   radius_m: number;
   energy_per_m: number;
   confidence: number;
+  /** Неопределённость оценки; null у backend 1.0. */
+  std_energy_per_m: number | null;
+  /** Номер режима: растёт после обнаруженного изменения грунта. */
+  regime: number;
+  last_measured_s: number | null;
+}
+
+export const STEP_STATUSES = ["pending", "active", "done", "rejected", "dropped"] as const;
+export type StepStatus = (typeof STEP_STATUSES)[number];
+
+export interface PlanStepView {
+  kind: GoalKind;
+  target: Point | null;
+  reason: string;
+  status: StepStatus;
+  evidence: string[];
+  revise_if: string | null;
+}
+
+export interface MissionPlanView {
+  plan_id: string;
+  source: PlannerMode;
+  rationale: string;
+  premises: string[];
+  fallback_reason: string | null;
+  revision_reason: string | null;
+  steps: PlanStepView[];
+}
+
+export const SENSOR_STATES = ["ok", "suspected", "degraded", "recovering"] as const;
+export type SensorState = (typeof SENSOR_STATES)[number];
+export const SENSOR_FAULTS = ["noise", "stuck", "dropout"] as const;
+export type SensorFault = (typeof SENSOR_FAULTS)[number];
+
+export interface HazardView {
+  detection_id: string;
+  center: Point;
+  radius_m: number;
+  hits: number;
+}
+
+export interface HypothesisView {
+  hypothesis_id: string;
+  kind: string;
+  status: string;
+  center: Point;
+  prediction: string;
+  measurement: string | null;
+  detection_id: string | null;
+  experiment_id: string | null;
+}
+
+/** Оценки агента: состояние датчика, наблюдаемые опасности, гипотезы. Не истина сценария. */
+export interface ResearchView {
+  sensor: { state: SensorState; fault: SensorFault | null; quality: number };
+  hazards: HazardView[];
+  hypotheses: HypothesisView[];
+  last_replan_reason: string | null;
+  last_replan_detection_id: string | null;
+  planner_requests: number;
 }
 
 export interface MissionSnapshot {
@@ -76,6 +136,10 @@ export interface MissionSnapshot {
   collected_samples: CollectedSample[];
   terrain_estimates: TerrainEstimate[];
   last_error: ErrorInfo | null;
+  mission_text: string;
+  target_samples: number | null;
+  plan: MissionPlanView | null;
+  research: ResearchView | null;
 }
 
 export interface HealthStatus {
@@ -112,6 +176,10 @@ export interface JournalEntry {
   expected: string | null;
   observed: string | null;
   conclusion: string | null;
+  experiment_id: string | null;
+  detection_id: string | null;
+  plan_id: string | null;
+  evidence: string[];
 }
 
 export interface JournalPage {
@@ -125,6 +193,7 @@ export interface StartRunRequest {
   request_id: string;
   scenario: Scenario;
   seed: number;
+  mission_text?: string;
 }
 
 export interface StopRunRequest {

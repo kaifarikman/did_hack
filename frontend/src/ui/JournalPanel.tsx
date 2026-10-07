@@ -106,6 +106,14 @@ export function JournalPanel({ view, controller }: JournalPanelProps) {
                 {entry.expected !== null && <p><strong>Ожидание:</strong> {entry.expected}</p>}
                 {entry.observed !== null && <p><strong>Наблюдение:</strong> {entry.observed}</p>}
                 {entry.conclusion !== null && <p><strong>Вывод:</strong> {entry.conclusion}</p>}
+                {(entry.plan_id ?? entry.experiment_id ?? entry.detection_id) !== null || entry.evidence.length > 0 ? (
+                  <p className="entry-links">
+                    {entry.plan_id !== null && <span className="chip">{entry.plan_id}</span>}
+                    {entry.experiment_id !== null && <span className="chip">{entry.experiment_id}</span>}
+                    {entry.detection_id !== null && <span className="chip">{entry.detection_id}</span>}
+                    {entry.evidence.length > 0 && <span className="chip">опора: {entry.evidence.join(", ")}</span>}
+                  </p>
+                ) : null}
                 {entry.hypothesis_id !== null && (
                   <button type="button" onClick={() => controller.selectHypothesis(entry.hypothesis_id)}>
                     Показать цепочку {entry.hypothesis_id}

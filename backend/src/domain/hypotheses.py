@@ -80,8 +80,9 @@ class HypothesisBook:
     def __init__(
         self, elevated_ratio: float = 1.5, min_confidence: float = 0.1,
         min_verify_distance_m: float = 0.3, max_attempts: int = 2, confirm_ratio: float = 1.3,
-        ambiguity_sigmas: float = 1.0,
+        ambiguity_sigmas: float = 1.0, max_costly_terrain: int = 3,
     ) -> None:
+        self._max_costly = max_costly_terrain  # проверки «дорогого участка» стоят энергии: не больше N за прогон
         self._elevated_ratio = elevated_ratio
         self._min_confidence = min_confidence
         self._min_verify_distance = min_verify_distance_m
@@ -121,6 +122,8 @@ class HypothesisBook:
         """Новая гипотеза: самая дорогая корзина заметно дороже базовой линии остальных измеренных."""
         baseline = estimator.baseline_energy_per_m()
         if baseline is None or self.active() is not None:
+            return None
+        if sum(item.kind is HypothesisKind.COSTLY_TERRAIN for item in self._items) >= self._max_costly:
             return None
         known = {item.bucket for item in self._items if item.kind is HypothesisKind.COSTLY_TERRAIN}
         candidates = [

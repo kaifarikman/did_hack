@@ -158,13 +158,15 @@ class PlanExecutor:
             for index, step in enumerate(plan.steps)
         )
         evidence = tuple(dict.fromkeys(ref for step in plan.steps for ref in step.evidence))
-        self._log(
-            JournalKind.DECISION, "План получен",
-            f"{plan.plan_id} от {plan.source}: {summary}. Обоснование: {plan.rationale}"
-            + (f" Предпосылки: {'; '.join(plan.premises)}." if plan.premises else "")
-            + (f" Резерв: {plan.fallback_reason}." if plan.fallback_reason else ""),
-            plan_id=plan.plan_id, evidence=evidence,
-        )
+        routine = plan.source == "fallback" and plan.fallback_reason is None and len(plan.steps) == 1
+        if not routine:  # обычный шаг резерва уже описан записью «Подцель», отдельная запись — шум
+            self._log(
+                JournalKind.DECISION, "План получен",
+                f"{plan.plan_id} от {plan.source}: {summary}. Обоснование: {plan.rationale}"
+                + (f" Предпосылки: {'; '.join(plan.premises)}." if plan.premises else "")
+                + (f" Резерв: {plan.fallback_reason}." if plan.fallback_reason else ""),
+                plan_id=plan.plan_id, evidence=evidence,
+            )
         chosen = self._next_from_plan(verdict)
         if chosen is not None:
             return chosen

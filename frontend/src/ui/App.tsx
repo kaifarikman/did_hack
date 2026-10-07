@@ -5,6 +5,7 @@ import { FIXTURE_SCENARIOS, type FixtureScenarioName } from "../adapters/fixture
 import { JournalPanel } from "./JournalPanel";
 import { MapView } from "./MapView";
 import { MissionPanel } from "./MissionPanel";
+import { ResearchPanel } from "./ResearchPanel";
 import { useMission } from "./useMission";
 
 interface AppProps {
@@ -58,6 +59,7 @@ export function App({ controller, fixtureControls }: AppProps) {
         <MapView map={view.map} snapshot={view.snapshot} mapError={view.mapError} stale={stale} />
         <div className="side">
           <MissionPanel view={view} controller={controller} />
+          <ResearchPanel snapshot={view.snapshot} />
           <JournalPanel view={view} controller={controller} />
         </div>
       </main>

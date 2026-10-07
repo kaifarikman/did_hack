@@ -199,3 +199,16 @@ def test_stuck_sensor_blocks_blind_collects_then_returns_honestly():
     assert "Неисправность датчика подтверждена" in titles
     assert world.collected == 0 and not any(e.kind is EventKind.FALSE_COLLECT for e in world.events)
     assert mission.status is MissionStatus.FAILED and mission.snapshot().last_error.code == "no_confirmed_sample"
+
+
+def test_costly_terrain_hypotheses_are_limited_per_run():
+    estimator = TerrainEstimator(prior_energy_per_m=1.0)
+    for x, drop in ((0.0, 1.0), (1.0, 3.5), (2.0, 1.0), (3.0, 3.5), (4.0, 1.0), (5.0, 3.5), (6.0, 1.0)):
+        for _ in range(2):
+            estimator.record(TravelSegment(Point(x, 0), Point(x + 1, 0), 1.0, drop, 5.0))
+    book = HypothesisBook(max_costly_terrain=2)
+    proposed = []
+    while (item := book.propose(estimator)) is not None:
+        book.defer(item)
+        proposed.append(item)
+    assert len(proposed) == 2

@@ -8,7 +8,8 @@ import type {
   MissionSnapshot,
   Point,
 } from "./contract";
-import { SCENARIOS } from "./contract";
+import { SCENARIOS, SENSOR_FAULTS, SENSOR_STATES, STEP_STATUSES } from "./contract";
+import type { HazardView, HypothesisView, MissionPlanView, ResearchView } from "./contract";
 
 export class ContractError extends Error {
   constructor(message: string) {
@@ -94,6 +95,13 @@ function field<T>(source: JsonObject, key: string, path: string, reader: Reader<
   return reader(source[key], `${path}.${key}`);
 }
 
+/** Поле расширения 1.1: у backend 1.0 его нет — берётся значение по умолчанию. */
+function optionalField<T>(source: JsonObject, key: string, path: string, reader: Reader<T>, fallback: T): T {
+  return source[key] === undefined ? fallback : field(source, key, path, reader);
+}
+
+const readStrings = arrayOf(readString);
+
 const readPoint: Reader<Point> = (value, path) => {
   const source = readObject(value, path);
   return {
@@ -130,6 +138,73 @@ const readRunStatus = enumReader([
   "stopped",
   "failed",
 ] as const);
+
+const readPlan: Reader<MissionPlanView> = (value, path) => {
+  const source = readObject(value, path);
+  return {
+    plan_id: field(source, "plan_id", path, readString),
+    source: field(source, "source", path, enumReader(["llm", "fallback"] as const)),
+    rationale: field(source, "rationale", path, readString),
+    premises: field(source, "premises", path, readStrings),
+    fallback_reason: field(source, "fallback_reason", path, nullable(readString)),
+    revision_reason: field(source, "revision_reason", path, nullable(readString)),
+    steps: field(
+      source,
+      "steps",
+      path,
+      arrayOf((item, itemPath) => {
+        const step = readObject(item, itemPath);
+        return {
+          ...readGoal(step, itemPath),
+          status: field(step, "status", itemPath, enumReader(STEP_STATUSES)),
+          evidence: field(step, "evidence", itemPath, readStrings),
+          revise_if: field(step, "revise_if", itemPath, nullable(readString)),
+        };
+      }),
+    ),
+  };
+};
+
+const readHazard: Reader<HazardView> = (value, path) => {
+  const source = readObject(value, path);
+  return {
+    detection_id: field(source, "detection_id", path, readString),
+    center: field(source, "center", path, readPoint),
+    radius_m: field(source, "radius_m", path, numberReader({ greaterThan: 0 })),
+    hits: field(source, "hits", path, numberReader({ min: 1 }, true)),
+  };
+};
+
+const readHypothesis: Reader<HypothesisView> = (value, path) => {
+  const source = readObject(value, path);
+  return {
+    hypothesis_id: field(source, "hypothesis_id", path, readString),
+    kind: field(source, "kind", path, readString),
+    status: field(source, "status", path, readString),
+    center: field(source, "center", path, readPoint),
+    prediction: field(source, "prediction", path, readString),
+    measurement: field(source, "measurement", path, nullable(readString)),
+    detection_id: field(source, "detection_id", path, nullable(readString)),
+    experiment_id: field(source, "experiment_id", path, nullable(readString)),
+  };
+};
+
+const readResearch: Reader<ResearchView> = (value, path) => {
+  const source = readObject(value, path);
+  const sensor = readObject(source.sensor, `${path}.sensor`);
+  return {
+    sensor: {
+      state: field(sensor, "state", `${path}.sensor`, enumReader(SENSOR_STATES)),
+      fault: field(sensor, "fault", `${path}.sensor`, nullable(enumReader(SENSOR_FAULTS))),
+      quality: field(sensor, "quality", `${path}.sensor`, numberReader({ min: 0, max: 1 })),
+    },
+    hazards: field(source, "hazards", path, arrayOf(readHazard)),
+    hypotheses: field(source, "hypotheses", path, arrayOf(readHypothesis)),
+    last_replan_reason: field(source, "last_replan_reason", path, nullable(readString)),
+    last_replan_detection_id: field(source, "last_replan_detection_id", path, nullable(readString)),
+    planner_requests: field(source, "planner_requests", path, numberReader({ min: 0 }, true)),
+  };
+};
 
 export function parseSnapshot(raw: unknown): MissionSnapshot {
   const path = "state";
@@ -193,10 +268,17 @@ export function parseSnapshot(raw: unknown): MissionSnapshot {
           radius_m: field(item, "radius_m", itemPath, numberReader({ greaterThan: 0 })),
           energy_per_m: field(item, "energy_per_m", itemPath, nonNegative),
           confidence: field(item, "confidence", itemPath, unitInterval),
+          std_energy_per_m: optionalField(item, "std_energy_per_m", itemPath, nullable(nonNegative), null),
+          regime: optionalField(item, "regime", itemPath, numberReader({ min: 0 }, true), 0),
+          last_measured_s: optionalField(item, "last_measured_s", itemPath, nullable(nonNegative), null),
         };
       }),
     ),
     last_error: field(source, "last_error", path, nullable(readErrorInfo)),
+    mission_text: optionalField(source, "mission_text", path, readString, ""),
+    target_samples: optionalField(source, "target_samples", path, nullable(numberReader({ min: 1 }, true)), null),
+    plan: optionalField(source, "plan", path, nullable(readPlan), null),
+    research: optionalField(source, "research", path, nullable(readResearch), null),
   };
 }
 
@@ -258,6 +340,10 @@ const readJournalEntry: Reader<JournalEntry> = (value, path) => {
     expected: field(source, "expected", path, nullable(readString)),
     observed: field(source, "observed", path, nullable(readString)),
     conclusion: field(source, "conclusion", path, nullable(readString)),
+    experiment_id: optionalField(source, "experiment_id", path, nullable(readString), null),
+    detection_id: optionalField(source, "detection_id", path, nullable(readString), null),
+    plan_id: optionalField(source, "plan_id", path, nullable(readString), null),
+    evidence: optionalField(source, "evidence", path, readStrings, []),
   };
 };
 

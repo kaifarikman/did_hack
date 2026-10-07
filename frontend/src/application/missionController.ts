@@ -338,14 +338,19 @@ export class MissionController {
 
   // ---- команды ----
 
-  async startRun(seed: number, scenario: Scenario = "easy"): Promise<void> {
+  async startRun(seed: number, scenario: Scenario = "easy", missionText = ""): Promise<void> {
     const snapshot = this.view.snapshot;
     if (snapshot === null || startDisabledReason(this.view) !== null) return;
     const requestId = this.generateId();
     this.pending = {
       kind: "start",
       requestId,
-      startBody: { request_id: requestId, scenario, seed },
+      startBody: {
+        request_id: requestId,
+        scenario,
+        seed,
+        ...(missionText.trim() === "" ? {} : { mission_text: missionText.trim() }),
+      },
       baselineRunId: snapshot.run_id,
       stopRunId: null,
       sentAt: this.scheduler.now(),

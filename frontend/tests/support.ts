@@ -34,6 +34,10 @@ export function entry(sequence: number, patch: Partial<JournalEntry> = {}): Jour
     expected: null,
     observed: null,
     conclusion: null,
+    experiment_id: null,
+    detection_id: null,
+    plan_id: null,
+    evidence: [],
     ...patch,
   };
 }
