@@ -6,7 +6,7 @@
 import json
 import math
 import os
-from typing import Iterable, Tuple
+from typing import Iterable, Optional, Tuple
 
 Point = Tuple[float, float]
 DEFAULT_STATE_PATH = "/tmp/did_soil_state.json"
@@ -22,13 +22,17 @@ def write_soil_state(path: str, base: Point, zones: Iterable, speed_factor: floa
     os.replace(temporary_path, path)
 
 
-def speed_factor_at(path: str, odom_x_m: float, odom_y_m: float) -> float:
-    """Коэффициент линейной скорости в точке одометрии; 1.0, если состояния нет или оно повреждено."""
+def speed_factor_at(path: str, odom_x_m: float, odom_y_m: float, base: Optional[Point] = None) -> float:
+    """Коэффициент линейной скорости в точке одометрии; 1.0, если состояния нет или оно повреждено.
+
+    base — старт данного робота (у каждого робота одометрия своя); по умолчанию база из файла состояния.
+    """
     try:
         with open(path, encoding="utf-8") as stream:
             state = json.load(stream)
-        world_x = state["base"][0] + odom_x_m
-        world_y = state["base"][1] + odom_y_m
+        origin = base if base is not None else state["base"]
+        world_x = origin[0] + odom_x_m
+        world_y = origin[1] + odom_y_m
         in_soil = any(math.hypot(world_x - x, world_y - y) <= radius for x, y, radius in state["zones"])
         return float(state["speed_factor"]) if in_soil else 1.0
     except (OSError, ValueError, KeyError, IndexError, TypeError):

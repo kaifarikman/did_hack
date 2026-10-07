@@ -24,3 +24,11 @@ def test_rewrite_moves_the_zone(tmp_path):
     write_soil_state(path, BASE, [SoilZone((1.0, 1.0), 0.5)], 0.5)
     assert speed_factor_at(path, 1.0, 0.0) == 1.0
     assert speed_factor_at(path, 3.0, 1.5) == 0.5
+
+
+def test_second_robot_uses_its_own_base(tmp_path):
+    path = str(tmp_path / "soil.json")
+    write_soil_state(path, BASE, [SoilZone((-1.0, 0.5), 0.3)], 0.5)
+    # одометрия (1.0, 0.0) у робота со стартом (-2.0, 0.5) — это мир (-1.0, 0.5), центр зоны
+    assert speed_factor_at(path, 1.0, 0.0, base=(-2.0, 0.5)) == 0.5
+    assert speed_factor_at(path, 1.0, 0.0) == 1.0  # с базой по умолчанию тот же odom лежит вне зоны

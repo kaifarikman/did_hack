@@ -45,3 +45,9 @@ def test_default_bases_are_distinct_and_start_pads_free(grid, config):
     safe = grid.inflated(config.robot_radius_m + config.placement_margin_m)
     for base in bases.values():
         assert safe.is_free(*safe.cell_of(*base))
+
+
+def test_judge_bases_match_spawn_positions():
+    from did_judge.team import default_robot_bases
+    spawned = default_bases(2)
+    assert default_robot_bases(list(spawned), (-2.0, -0.5)) == spawned

@@ -5,7 +5,7 @@ Reset реализован как рестарт процессов: одоме�
 
 HTTP (внутренний, только сеть Compose):
   GET  /status        -> {"state": "starting|ready|failed", "seed": int|null, "scenario": str|null}
-  POST /reset {"seed": int, "scenario": "easy|medium|hard", "map_mode": "static|slam"} -> блокируется до готовности или таймаута; 200/500
+  POST /reset {"seed": int, "scenario": "easy|medium|hard", "map_mode": "static|slam", "robots": 1|2} -> блокируется до готовности или таймаута; 200/500
 """
 import json
 import os
@@ -22,6 +22,9 @@ PORT = int(os.environ.get("SUPERVISOR_PORT", "7000"))
 SCENARIOS = ("easy", "medium", "hard")
 MAP_MODES = ("static", "slam")
 DEFAULT_MAP_MODE = "static"
+MAX_ROBOTS = 2
+BASE_SPACING_M = 1.0
+FIRST_BASE = (-2.0, -0.5)
 DEFAULT_SCENARIO = "easy"
 
 
@@ -37,22 +40,36 @@ class Simulation:
         self.seed = None
         self.scenario = None
         self.map_mode = None
+        self.robots = 1
 
-    def restart(self, seed: int, scenario: str = DEFAULT_SCENARIO, map_mode: str = DEFAULT_MAP_MODE):
+    def restart(self, seed: int, scenario: str = DEFAULT_SCENARIO, map_mode: str = DEFAULT_MAP_MODE,
+                robots: int = 1):
         with self._lock:
             self.state, self.seed, self.scenario, self.map_mode = "starting", seed, scenario, map_mode
+            self.robots = robots
             self._stop_processes()
-            self._start_processes(seed, scenario, map_mode)
+            self._start_processes(seed, scenario, map_mode, robots)
             self.state = "ready" if self._wait_ready() else "failed"
             return self.state == "ready"
 
-    def _start_processes(self, seed: int, scenario: str, map_mode: str):
-        commands = [
-            f"exec ros2 launch {SIM_DIR}/launch/headless_world.launch.py",
-            f"exec python3 {SIM_DIR}/scripts/cmd_vel_guard.py",
-            f"cd {SIM_DIR}/judge && exec python3 -m did_judge.ros_node --ros-args "
-            f"-p seed:={seed} -p config_path:={SIM_DIR}/judge/config/local_{scenario}.json",
-        ]
+    def _start_processes(self, seed: int, scenario: str, map_mode: str, robots: int = 1):
+        config = f"{SIM_DIR}/judge/config/local_{scenario}.json"
+        if robots == 1:
+            commands = [
+                f"exec ros2 launch {SIM_DIR}/launch/headless_world.launch.py",
+                f"exec python3 {SIM_DIR}/scripts/cmd_vel_guard.py",
+                f"cd {SIM_DIR}/judge && exec python3 -m did_judge.ros_node --ros-args "
+                f"-p seed:={seed} -p config_path:={config}",
+            ]
+        else:
+            robot_ids = [f"robot_{index + 1}" for index in range(robots)]
+            commands = [f"exec ros2 launch {SIM_DIR}/launch/multi_robot_world.launch.py robot_count:={robots}"]
+            for index, robot_id in enumerate(robot_ids):
+                base = f"{FIRST_BASE[0]},{FIRST_BASE[1] + index * BASE_SPACING_M}"
+                commands.append(f"ROBOT_ID={robot_id} ROBOT_BASE={base} exec python3 {SIM_DIR}/scripts/cmd_vel_guard.py")
+            ids_literal = "[" + ",".join(robot_ids) + "]"
+            commands.append(f"cd {SIM_DIR}/judge && exec python3 -m did_judge.team_node --ros-args "
+                            f"-p seed:={seed} -p config_path:={config} -p robot_ids:=\"{ids_literal}\"")
         if map_mode == "slam":
             commands.append(f"exec ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true "
                             f"slam_params_file:={SIM_DIR}/config/slam_params.yaml")
@@ -84,7 +101,12 @@ class Simulation:
 
     def _wait_ready(self) -> bool:
         deadline = time.monotonic() + READY_TIMEOUT_S
-        topics = ["/odom", "/scan", "/did/battery"] + (["/map"] if self.map_mode == "slam" else [])
+        if self.robots == 1:
+            topics = ["/odom", "/scan", "/did/battery"]
+        else:
+            topics = [f"/robot_{index + 1}/{name}" for index in range(self.robots)
+                      for name in ("odom", "scan", "did/battery")]
+        topics += ["/map"] if self.map_mode == "slam" else []
         while time.monotonic() < deadline:
             if all(self._has_message(topic) for topic in topics):
                 return True
@@ -114,7 +136,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/status":
             self._reply(200, {"state": SIMULATION.state, "seed": SIMULATION.seed,
-                                  "scenario": SIMULATION.scenario, "map_mode": SIMULATION.map_mode})
+                                  "scenario": SIMULATION.scenario, "map_mode": SIMULATION.map_mode,
+                                  "robots": SIMULATION.robots})
         else:
             self._reply(404, {"error": "not_found"})
 
@@ -133,9 +156,12 @@ class Handler(BaseHTTPRequestHandler):
         map_mode = request.get("map_mode", DEFAULT_MAP_MODE)
         if map_mode not in MAP_MODES:
             return self._reply(422, {"error": "unknown_map_mode", "allowed": list(MAP_MODES)})
-        ok = SIMULATION.restart(seed, scenario, map_mode)
-        self._reply(200 if ok else 500, {"state": SIMULATION.state, "seed": seed,
-                                         "scenario": scenario, "map_mode": map_mode})
+        robots = request.get("robots", 1)
+        if not isinstance(robots, int) or not 1 <= robots <= MAX_ROBOTS:
+            return self._reply(422, {"error": "unknown_robot_count", "allowed": list(range(1, MAX_ROBOTS + 1))})
+        ok = SIMULATION.restart(seed, scenario, map_mode, robots)
+        self._reply(200 if ok else 500, {"state": SIMULATION.state, "seed": seed, "scenario": scenario,
+                                         "map_mode": map_mode, "robots": robots})
 
     def log_message(self, *_args):
         pass

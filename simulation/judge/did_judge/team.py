@@ -17,6 +17,11 @@ from .scenario import Scenario
 Point = Tuple[float, float]
 
 
+def default_robot_bases(robot_ids, first_base: Point, spacing_m: float = 1.0) -> Dict[str, Point]:
+    """Площадки в ряд вдоль Y; должны совпадать со спавном в multi_robot_world.launch.py."""
+    return {robot_id: (first_base[0], first_base[1] + index * spacing_m) for index, robot_id in enumerate(robot_ids)}
+
+
 class TeamJudge:
     def __init__(self, scenario: Scenario, config: JudgeConfig, robot_bases: Dict[str, Point],
                  schedule: Optional[EventSchedule] = None) -> None:
