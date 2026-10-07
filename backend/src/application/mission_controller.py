@@ -9,18 +9,17 @@ from dataclasses import dataclass
 
 from application.event_feed import EventFeed
 from application.motion import MotionExecutor, MotionState
+from application.research import TerrainResearch
 from application.navigation_service import NavigationService
 from application.ports import (
     Clock, EventSource, JournalStore, JudgeClient, JudgeReply, MapMode, ObservationSource, OperationOutcome,
     Planner, PlannerError, ResetRequest, ScoreSource, SimulationControl,
 )
 from application.validation import GoalVerdict, validate_subgoal
-from domain.energy import TerrainEstimator, TravelSegment
 from domain.errors import InvalidTransition
-from domain.geometry import Point, distance_m, normalize_angle
-from domain.hypotheses import Hypothesis, HypothesisBook, HypothesisStatus
+from domain.geometry import Point, distance_m
 from domain.journal import JournalDraft, JournalKind
-from domain.mission import Mission, MissionError, TerrainEstimateView
+from domain.mission import Mission, MissionError
 from domain.observations import DEFAULT_ROBOT_ID, LocalizationStatus, Observation
 from domain.policy import decide_subgoal
 from domain.search import SignalSearch
@@ -53,16 +52,15 @@ class MissionController:
         mission: Mission,
         ports: ControllerPorts,
         settings: MissionSettings,
-        estimator: TerrainEstimator,
+        research: TerrainResearch,
         search: SignalSearch,
-        hypotheses: HypothesisBook,
     ) -> None:
         self._mission = mission
         self._ports = ports
         self._settings = settings
-        self._estimator = estimator
+        self._research = research
+        self._estimator = research.estimator
         self._search = search
-        self._hypotheses = hypotheses
         self._goal: Subgoal | None = None
         self._planner_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="planner")
         self._pending_proposal: Future[Subgoal] | None = None
@@ -70,8 +68,6 @@ class MissionController:
         self._decisions = 0
         self._reset_done_at_s: float | None = None
         self._simulation_time_s: float | None = None
-        self._segment_reset: Point | None = None
-        self._segment = _SegmentAccumulator()
         self._return_estimate: float | None = None
         self._return_estimate_at: Point | None = None
         self._return_estimate_revision = -1
@@ -109,10 +105,11 @@ class MissionController:
     # ------------------------------------------------------------ lifecycle
 
     def _log(self, kind: JournalKind, title: str, detail: str, **fields) -> None:
-        self._ports.journal.append(
-            self._mission.run_id,
-            JournalDraft(kind, title, detail, self._simulation_time_s, **fields),
-        )
+        self._write(JournalDraft(kind, title, detail, self._simulation_time_s, **fields))
+
+    def _write(self, *drafts: JournalDraft) -> None:
+        for draft in drafts:
+            self._ports.journal.append(self._mission.run_id, draft)
 
     def _reset_and_start(self) -> None:
         self._ports.motion.stop()
@@ -226,17 +223,10 @@ class MissionController:
                     JournalKind.OBSERVATION, f"Событие судьи: {event.kind.value}",
                     f"Событие №{event.sequence}; расход рядом не считается чистой стоимостью грунта.",
                 )
-        segment = self._segment.add(observation, self._ports.clock.monotonic_s(), penalty)
-        if segment is not None:
-            self._estimator.record(segment)
-        if self._estimator.revision != self._published_terrain_revision:
-            self._published_terrain_revision = self._estimator.revision
-            self._mission.set_terrain(
-                tuple(
-                    TerrainEstimateView(region_id, center, radius, energy, confidence)
-                    for region_id, center, radius, energy, confidence in self._estimator.regions()
-                )
-            )
+        self._write(*self._research.observe(observation, self._ports.clock.monotonic_s(), penalty))
+        if self._research.revision != self._published_terrain_revision:
+            self._published_terrain_revision = self._research.revision
+            self._mission.set_terrain(self._research.terrain_views())
         self._refresh_return_estimate(observation)
 
     def _refresh_return_estimate(self, observation: Observation) -> None:
@@ -494,6 +484,7 @@ class MissionController:
 
     def _collect(self, observation: Observation, goal: Subgoal) -> None:
         self._ports.motion.stop()
+        self._research.discard_segment()  # штраф/пауза сбора не относятся к стоимости грунта
         self._mission.set_goal(goal)
         reply = self._reconcile_collect(self._ports.judge.collect())
         position = observation.pose.point
@@ -521,128 +512,18 @@ class MissionController:
     # ----------------------------------------------------------- experiment
 
     def _try_experiment(self, observation: Observation) -> bool:
-        book = self._hypotheses
-        hypothesis = book.active()
-        if hypothesis is None:
-            hypothesis = book.propose(self._estimator)
-            if hypothesis is not None:
-                self._log(
-                    JournalKind.HYPOTHESIS, "Участок с повышенным расходом",
-                    f"Корзина {hypothesis.bucket} дороже базовой линии {hypothesis.baseline_energy_per_m:.2f} ед./м.",
-                    hypothesis_id=hypothesis.hypothesis_id,
-                    expected=f"Повторный проезд даст расход ≥ {1.3 * hypothesis.baseline_energy_per_m:.2f} ед./м.",
-                    observed=f"Первичная оценка {hypothesis.observed_energy_per_m:.2f} ед./м.",
-                )
-        if hypothesis is None or hypothesis.status is HypothesisStatus.DEFERRED:
+        navigation = self._ports.navigation
+        proposal, notes = self._research.proposal(observation.pose.point, navigation.is_reachable)
+        self._write(*notes)
+        if proposal is None:
             return False
-        goal = self._experiment_goal(observation, hypothesis)
-        verdict = self._verdict(observation, goal) if goal else GoalVerdict(False, "нет цели")
+        verdict = self._verdict(observation, proposal.goal)
         if not verdict.accepted:
-            book.defer(hypothesis)
-            self._log(
-                JournalKind.EXPERIMENT, "Эксперимент отложен",
-                f"Недостаточно энергии или нет маршрута: {verdict.reason}. Вывод не делается.",
-                hypothesis_id=hypothesis.hypothesis_id, expected="Проверочный проезд через участок.",
-            )
+            self._write(*self._research.defer(proposal.hypothesis, verdict.reason))
             return False
-        book.start_experiment(hypothesis, self._estimator)
-        self._log(
-            JournalKind.EXPERIMENT, "Проверочный проезд",
-            "Безопасный проезд через участок с сохранением запаса возврата.",
-            hypothesis_id=hypothesis.hypothesis_id,
-            expected=f"Расход ≥ {1.3 * hypothesis.baseline_energy_per_m:.2f} ед./м.",
-        )
-        self._apply_goal(observation, goal, verdict)
+        self._write(*self._research.start(proposal.hypothesis))
+        self._apply_goal(observation, proposal.goal, verdict)
         return True
 
-    def _experiment_goal(self, observation: Observation, hypothesis: Hypothesis) -> Subgoal | None:
-        """Цель за участком: проезд насквозь даёт достаточную дистанцию для измерения."""
-        robot = observation.pose.point
-        center = hypothesis.center
-        length = distance_m(robot, center)
-        navigation = self._ports.navigation
-        if length > 0.05:
-            beyond = Point(
-                center.x_m + (center.x_m - robot.x_m) / length * 0.5,
-                center.y_m + (center.y_m - robot.y_m) / length * 0.5,
-            )
-            if navigation.is_reachable(beyond):
-                center = beyond
-        return Subgoal(
-            GoalKind.EXPLORE, center, "Проверка гипотезы о стоимости грунта.",
-            hypothesis_id=hypothesis.hypothesis_id,
-        )
-
     def _conclude_experiment(self, hypothesis_id: str) -> None:
-        book = self._hypotheses
-        hypothesis = next((h for h in book.items if h.hypothesis_id == hypothesis_id), None)
-        if hypothesis is None:
-            return
-        status = book.evaluate(hypothesis, self._estimator)
-        if status is None:
-            status = book.give_up_or_retry(hypothesis)
-            self._log(
-                JournalKind.OUTCOME, "Измерение не получено",
-                "Проезд не дал достаточной чистой дистанции; гипотеза остаётся непроверенной.",
-                hypothesis_id=hypothesis_id,
-                conclusion=None,
-            )
-            return
-        self._log(
-            JournalKind.OUTCOME, "Гипотеза проверена",
-            "Сравнение ожидания с измерением.",
-            hypothesis_id=hypothesis_id,
-            expected=f"≥ {1.3 * hypothesis.baseline_energy_per_m:.2f} ед./м",
-            observed=f"{hypothesis.measured_energy_per_m:.2f} ед./м",
-            conclusion=(
-                "Подтверждено: участок дорогой, маршруты и запас возврата учитывают оценку."
-                if status is HypothesisStatus.CONFIRMED
-                else "Опровергнуто: повышенный расход не воспроизведён, оценка пересмотрена."
-            ),
-        )
-
-
-class _SegmentAccumulator:
-    """Копит пройденный путь и падение батареи до отрезка, пригодного для оценки грунта."""
-
-    IDLE_STEP_M = 0.005
-    MAX_IDLE_S = 1.0
-
-    def __init__(self) -> None:
-        self._last: Observation | None = None
-        self._last_time_s = 0.0
-        self._reset(None, 0.0)
-
-    def _reset(self, observation: Observation | None, now_s: float) -> None:
-        self._start = observation
-        self._start_time_s = now_s
-        self._distance = 0.0
-        self._rotation = 0.0
-        self._idle_s = 0.0
-        self._penalty = False
-
-    def add(self, observation: Observation, now_s: float, penalty: bool) -> TravelSegment | None:
-        if self._start is None:
-            self._reset(observation, now_s)
-            self._last, self._last_time_s = observation, now_s
-            return None
-        step = distance_m(self._last.pose.point, observation.pose.point)
-        self._distance += step
-        self._rotation += abs(normalize_angle(observation.pose.heading_rad - self._last.pose.heading_rad))
-        if step < self.IDLE_STEP_M:
-            self._idle_s += now_s - self._last_time_s
-        self._penalty = self._penalty or penalty
-        self._last, self._last_time_s = observation, now_s
-        if self._distance < 0.3:
-            return None
-        segment = TravelSegment(
-            start=self._start.pose.point,
-            end=observation.pose.point,
-            distance_m=self._distance,
-            battery_drop=self._start.battery_remaining - observation.battery_remaining,
-            duration_s=now_s - self._start_time_s,
-            rotation_rad=self._rotation,
-            penalty_flagged=self._penalty or self._idle_s > self.MAX_IDLE_S,
-        )
-        self._reset(observation, now_s)
-        return segment
+        self._write(*self._research.conclude(hypothesis_id))

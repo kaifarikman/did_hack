@@ -5,6 +5,7 @@ from adapters.journal.memory import InMemoryJournal
 from application.mission_controller import ControllerPorts, MissionController
 from application.motion import MotionExecutor
 from application.navigation_service import NavigationService
+from application.research import TerrainResearch
 from application.planner import FallbackPlanner, ResilientPlanner
 from application.run_service import RunService
 from domain.energy import TerrainEstimator
@@ -40,7 +41,7 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
         events=events,
         score=score,
     )
-    controller = MissionController(mission, ports, settings, estimator, SignalSearch(), HypothesisBook())
+    controller = MissionController(mission, ports, settings, TerrainResearch(estimator, HypothesisBook()), SignalSearch())
     return controller, mission, journal
 
 

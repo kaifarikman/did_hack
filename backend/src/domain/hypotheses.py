@@ -76,6 +76,9 @@ class HypothesisBook:
                 return item
         return None
 
+    def confirm_threshold(self, item: Hypothesis) -> float:
+        return self._confirm_ratio * item.baseline_energy_per_m
+
     def start_experiment(self, item: Hypothesis, estimator: TerrainEstimator) -> None:
         item.status = HypothesisStatus.TESTING
         item.attempts += 1

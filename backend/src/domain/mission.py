@@ -68,6 +68,9 @@ class TerrainEstimateView:
     radius_m: float
     energy_per_m: float
     confidence: float
+    std_energy_per_m: float = 0.0
+    regime: int = 0
+    last_measured_s: float | None = None
 
 
 @dataclass(frozen=True)

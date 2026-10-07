@@ -18,6 +18,7 @@ from adapters.ros.simulation_control import SupervisorSimulationControl
 from application.mission_controller import ControllerPorts, MissionController
 from application.motion import MotionExecutor
 from application.navigation_service import NavigationService
+from application.research import TerrainResearch
 from application.planner import FallbackPlanner, ResilientPlanner
 from application.run_service import RunService
 from application.ticker import TickLoop
@@ -96,7 +97,7 @@ def create_default_app() -> FastAPI:
             navigation=NavigationService(grid, estimator, settings), clock=clock,
             events=events, score=score,
         )
-        return MissionController(mission, ports, settings, estimator, SignalSearch(), HypothesisBook())
+        return MissionController(mission, ports, settings, TerrainResearch(estimator, HypothesisBook()), SignalSearch())
 
     service = RunService(environment, maps, journal, build_controller, settings)
     ticker = TickLoop(service)
