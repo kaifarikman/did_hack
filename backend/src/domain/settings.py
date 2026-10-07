@@ -19,6 +19,10 @@ class MissionSettings:
     base_tolerance_m: float = 0.25
     collect_signal_threshold: float = 0.8
     approach_signal_threshold: float = 0.35
+    refine_signal_threshold: float = 0.65  # выше — уточняющие пробы вокруг робота перед сбором
+    refine_step_m: float = 0.25
+    energy_price: float = 0.15  # ценность единицы энергии при полной батарее; растёт по мере расхода
+    detour_factor: float = 1.3  # прямая оценка пути занижает реальный маршрут
     max_collect_attempts: int = 4
     target_samples: int = 3
     max_decisions: int = 60

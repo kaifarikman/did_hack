@@ -26,8 +26,10 @@ class Subgoal:
 @dataclass(frozen=True)
 class Candidate:
     point: Point
-    score: float
+    score: float  # полезность: ценность поиска минус цена энергии (после rank_by_utility)
     expected_signal: float
+    energy_to: float | None = None  # консервативная оценка расхода до точки
+    energy_back: float | None = None  # оценка возврата из точки на базу
 
 
 @dataclass(frozen=True)
@@ -57,6 +59,9 @@ class PlanningContext:
     collect_attempts_here: int
     total_collect_attempts: int
     candidates: tuple[Candidate, ...] = ()
+    refine_candidates: tuple[Candidate, ...] = ()  # пробы вокруг робота при сильном сигнале
+    at_signal_peak: bool = False  # сигнал здесь не ниже соседних измерений: место для попытки сбора
+    target_samples: int = 3  # сколько образцов может быть в профиле (публичное правило)
     terrain: tuple[TerrainView, ...] = ()
     recent_signals: tuple[tuple[Point, float], ...] = ()
     journal_tail: tuple[str, ...] = field(default_factory=tuple)

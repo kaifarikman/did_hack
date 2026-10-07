@@ -14,7 +14,7 @@ from domain.mission import Mission
 from domain.navigation import StuckDetector
 from domain.search import SignalSearch
 from domain.settings import MissionSettings
-from fakes import FakeClock, FakeEnvironment, SimWorld, StaticMap, build_arena
+from fakes import FakeClock, FakeEnvironment, SimWorld, StaticMap, SynchronousExecutor, build_arena
 
 SETTINGS = MissionSettings()
 
@@ -25,7 +25,7 @@ def make_mission(run_id: str = "run-1") -> Mission:
 
 def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=None, mission=None,
                     settings: MissionSettings = SETTINGS, simulation=None, estimator=None, judge=None,
-                    events=None, score=None):
+                    events=None, score=None, planner_executor=None):
     journal = journal or InMemoryJournal()
     mission = mission or make_mission()
     estimator = estimator or TerrainEstimator()
@@ -41,7 +41,8 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
         events=events,
         score=score,
     )
-    controller = MissionController(mission, ports, settings, TerrainResearch(estimator, HypothesisBook()), SignalSearch())
+    controller = MissionController(mission, ports, settings, TerrainResearch(estimator, HypothesisBook()), SignalSearch(),
+                                   planner_executor or SynchronousExecutor())
     return controller, mission, journal
 
 

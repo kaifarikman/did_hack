@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import math
 import random
+from concurrent.futures import Executor, Future
 from dataclasses import dataclass, field
 
 from application.ports import JudgeReply, OperationOutcome, PlannerError, PublicScore, ResetAck, ResetRequest
@@ -11,6 +12,18 @@ from domain.geometry import Point, Pose, distance_m
 from domain.grid import OccupancyGrid
 from domain.observations import LocalizationStatus, Observation
 from domain.subgoals import PlanningContext, Subgoal
+
+
+class SynchronousExecutor(Executor):
+    """Выполняет задачу сразу: ответ планировщика детерминированно готов к следующему тику."""
+
+    def submit(self, fn, /, *args, **kwargs) -> Future:
+        future: Future = Future()
+        try:
+            future.set_result(fn(*args, **kwargs))
+        except BaseException as error:  # noqa: BLE001 — ошибка передаётся через Future, как в пуле
+            future.set_exception(error)
+        return future
 
 
 class FakeClock:

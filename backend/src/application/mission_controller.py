@@ -4,7 +4,7 @@
 """
 from __future__ import annotations
 
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import Executor, Future, ThreadPoolExecutor
 from dataclasses import dataclass
 
 from application.event_feed import EventFeed
@@ -22,6 +22,7 @@ from domain.journal import JournalDraft, JournalKind
 from domain.mission import Mission, MissionError
 from domain.observations import DEFAULT_ROBOT_ID, LocalizationStatus, Observation
 from domain.policy import decide_subgoal
+from domain.target_selection import rank_by_utility
 from domain.search import SignalSearch
 from domain.settings import MissionSettings
 from domain.subgoals import GoalKind, PlanningContext, Subgoal, TerrainView
@@ -54,6 +55,7 @@ class MissionController:
         settings: MissionSettings,
         research: TerrainResearch,
         search: SignalSearch,
+        planner_executor: Executor | None = None,
     ) -> None:
         self._mission = mission
         self._ports = ports
@@ -62,8 +64,10 @@ class MissionController:
         self._estimator = research.estimator
         self._search = search
         self._goal: Subgoal | None = None
-        self._planner_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="planner")
+        # планировщик (LLM) отвечает в фоне, тик не ждёт его; тесты подставляют синхронный исполнитель
+        self._planner_pool = planner_executor or ThreadPoolExecutor(max_workers=1, thread_name_prefix="planner")
         self._pending_proposal: Future[Subgoal] | None = None
+        self._pending_context: PlanningContext | None = None
         self._replans = 0
         self._decisions = 0
         self._reset_done_at_s: float | None = None
@@ -263,11 +267,18 @@ class MissionController:
             return
         self._ports.motion.stop()
         self._goal = None
+        needed = self._return_estimate_or_conservative(observation.pose.point)
         self._log(
             JournalKind.DECISION, "Возврат по запасу энергии",
             "Проверка запаса имеет приоритет над решением планировщика: "
-            f"батарея {observation.battery_remaining:.1f}, оценка возврата {self._return_estimate_or_conservative(observation.pose.point):.1f}.",
+            f"батарея {observation.battery_remaining:.1f}, оценка возврата {needed:.1f}.",
         )
+        if observation.battery_remaining < needed:
+            self._log(
+                JournalKind.DECISION, "Возврат под угрозой",
+                "Консервативная оценка возврата больше остатка батареи. Возвращаемся кратчайшим допустимым "
+                "маршрутом; если энергии не хватит, прогон завершится ошибкой, а не успехом.",
+            )
         self._apply_goal(
             observation, Subgoal(GoalKind.RETURN, self._settings.base, "Запас энергии на возврат на пределе.")
         )
@@ -362,10 +373,24 @@ class MissionController:
     def _build_context(self, observation: Observation) -> PlanningContext:
         pose = observation.pose
         navigation = self._ports.navigation
-        candidates = self._search.rank_candidates(
+        settings = self._settings
+        valued = self._search.rank_candidates(
             navigation.lattice_points(pose.point), pose.point,
-            self._settings.candidate_min_distance_m, self._settings.candidate_max_distance_m,
+            settings.candidate_min_distance_m, settings.candidate_max_distance_m, limit=10,
+            focus_signal=settings.approach_signal_threshold,
         )
+        candidates = rank_by_utility(
+            valued, pose.point, settings.base, observation.battery_remaining, settings.battery_initial,
+            settings.return_reserve, self._energy_along, settings.energy_price,
+        )[:6]
+        refine: list = []
+        best, center = self._search.best_signal or 0.0, self._search.best_point
+        if center is not None and best >= settings.approach_signal_threshold:
+            fine = best >= settings.refine_signal_threshold
+            for step in ((settings.refine_step_m,) if fine else (2 * settings.refine_step_m, settings.refine_step_m)):
+                refine = self._search.refine_candidates(center, step, navigation.is_reachable)
+                if refine:
+                    break
         tail = self._ports.journal.tail(self._mission.run_id, 5)
         return PlanningContext(
             run_id=self._mission.run_id,
@@ -383,6 +408,9 @@ class MissionController:
             collect_attempts_here=self._search.collect_attempts_near(pose.point),
             total_collect_attempts=self._search.total_collect_attempts,
             candidates=tuple(candidates),
+            refine_candidates=tuple(refine),
+            at_signal_peak=self._search.at_peak(pose.point),
+            target_samples=settings.target_samples,
             terrain=tuple(
                 TerrainView(center, radius, energy, confidence)
                 for _, center, radius, energy, confidence in self._estimator.regions()
@@ -390,6 +418,11 @@ class MissionController:
             recent_signals=self._search.recent_signals(),
             journal_tail=tuple(f"{entry.draft.title}: {entry.draft.detail}" for entry in tail),
         )
+
+    def _energy_along(self, start: Point, end: Point) -> float:
+        """Быстрая консервативная оценка для ранжирования: прямая через оценки грунта с поправкой на обход."""
+        factor = self._settings.detour_factor * self._settings.return_safety_factor
+        return self._estimator.path_energy(start, [end], factor)
 
     def _decide(self, observation: Observation) -> None:
         mission = self._mission
@@ -409,16 +442,21 @@ class MissionController:
             self._search.note_decision()
             if self._try_experiment(observation):
                 return
-        context = self._build_context(observation)
+        if self._pending_proposal is None:
+            self._pending_context = self._build_context(observation)
+        context = self._pending_context
         proposed = self._await_proposal(context)
         if proposed is None:
             return  # планировщик ещё думает: тик не блокируется, Stop и контроль наблюдений продолжают работать
         if self._is_cancelled():
             return  # устаревший ответ после Stop игнорируется
+        approaching = (context.best_signal or 0) >= self._settings.approach_signal_threshold
         alternatives = [
+            Subgoal(GoalKind.APPROACH, candidate.point, "Резервная уточняющая проба после отказа исполнителя.")
+            for candidate in context.refine_candidates
+        ] + [
             Subgoal(
-                GoalKind.APPROACH if (context.best_signal or 0) >= self._settings.approach_signal_threshold
-                else GoalKind.EXPLORE,
+                GoalKind.APPROACH if approaching else GoalKind.EXPLORE,
                 candidate.point, "Резервная цель после отказа исполнителя.",
             )
             for candidate in context.candidates
@@ -472,6 +510,8 @@ class MissionController:
         if goal.kind is GoalKind.RETURN:
             mission.begin_return()
         self._goal = goal
+        if goal.kind is not GoalKind.RETURN and goal.target is not None:
+            self._search.note_target(goal.target)
         mission.set_goal(goal, verdict.route.waypoints)
         self._ports.motion.follow(list(verdict.route.waypoints))
         self._log(

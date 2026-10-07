@@ -325,7 +325,10 @@ def test_slow_planner_does_not_block_ticks_and_stop_is_prompt():
 
     clock = FakeClock()
     world = SimWorld(clock, SEED_SAMPLES[1])
-    controller, mission, _ = make_controller(world, clock, planner=HangingPlanner())
+    from concurrent.futures import ThreadPoolExecutor
+
+    controller, mission, _ = make_controller(world, clock, planner=HangingPlanner(),
+                                             planner_executor=ThreadPoolExecutor(max_workers=1))
     for _ in range(5):
         world.advance(0.1)
         controller.tick()

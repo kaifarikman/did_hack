@@ -26,6 +26,7 @@ from domain.energy import TerrainEstimator
 from domain.hypotheses import HypothesisBook
 from domain.mission import Mission
 from domain.navigation import StuckDetector
+from domain.profiles import settings_for_profile
 from domain.search import SignalSearch
 from domain.settings import MissionSettings
 
@@ -87,17 +88,20 @@ def create_default_app() -> FastAPI:
     clock = _MonotonicClock()
 
     def build_controller(mission: Mission) -> MissionController:
+        run_settings = settings_for_profile(mission.scenario, settings)
         estimator = TerrainEstimator()
         grid = maps.load()
-        planner = ResilientPlanner(OpenAiCompatiblePlanner(llm_config) if llm_config else None, FallbackPlanner(settings))
+        planner = ResilientPlanner(
+            OpenAiCompatiblePlanner(llm_config) if llm_config else None, FallbackPlanner(run_settings))
         ports = ControllerPorts(
             observations=bridge,
-            motion=MotionExecutor(bridge, StuckDetector(), settings.arrival_tolerance_m),
+            motion=MotionExecutor(bridge, StuckDetector(), run_settings.arrival_tolerance_m),
             judge=bridge, simulation=simulation, planner=planner, journal=journal,
-            navigation=NavigationService(grid, estimator, settings), clock=clock,
+            navigation=NavigationService(grid, estimator, run_settings), clock=clock,
             events=events, score=score,
         )
-        return MissionController(mission, ports, settings, TerrainResearch(estimator, HypothesisBook()), SignalSearch())
+        research = TerrainResearch(estimator, HypothesisBook())
+        return MissionController(mission, ports, run_settings, research, SignalSearch())
 
     service = RunService(environment, maps, journal, build_controller, settings)
     ticker = TickLoop(service)
