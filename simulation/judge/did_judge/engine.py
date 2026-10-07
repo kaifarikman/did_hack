@@ -30,6 +30,7 @@ class JudgeEngine:
     config: JudgeConfig
     noise_rng: random.Random = field(default=None)
     schedule: Optional[EventSchedule] = None
+    shared_remaining: Optional[List[Point]] = None  # общий список образцов команды
     battery: float = 0.0
     collected: int = 0
     collisions: int = 0
@@ -49,7 +50,8 @@ class JudgeEngine:
         if self.noise_rng is None:
             self.noise_rng = random.Random(self.scenario.seed + 1)
         self.battery = self.config.battery_initial
-        self._remaining = list(self.scenario.samples)
+        self._remaining = (self.shared_remaining if self.shared_remaining is not None
+                           else list(self.scenario.samples))
 
     @property
     def depleted(self) -> bool:
