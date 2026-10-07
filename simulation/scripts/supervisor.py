@@ -4,8 +4,8 @@ Reset реализован как рестарт процессов: одоме�
 поэтому преобразование world = (-2.0, -0.5) + odom остаётся верным.
 
 HTTP (внутренний, только сеть Compose):
-  GET  /status        -> {"state": "starting|ready|failed", "seed": int|null}
-  POST /reset {"seed": int} -> блокируется до готовности или таймаута; 200/500
+  GET  /status        -> {"state": "starting|ready|failed", "seed": int|null, "scenario": str|null}
+  POST /reset {"seed": int, "scenario": "easy|medium|hard"} -> блокируется до готовности или таймаута; 200/500
 """
 import json
 import os
@@ -19,6 +19,8 @@ ROS_SETUP = "/opt/ros/jazzy/setup.bash"
 SIM_DIR = os.environ.get("SIMULATION_DIR", "/workspace/simulation")
 READY_TIMEOUT_S = float(os.environ.get("SIM_READY_TIMEOUT_S", "120"))
 PORT = int(os.environ.get("SUPERVISOR_PORT", "7000"))
+SCENARIOS = ("easy", "medium", "hard")
+DEFAULT_SCENARIO = "easy"
 
 
 def ros_shell(command: str) -> list:
@@ -31,21 +33,22 @@ class Simulation:
         self._processes = []
         self.state = "stopped"
         self.seed = None
+        self.scenario = None
 
-    def restart(self, seed: int):
+    def restart(self, seed: int, scenario: str = DEFAULT_SCENARIO):
         with self._lock:
-            self.state, self.seed = "starting", seed
+            self.state, self.seed, self.scenario = "starting", seed, scenario
             self._stop_processes()
-            self._start_processes(seed)
+            self._start_processes(seed, scenario)
             self.state = "ready" if self._wait_ready() else "failed"
             return self.state == "ready"
 
-    def _start_processes(self, seed: int):
+    def _start_processes(self, seed: int, scenario: str):
         commands = [
             f"exec ros2 launch {SIM_DIR}/launch/headless_world.launch.py",
             f"exec python3 {SIM_DIR}/scripts/cmd_vel_guard.py",
             f"cd {SIM_DIR}/judge && exec python3 -m did_judge.ros_node --ros-args "
-            f"-p seed:={seed} -p config_path:={SIM_DIR}/judge/config/local_easy.json",
+            f"-p seed:={seed} -p config_path:={SIM_DIR}/judge/config/local_{scenario}.json",
         ]
         for index, command in enumerate(commands):
             self._processes.append(subprocess.Popen(ros_shell(command), start_new_session=True))
@@ -104,7 +107,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/status":
-            self._reply(200, {"state": SIMULATION.state, "seed": SIMULATION.seed})
+            self._reply(200, {"state": SIMULATION.state, "seed": SIMULATION.seed,
+                                  "scenario": SIMULATION.scenario})
         else:
             self._reply(404, {"error": "not_found"})
 
@@ -113,11 +117,16 @@ class Handler(BaseHTTPRequestHandler):
             return self._reply(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            seed = int(json.loads(self.rfile.read(length) or b"{}")["seed"])
+            request = json.loads(self.rfile.read(length) or b"{}")
+            seed = int(request["seed"])
         except (ValueError, KeyError, TypeError):
             return self._reply(422, {"error": "seed_required"})
-        ok = SIMULATION.restart(seed)
-        self._reply(200 if ok else 500, {"state": SIMULATION.state, "seed": seed})
+        scenario = request.get("scenario", DEFAULT_SCENARIO)
+        if scenario not in SCENARIOS:
+            return self._reply(422, {"error": "unknown_scenario", "allowed": list(SCENARIOS)})
+        ok = SIMULATION.restart(seed, scenario)
+        self._reply(200 if ok else 500,
+                    {"state": SIMULATION.state, "seed": seed, "scenario": scenario})
 
     def log_message(self, *_args):
         pass
