@@ -102,7 +102,8 @@ def create_default_app() -> FastAPI:
             events=events, score=score,
         )
         research = TerrainResearch(estimator, HypothesisBook(), hazards=hazards)
-        return MissionController(mission, ports, run_settings, research, SignalSearch())
+        return MissionController(mission, ports, run_settings, research, SignalSearch(),
+                                 planner_rate_limited=llm_config is not None)
 
     service = RunService(environment, maps, journal, build_controller, settings)
     ticker = TickLoop(service)

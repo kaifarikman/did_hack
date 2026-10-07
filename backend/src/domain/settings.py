@@ -23,6 +23,9 @@ class MissionSettings:
     refine_step_m: float = 0.25
     energy_price: float = 0.15  # ценность единицы энергии при полной батарее; растёт по мере расхода
     detour_factor: float = 1.3  # прямая оценка пути занижает реальный маршрут
+    max_planner_requests: int = 80  # лимит запросов плана за прогон; дальше — алгоритмический резерв
+    min_planner_interval_s: float = 1.0
+    max_plan_steps: int = 3
     sensor_wait_s: float = 15.0  # сколько ждать восстановления неисправного датчика до возврата
     max_collect_attempts: int = 4
     target_samples: int = 3

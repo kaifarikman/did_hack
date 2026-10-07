@@ -11,9 +11,12 @@ from application.mission_controller import MissionController
 from application.ports import EnvironmentStatus, JournalStore, MapSource
 from domain.journal import JournalEntry
 from domain.mission import Mission, MissionSnapshot, MissionStatus
+from domain.profiles import PUBLIC_PROFILES
 from domain.settings import MissionSettings
 
 KNOWN_SCENARIOS = ("easy", "medium", "hard")
+DEFAULT_MISSION_TEXT = "Собрать как можно больше образцов и вернуться на базу с положительной батареей."
+MISSION_TEXT_MAX = 500
 JOURNAL_LIMIT_MAX = 200
 
 ControllerFactory = Callable[[Mission], MissionController]
@@ -82,8 +85,11 @@ class RunService:
 
     # ---------------------------------------------------------- commands
 
-    def start_run(self, request_id: str, scenario: str, seed: int) -> MissionSnapshot:
-        fingerprint = ("start", scenario, seed)
+    def start_run(self, request_id: str, scenario: str, seed: int, mission_text: str | None = None) -> MissionSnapshot:
+        text = (mission_text or "").strip() or DEFAULT_MISSION_TEXT
+        if len(text) > MISSION_TEXT_MAX:
+            raise InvalidRequest(f"Текст миссии длиннее {MISSION_TEXT_MAX} символов.")
+        fingerprint = ("start", scenario, seed, text)
         with self._lock:
             replay = self._replay(request_id, fingerprint)
             if replay is not None:
@@ -104,6 +110,8 @@ class RunService:
                 map_id=self._maps.load().map_id, base=self._settings.base,
                 battery_initial=self._settings.battery_initial,
                 generation=self._next_generation(),
+                mission_text=text,
+                target_samples=PUBLIC_PROFILES[scenario].sample_count,
             )
             # новая память исследователя на каждый прогон: фабрика создаёт свежие объекты
             self._controllers[mission.run_id] = self._controller_factory(mission)

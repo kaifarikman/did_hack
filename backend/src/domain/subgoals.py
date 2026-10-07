@@ -21,6 +21,7 @@ class Subgoal:
     reason: str
     source: str = "fallback"  # "llm" или "fallback"
     hypothesis_id: str | None = None
+    plan_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -69,3 +70,11 @@ class PlanningContext:
     terrain: tuple[TerrainView, ...] = ()
     recent_signals: tuple[tuple[Point, float], ...] = ()
     journal_tail: tuple[str, ...] = field(default_factory=tuple)
+    mission_text: str = ""
+    plan_id: str = "plan-0"
+    model_epoch: int = 0  # версия существенных изменений модели; план с другой версией устарел
+    map_revision: int = 0
+    max_plan_steps: int = 3
+    hypotheses: tuple[str, ...] = ()  # краткие формулировки гипотез и их статусов
+    detections: tuple[str, ...] = ()  # обнаруженные изменения среды с detection_id
+    hazards: tuple[tuple[Point, float], ...] = ()  # наблюдаемые опасные области (центр, радиус)

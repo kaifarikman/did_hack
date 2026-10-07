@@ -10,6 +10,7 @@ from enum import Enum
 
 from domain.errors import InvalidTransition
 from domain.geometry import Point, Pose
+from domain.plans import MissionPlan, StepStatus
 from domain.subgoals import Subgoal
 
 TRAJECTORY_LIMIT = 500
@@ -97,6 +98,46 @@ class MissionSnapshot:
     collected_samples: tuple[CollectedSample, ...]
     terrain_estimates: tuple[TerrainEstimateView, ...]
     last_error: MissionError | None
+    mission_text: str = ""
+    target_samples: int | None = None
+    plan: MissionPlan | None = None
+    plan_statuses: tuple[StepStatus, ...] = ()
+    plan_revision_reason: str | None = None
+    research: "ResearchView" = None  # type: ignore[assignment]
+
+
+@dataclass(frozen=True)
+class HazardView:
+    detection_id: str
+    center: Point
+    radius_m: float
+    hits: int
+
+
+@dataclass(frozen=True)
+class HypothesisView:
+    hypothesis_id: str
+    kind: str
+    status: str
+    center: Point
+    prediction: str
+    measurement: str | None
+    detection_id: str | None
+    experiment_id: str | None
+
+
+@dataclass(frozen=True)
+class ResearchView:
+    """Оценки агента для панели: состояние датчика, опасности, гипотезы. Не истина сценария."""
+
+    sensor_state: str = "ok"
+    sensor_fault: str | None = None
+    sensor_quality: float = 1.0
+    hazards: tuple[HazardView, ...] = ()
+    hypotheses: tuple[HypothesisView, ...] = ()
+    last_replan_reason: str | None = None
+    last_replan_detection_id: str | None = None
+    planner_requests: int = 0
 
 
 class Mission:
@@ -111,12 +152,20 @@ class Mission:
         base: Point,
         battery_initial: float,
         generation: int = 1,
+        mission_text: str = "",
+        target_samples: int | None = None,
     ) -> None:
         self._lock = threading.RLock()
         self.run_id = run_id
         self.scenario = scenario
         self.seed = seed
         self.generation = generation  # поколение прогона: наблюдения и ответы других поколений отбрасываются
+        self.mission_text = mission_text
+        self.target_samples = target_samples
+        self._plan: MissionPlan | None = None
+        self._plan_statuses: tuple[StepStatus, ...] = ()
+        self._plan_revision_reason: str | None = None
+        self._research_view: ResearchView = ResearchView()
         self._judge_mode = judge_mode
         self._planner_mode = planner_mode
         self._map_id = map_id
@@ -152,6 +201,8 @@ class Mission:
         if target not in _ALLOWED.get(self._status, set()):
             raise InvalidTransition(f"{self._status.value} -> {target.value}")
         self._status = target
+        if target.is_terminal:  # после завершения нет «текущей» цели: последняя цель не выдаётся за активную
+            self._goal, self._planned_path = None, ()
         self._revision += 1
 
     def mark_running(self) -> None:
@@ -229,6 +280,20 @@ class Mission:
             self._return_estimate = estimate
             self._revision += 1
 
+    def set_plan(self, plan: MissionPlan, statuses: tuple[StepStatus, ...], revision_reason: str | None) -> None:
+        with self._lock:
+            if self._status.is_terminal:
+                return
+            self._plan, self._plan_statuses, self._plan_revision_reason = plan, statuses, revision_reason
+            self._revision += 1
+
+    def set_research(self, view: "ResearchView") -> None:
+        with self._lock:
+            if self._status.is_terminal or view == self._research_view:
+                return
+            self._research_view = view
+            self._revision += 1
+
     def set_terrain(self, terrain: tuple[TerrainEstimateView, ...]) -> None:
         with self._lock:
             self._terrain = terrain
@@ -266,4 +331,10 @@ class Mission:
                 collected_samples=tuple(self._collected),
                 terrain_estimates=self._terrain,
                 last_error=self._error,
+                mission_text=self.mission_text,
+                target_samples=self.target_samples,
+                plan=self._plan,
+                plan_statuses=self._plan_statuses,
+                plan_revision_reason=self._plan_revision_reason,
+                research=self._research_view,
             )

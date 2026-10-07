@@ -24,6 +24,7 @@ class StartRunBody(BaseModel):
     request_id: StrictStr
     scenario: StrictStr
     seed: StrictInt
+    mission_text: StrictStr | None = None
 
 
 class StopRunBody(BaseModel):
@@ -78,7 +79,7 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
 
     @app.post("/api/v1/runs", status_code=202)
     def start_run(body: StartRunBody) -> dict:
-        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed))
+        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed, body.mission_text))
 
     @app.post("/api/v1/runs/{run_id}/stop", status_code=202)
     def stop_run(run_id: str, body: StopRunBody) -> dict:

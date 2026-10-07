@@ -13,7 +13,8 @@ from domain.events import PublicEvent
 from domain.grid import OccupancyGrid
 from domain.journal import JournalDraft, JournalEntry
 from domain.observations import DEFAULT_ROBOT_ID, Observation
-from domain.subgoals import PlanningContext, Subgoal
+from domain.plans import MissionPlan
+from domain.subgoals import PlanningContext
 
 CONTRACT_VERSION = "2.0"
 
@@ -140,9 +141,9 @@ class EnvironmentStatus(Protocol):
 
 
 class Planner(Protocol):
-    """Выбор подцели. Возвращает намерение, не скорости."""
+    """План из нескольких подцелей. Возвращает намерения, не скорости."""
 
-    def propose(self, context: PlanningContext, is_cancelled: "CancelCheck") -> Subgoal:
+    def propose(self, context: PlanningContext, is_cancelled: "CancelCheck") -> MissionPlan:
         """Исключение PlannerError — планировщик не смог ответить."""
 
 

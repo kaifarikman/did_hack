@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "run_id": "fixture-run-001",
   "revision": 12,
   "status": "running",
@@ -69,8 +69,70 @@
       },
       "radius_m": 0.2,
       "energy_per_m": 2.1,
-      "confidence": 0.4
+      "confidence": 0.4,
+      "std_energy_per_m": 0.21,
+      "regime": 0,
+      "last_measured_s": 41.2
     }
   ],
-  "last_error": null
+  "last_error": null,
+  "mission_text": "Собрать как можно больше образцов и вернуться на базу с положительной батареей.",
+  "target_samples": 3,
+  "plan": {
+    "plan_id": "plan-4",
+    "source": "fallback",
+    "rationale": "Алгоритмический резерв: Прогноз сигнала 0.08; сигнал слабый, исследуем новые области. Путь ≈ 5.6, возврат оттуда ≈ 6.1.",
+    "premises": [],
+    "fallback_reason": null,
+    "revision_reason": null,
+    "steps": [
+      {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -0.44999999999999973,
+          "position_y_m": -0.9499999999999997
+        },
+        "reason": "Прогноз сигнала 0.08; сигнал слабый, исследуем новые области. Путь ≈ 5.6, возврат оттуда ≈ 6.1.",
+        "status": "active",
+        "evidence": [],
+        "revise_if": null
+      }
+    ]
+  },
+  "research": {
+    "sensor": {
+      "state": "ok",
+      "fault": null,
+      "quality": 1.0
+    },
+    "hazards": [
+      {
+        "detection_id": "hazard-1",
+        "center": {
+          "position_x_m": -1.6,
+          "position_y_m": -0.5
+        },
+        "radius_m": 0.35,
+        "hits": 1
+      }
+    ],
+    "hypotheses": [
+      {
+        "hypothesis_id": "hypothesis-1",
+        "kind": "costly_terrain",
+        "status": "testing",
+        "center": {
+          "position_x_m": -0.75,
+          "position_y_m": -0.25
+        },
+        "prediction": "расход ≈ 2.90 ед./м, подтверждение при ≥ 1.36",
+        "measurement": "2.95 ± 0.12 ед./м на 0.41 м",
+        "detection_id": null,
+        "experiment_id": "experiment-1"
+      }
+    ],
+    "last_replan_reason": "наблюдаемая опасность",
+    "last_replan_detection_id": "hazard-1",
+    "planner_requests": 4
+  }
 }

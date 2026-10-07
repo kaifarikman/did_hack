@@ -11,6 +11,7 @@ from domain.events import EventKind, PublicEvent
 from domain.geometry import Point, Pose, distance_m
 from domain.grid import OccupancyGrid
 from domain.observations import LocalizationStatus, Observation
+from domain.plans import MissionPlan, single_step_plan
 from domain.subgoals import PlanningContext, Subgoal
 
 
@@ -273,10 +274,13 @@ class ScriptedPlanner:
     def __init__(self, script: list, on_call=None) -> None:
         self._script = list(script)
         self.calls = 0
+        self.contexts: list[PlanningContext] = []
         self._on_call = on_call
 
-    def propose(self, context: PlanningContext, is_cancelled) -> Subgoal:
+    def propose(self, context: PlanningContext, is_cancelled) -> MissionPlan:
+        """Подцель в сценарии становится планом из одного шага; MissionPlan возвращается как есть."""
         self.calls += 1
+        self.contexts.append(context)
         if self._on_call:
             self._on_call()
         if not self._script:
@@ -284,7 +288,9 @@ class ScriptedPlanner:
         item = self._script.pop(0)
         if isinstance(item, Exception):
             raise item
-        return item
+        if isinstance(item, MissionPlan):
+            return item
+        return single_step_plan(context, item, item.reason)
 
 
 @dataclass

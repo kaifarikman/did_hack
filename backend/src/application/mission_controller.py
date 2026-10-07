@@ -4,24 +4,25 @@
 """
 from __future__ import annotations
 
-from concurrent.futures import Executor, Future, ThreadPoolExecutor
+from concurrent.futures import Executor, ThreadPoolExecutor
 from dataclasses import dataclass
 
 from application.event_feed import EventFeed
 from application.motion import MotionExecutor, MotionState
+from application.plan_execution import NothingValid, PlanExecutor, Waiting
 from application.research import TerrainResearch
 from application.navigation_service import NavigationService
 from application.ports import (
     Clock, EventSource, JournalStore, JudgeClient, JudgeReply, MapMode, ObservationSource, OperationOutcome,
-    Planner, PlannerError, ResetRequest, ScoreSource, SimulationControl,
+    Planner, ResetRequest, ScoreSource, SimulationControl,
 )
 from application.validation import GoalVerdict, validate_subgoal
 from domain.errors import InvalidTransition
 from domain.geometry import Point, distance_m
 from domain.journal import JournalDraft, JournalKind
-from domain.mission import Mission, MissionError
+from domain.hypotheses import describe_measurement
+from domain.mission import HazardView, HypothesisView, Mission, MissionError, ResearchView
 from domain.observations import DEFAULT_ROBOT_ID, LocalizationStatus, Observation
-from domain.policy import decide_subgoal
 from domain.target_selection import rank_by_utility
 from domain.search import SignalSearch
 from domain.settings import MissionSettings
@@ -56,6 +57,7 @@ class MissionController:
         research: TerrainResearch,
         search: SignalSearch,
         planner_executor: Executor | None = None,
+        planner_rate_limited: bool = True,
     ) -> None:
         self._mission = mission
         self._ports = ports
@@ -65,9 +67,13 @@ class MissionController:
         self._search = search
         self._goal: Subgoal | None = None
         # планировщик (LLM) отвечает в фоне, тик не ждёт его; тесты подставляют синхронный исполнитель
-        self._planner_pool = planner_executor or ThreadPoolExecutor(max_workers=1, thread_name_prefix="planner")
-        self._pending_proposal: Future[Subgoal] | None = None
-        self._pending_context: PlanningContext | None = None
+        self._plans = PlanExecutor(
+            ports.planner, settings,
+            planner_executor or ThreadPoolExecutor(max_workers=1, thread_name_prefix="planner"),
+            self._log, ports.clock.monotonic_s, self._is_cancelled, planner_rate_limited,
+        )
+        self._signal_tier = 0
+        self._last_replan: tuple[str | None, str | None] = (None, None)
         self._replans = 0
         self._decisions = 0
         self._reset_done_at_s: float | None = None
@@ -151,7 +157,7 @@ class MissionController:
         )
 
     def _finish_stop(self) -> None:
-        self._pending_proposal = None
+        self._plans.cancel()
         self._ports.motion.stop()
         self._goal = None
         try:
@@ -232,10 +238,29 @@ class MissionController:
             self._search.record_signal(pose.point, observation.sample_signal)
         for change in self._research.take_changes():
             self._react_to_change(change, observation)
+        self._publish_research()
         if self._research.revision != self._published_terrain_revision:
             self._published_terrain_revision = self._research.revision
             self._mission.set_terrain(self._research.terrain_views())
         self._refresh_return_estimate(observation)
+
+    def _publish_research(self) -> None:
+        research, sensor = self._research, self._research.sensor
+        self._mission.set_research(ResearchView(
+            sensor_state=sensor.state.value,
+            sensor_fault=sensor.fault.value if sensor.fault else None,
+            sensor_quality=sensor.quality,
+            hazards=tuple(HazardView(h.detection_id, h.center, h.radius_m, h.hits) for h in research.hazards.sightings),
+            hypotheses=tuple(
+                HypothesisView(item.hypothesis_id, item.kind.value, item.status.value, item.center,
+                               item.prediction.describe(), describe_measurement(item), item.detection_id,
+                               item.experiment_id)
+                for item in research.hypotheses.items
+            ),
+            last_replan_reason=self._last_replan[0],
+            last_replan_detection_id=self._last_replan[1],
+            planner_requests=self._plans.requests,
+        ))
 
     def _react_to_change(self, change, observation: Observation) -> None:
         """Изменение модели прерывает маршрут, который оно затрагивает: план строится заново."""
@@ -247,6 +272,7 @@ class MissionController:
             or (change.bucket is None and change.hazard is None)
         )
         if not affected:
+            self._plans.invalidate(change.cause, change.detection_id)
             self._log(
                 JournalKind.DECISION, "Модель обновлена",
                 f"{change.cause}; текущий маршрут не затронут, запас возврата пересчитывается.",
@@ -255,6 +281,8 @@ class MissionController:
             return
         self._ports.motion.stop()
         self._goal = None
+        self._plans.invalidate(change.cause, change.detection_id)
+        self._last_replan = (change.cause, change.detection_id)
         self._log(
             JournalKind.DECISION, "Перепланирование",
             f"{change.cause}: прежний маршрут к {goal.kind.value} построен по устаревшей модели и прерван; "
@@ -317,6 +345,8 @@ class MissionController:
         self._replans = 0
         if goal is None:
             return
+        self._plans.step_finished(True)
+        self._publish_plan()
         if goal.kind is GoalKind.RETURN:
             self._finish_mission(observation)
         elif goal.hypothesis_id is not None:
@@ -335,6 +365,8 @@ class MissionController:
             if goal.kind is GoalKind.RETURN:
                 self._fail("stuck_returning", "Робот застрял при возврате на базу.")
                 return
+            self._plans.step_finished(False)
+            self._publish_plan()
             self._goal = None
             self._replans = 0
             return
@@ -404,7 +436,7 @@ class MissionController:
             self._ports.navigation, self._settings,
         )
 
-    def _build_context(self, observation: Observation) -> PlanningContext:
+    def _build_context(self, observation: Observation, plan_id: str = "plan-0", epoch: int = 0) -> PlanningContext:
         pose = observation.pose
         navigation = self._ports.navigation
         settings = self._settings
@@ -463,7 +495,22 @@ class MissionController:
                 for _, center, radius, energy, confidence in self._estimator.regions()
             ),
             recent_signals=self._search.recent_signals(),
-            journal_tail=tuple(f"{entry.draft.title}: {entry.draft.detail}" for entry in tail),
+            journal_tail=tuple(f"#{entry.sequence} {entry.draft.title}: {entry.draft.detail}" for entry in tail),
+            mission_text=self._mission.mission_text,
+            plan_id=plan_id,
+            model_epoch=epoch,
+            map_revision=self._ports.navigation.map_revision,
+            max_plan_steps=settings.max_plan_steps,
+            hypotheses=tuple(
+                f"{item.hypothesis_id} [{item.status.value}] {item.kind.value} ячейка {item.bucket}: "
+                f"{item.prediction.describe()}"
+                for item in self._research.hypotheses.items[-4:]
+            ),
+            detections=tuple(
+                f"{entry.draft.detection_id}: {entry.draft.title}"
+                for entry in tail if entry.draft.detection_id
+            ),
+            hazards=tuple((h.center, h.radius_m) for h in self._research.hazards.sightings),
         )
 
     def _energy_along(self, start: Point, end: Point) -> float:
@@ -481,63 +528,44 @@ class MissionController:
             )
             return
         if self._reserve_low(observation):
-            self._pending_proposal = None
+            self._plans.cancel()
             self._enforce_reserve(observation)
             return
-        if self._pending_proposal is None:
+        if not self._plans.waiting:
             self._decisions += 1
             self._search.note_decision()
+            self._note_signal_tier()
             if self._try_experiment(observation):
                 return
-        if self._pending_proposal is None:
-            self._pending_context = self._build_context(observation)
-        context = self._pending_context
-        proposed = self._await_proposal(context)
-        if proposed is None:
+        decision = self._plans.poll(
+            lambda plan_id, epoch: self._build_context(observation, plan_id, epoch),
+            lambda goal: self._verdict(observation, goal),
+        )
+        self._publish_plan()
+        if isinstance(decision, Waiting):
             return  # планировщик ещё думает: тик не блокируется, Stop и контроль наблюдений продолжают работать
-        if self._is_cancelled():
-            return  # устаревший ответ после Stop игнорируется
-        approaching = (context.best_signal or 0) >= self._settings.approach_signal_threshold
-        alternatives = [
-            Subgoal(GoalKind.APPROACH, candidate.point, "Резервная уточняющая проба после отказа исполнителя.")
-            for candidate in context.refine_candidates
-        ] + [
-            Subgoal(
-                GoalKind.APPROACH if approaching else GoalKind.EXPLORE,
-                candidate.point, "Резервная цель после отказа исполнителя.",
-            )
-            for candidate in context.candidates
-        ]
-        base_goal = Subgoal(GoalKind.RETURN, self._settings.base, "Возврат: другие цели недопустимы.")
-        for goal in [proposed, *alternatives, base_goal]:
-            verdict = self._verdict(observation, goal)
-            if verdict.accepted:
-                self._apply_goal(observation, goal, verdict)
-                return
-            self._log(
-                JournalKind.DECISION, "Подцель отклонена исполнителем",
-                f"{goal.kind.value}: {verdict.reason}. Источник: {goal.source}.",
-            )
-        self._fail("no_valid_goal", "Ни одна подцель, включая возврат, не допустима.")
+        if isinstance(decision, NothingValid):
+            self._fail("no_valid_goal", "Ни одна подцель, включая возврат, не допустима.")
+            return
+        self._apply_goal(observation, decision.goal, decision.verdict)
+        self._publish_plan()
+
+    def _note_signal_tier(self) -> None:
+        """Сигнал перешёл в более сильный режим поиска: план, построенный для разведки, пересматривается."""
+        best = self._search.best_signal or 0.0
+        settings = self._settings
+        tier = 2 if best >= settings.refine_signal_threshold else 1 if best >= settings.approach_signal_threshold else 0
+        if tier > self._signal_tier:
+            self._plans.invalidate(f"лучший сигнал вырос до {best:.2f}")
+        self._signal_tier = tier
+
+    def _publish_plan(self) -> None:
+        progress = self._plans.progress
+        if progress is not None:
+            self._mission.set_plan(progress.plan, tuple(progress.statuses), progress.revision_reason)
 
     def _is_cancelled(self) -> bool:
         return self._mission.stop_requested or self._mission.status.is_terminal
-
-    def _propose(self, context: PlanningContext) -> Subgoal:
-        try:
-            return self._ports.planner.propose(context, self._is_cancelled)
-        except PlannerError as error:
-            fallback = decide_subgoal(context, self._settings)
-            return Subgoal(fallback.kind, fallback.target, f"{fallback.reason} (fallback: {error})")
-
-    def _await_proposal(self, context: PlanningContext) -> Subgoal | None:
-        """Запрос к планировщику идёт в фоне; None — ответа ещё нет."""
-        if self._pending_proposal is None:
-            self._pending_proposal = self._planner_pool.submit(self._propose, context)
-        if not self._pending_proposal.done():
-            return None
-        proposal, self._pending_proposal = self._pending_proposal.result(), None
-        return proposal
 
     def _apply_goal(
         self, observation: Observation, goal: Subgoal, verdict: GoalVerdict | None = None
@@ -566,7 +594,7 @@ class MissionController:
             f"{goal.reason} Источник: {goal.source}. Расход по маршруту ≈ {verdict.route.energy:.1f}, "
             f"оценка возврата {self._return_estimate_or_conservative(observation.pose.point):.1f} "
             f"(по {len(self._estimator.measured_buckets())} измеренным участкам).",
-            hypothesis_id=goal.hypothesis_id,
+            hypothesis_id=goal.hypothesis_id, plan_id=goal.plan_id,
         )
 
     def _collect(self, observation: Observation, goal: Subgoal) -> None:
@@ -585,6 +613,7 @@ class MissionController:
             self._research.note_collect()
             sample = self._mission.add_collected_sample(position)
             self._search.reset_after_collect()
+            self._plans.invalidate("образец собран: сигнал теперь относится к другому образцу")
             self._log(
                 JournalKind.OUTCOME, "Образец собран",
                 f"{sample.sample_id}: подтверждён судьёй в точке ({position.x_m:.2f}, {position.y_m:.2f}).",
@@ -609,6 +638,7 @@ class MissionController:
         if not verdict.accepted:
             self._write(*self._research.defer(proposal.hypothesis, verdict.reason))
             return False
+        self._plans.invalidate(f"начата проверка {proposal.hypothesis.hypothesis_id}")
         self._write(*self._research.start(proposal.hypothesis, verdict.route.energy))
         self._apply_goal(observation, proposal.goal, verdict)
         return True

@@ -9,7 +9,7 @@ from domain.grid import OccupancyGrid
 from domain.journal import JournalEntry
 from domain.mission import MissionSnapshot
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"  # 1.1: совместимые поля плана, исследования и текста миссии
 
 
 def _number(value: float | None) -> float | None:
@@ -57,12 +57,67 @@ def snapshot_json(snapshot: MissionSnapshot) -> dict:
             {
                 "region_id": t.region_id, "center": point_json(t.center), "radius_m": t.radius_m,
                 "energy_per_m": t.energy_per_m, "confidence": t.confidence,
+                "std_energy_per_m": _number(t.std_energy_per_m), "regime": t.regime,
+                "last_measured_s": _number(t.last_measured_s),
             }
             for t in snapshot.terrain_estimates
         ],
         "last_error": None if error is None else {
             "code": error.code, "message": error.message, "retryable": error.retryable,
         },
+        "mission_text": snapshot.mission_text,
+        "target_samples": snapshot.target_samples,
+        "plan": plan_json(snapshot),
+        "research": research_json(snapshot),
+    }
+
+
+def plan_json(snapshot: MissionSnapshot) -> dict | None:
+    plan = snapshot.plan
+    if plan is None:
+        return None
+    return {
+        "plan_id": plan.plan_id,
+        "source": plan.source,
+        "rationale": plan.rationale,
+        "premises": list(plan.premises),
+        "fallback_reason": plan.fallback_reason,
+        "revision_reason": snapshot.plan_revision_reason,
+        "steps": [
+            {
+                "kind": step.goal.kind.value,
+                "target": None if step.goal.target is None else point_json(step.goal.target),
+                "reason": step.goal.reason,
+                "status": status.value,
+                "evidence": list(step.evidence),
+                "revise_if": step.revise_if,
+            }
+            for step, status in zip(plan.steps, snapshot.plan_statuses)
+        ],
+    }
+
+
+def research_json(snapshot: MissionSnapshot) -> dict | None:
+    view = snapshot.research
+    if view is None:
+        return None
+    return {
+        "sensor": {"state": view.sensor_state, "fault": view.sensor_fault, "quality": view.sensor_quality},
+        "hazards": [
+            {"detection_id": h.detection_id, "center": point_json(h.center), "radius_m": h.radius_m, "hits": h.hits}
+            for h in view.hazards
+        ],
+        "hypotheses": [
+            {
+                "hypothesis_id": h.hypothesis_id, "kind": h.kind, "status": h.status,
+                "center": point_json(h.center), "prediction": h.prediction, "measurement": h.measurement,
+                "detection_id": h.detection_id, "experiment_id": h.experiment_id,
+            }
+            for h in view.hypotheses
+        ],
+        "last_replan_reason": view.last_replan_reason,
+        "last_replan_detection_id": view.last_replan_detection_id,
+        "planner_requests": view.planner_requests,
     }
 
 

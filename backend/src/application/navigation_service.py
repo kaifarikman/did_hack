@@ -27,6 +27,10 @@ class NavigationService:
         self._hazards = hazards or HazardMap()
         self._blocked = grid.inflated_blocked(settings.clearance_m)
 
+    @property
+    def map_revision(self) -> int:
+        return self._grid.revision
+
     def _terrain_multiplier(self, point: Point) -> float:
         """Маршрут предпочитает дешёвые участки и обходит наблюдаемые опасности."""
         terrain = self._estimator.estimate_at(point).energy_per_m / self._settings.nominal_energy_per_m
