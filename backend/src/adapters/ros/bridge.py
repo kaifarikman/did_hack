@@ -18,6 +18,7 @@ from nav_msgs.msg import Odometry
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
+from rclpy.signals import SignalHandlerOptions
 from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Float32, String
@@ -203,7 +204,10 @@ class RosRuntime:
     """Запускает rclpy и executor в фоновом потоке."""
 
     def __init__(self, **bridge_options) -> None:
-        rclpy.init()
+        # SIGTERM принадлежит серверу приложения: сначала stop, затем закрытие ROS.
+        rclpy.init(signal_handler_options=SignalHandlerOptions.NO)
+        self._shutdown_lock = threading.Lock()
+        self._closed = False
         self.bridge = RosBridge(**bridge_options)
         self._executor = MultiThreadedExecutor(num_threads=4)
         self._executor.add_node(self.bridge)
@@ -211,7 +215,15 @@ class RosRuntime:
         self._thread.start()
 
     def shutdown(self) -> None:
-        self.bridge.stop()
-        self._executor.shutdown()
-        self.bridge.destroy_node()
-        rclpy.try_shutdown()
+        with self._shutdown_lock:
+            if self._closed:
+                return
+            self._closed = True
+            try:
+                if self.bridge.context.ok():
+                    self.bridge.stop()
+            finally:
+                self._executor.shutdown()
+                self._thread.join(timeout=2.0)
+                self.bridge.destroy_node()
+                rclpy.try_shutdown()
