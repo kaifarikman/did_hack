@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-07",
+  "base_commit": "585c4d18186294fa2bbd61d73063ed360e3528d3",
+  "platform": "Docker Desktop linux/arm64 on macOS ARM64",
+  "scenario": "easy",
+  "seed": 1,
+  "judge_mode": "local",
+  "start_method": "Chrome UI Start via CUA",
+  "configuration": "Default battery, physics and mission settings; only ROS lifecycle fix differs from base commit.",
+  "sha256": {
+    "backend/src/adapters/ros/bridge.py": "d66d2e8ebcfd49f1e6efb80dfedd23e6039c5947bd9d578ecca5635d45588fc1",
+    "backend/tests/test_ros_lifecycle.py": "9a83b2124561d5aa9f4d90ed5589ff08dd334fea94dcff9655310e165b5f3bc1",
+    "backend/src/domain/settings.py": "e3bc4089505d33734ea59c4afd14ff3f7a2ea6e583cab51a4259000a7fc4c2b3",
+    "compose.yaml": "8fa540a9835c19eeca238c5febe4b378aaf57224d439500cfb8416a081539b4d"
+  },
+  "images": [
+    {
+      "ID": "sha256:e22e24bde82802164c6c40fe4b054e420de137faa9501a67efc441a3a2a9ced8",
+      "ContainerName": "did_hack-gui-1",
+      "Repository": "did_hack-gui",
+      "Tag": "latest",
+      "Platform": "linux/arm64",
+      "Size": 1072269622,
+      "LastTagTime": "2026-10-06T17:45:14.267854177Z"
+    },
+    {
+      "ID": "sha256:d7043f518d3bbf59799e7324b5b23eb892623665575489976eeccdfbec0a29d8",
+      "ContainerName": "did_hack-backend-1",
+      "Repository": "did_hack-backend",
+      "Tag": "latest",
+      "Platform": "linux/arm64",
+      "Size": 298118012,
+      "LastTagTime": "2026-10-07T12:13:19.085492217Z"
+    },
+    {
+      "ID": "sha256:8536aa02052ba3a2fedde83a89d62c7a7a33db76898f46f3db91323830b9c614",
+      "ContainerName": "did_hack-simulation-1",
+      "Repository": "did-sim",
+      "Tag": "dev",
+      "Platform": "linux/arm64",
+      "Size": 1003894412,
+      "LastTagTime": "2026-10-06T20:27:22.292163632Z"
+    },
+    {
+      "ID": "sha256:f774edce075b5b370d8360a38c60955123a44df48dd7f0c8f5bbb0c5d0870c41",
+      "ContainerName": "did_hack-frontend-1",
+      "Repository": "did_hack-frontend",
+      "Tag": "latest",
+      "Platform": "linux/arm64",
+      "Size": 25919526,
+      "LastTagTime": "2026-10-06T20:27:22.280718132Z"
+    }
+  ]
+}

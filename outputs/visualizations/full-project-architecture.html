@@ -1,0 +1,145 @@
+<div id="did-full-architecture">
+  <style>
+    #did-full-architecture .arch-head { margin-bottom: 24px; padding-right: 90px; }
+    #did-full-architecture .arch-layout { position: relative; padding: 8px 24px; }
+    #did-full-architecture .arch-grid { display: grid; grid-template-columns: 1fr 1.35fr 1fr; gap: 46px 34px; position: relative; }
+    #did-full-architecture .arch-node { min-width: 0; text-align: center; align-self: center; }
+    #did-full-architecture .arch-status { margin-top: 6px; color: var(--muted-foreground); }
+    #did-full-architecture .arch-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; grid-column: 1 / -1; }
+    #did-full-architecture .arch-top { grid-column: 2; grid-row: 1; }
+    #did-full-architecture .arch-mission { grid-column: 2; grid-row: 2; }
+    #did-full-architecture .arch-model { grid-column: 1; grid-row: 3; }
+    #did-full-architecture .arch-coordinator { grid-column: 2; grid-row: 3; }
+    #did-full-architecture .arch-knowledge { grid-column: 3; grid-row: 3; }
+    #did-full-architecture .arch-storage { grid-column: 3; grid-row: 4; }
+    #did-full-architecture .arch-researchers { grid-row: 5; }
+    #did-full-architecture .arch-executors { grid-row: 6; }
+    #did-full-architecture .arch-world { grid-column: 2; grid-row: 7; }
+    #did-full-architecture .arch-judge { grid-column: 2; grid-row: 8; }
+    #did-full-architecture .arch-connectors { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+    #did-full-architecture .arch-connectors path { fill: none; stroke: var(--border); stroke-width: 1.5; }
+    #did-full-architecture .arch-connectors path.arch-active { stroke: var(--viz-series-1); stroke-width: 2; }
+    #did-full-architecture .arch-connectors marker path { fill: var(--muted-foreground); stroke: none; }
+    #did-full-architecture .arch-detail { margin-top: 24px; min-height: 70px; }
+    #did-full-architecture .arch-detail p { margin: 6px 0 0; }
+    #did-full-architecture .arch-cycle { margin-top: 20px; text-align: center; color: var(--muted-foreground); }
+    @media (max-width: 560px) {
+      #did-full-architecture .arch-layout { padding: 8px 16px; }
+      #did-full-architecture .arch-grid { grid-template-columns: 1fr 1fr; gap: 44px 24px; }
+      #did-full-architecture .arch-top { grid-column: 1 / -1; }
+      #did-full-architecture .arch-mission { grid-column: 1 / -1; }
+      #did-full-architecture .arch-coordinator { grid-column: 1 / -1; }
+      #did-full-architecture .arch-model { grid-column: 1; grid-row: 4; }
+      #did-full-architecture .arch-knowledge { grid-column: 2; grid-row: 4; }
+      #did-full-architecture .arch-storage { grid-column: 2; grid-row: 5; }
+      #did-full-architecture .arch-researchers { grid-row: 6; }
+      #did-full-architecture .arch-executors { grid-row: 7; }
+      #did-full-architecture .arch-world { grid-column: 1 / -1; grid-row: 8; }
+      #did-full-architecture .arch-judge { grid-column: 1 / -1; grid-row: 9; }
+      #did-full-architecture .arch-pair { gap: 24px; }
+    }
+  </style>
+  <div class="arch-head">
+    <h2>Архитектура полного решения</h2>
+    <span class="text-small text-muted">Два исследователя · общая память · проверяемые действия</span>
+  </div>
+  <div class="arch-layout">
+    <svg class="arch-connectors" aria-hidden="true"><defs><marker id="did-arch-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 Z"></path></marker></defs><g class="arch-edges"></g></svg>
+    <div class="arch-grid">
+      <div class="arch-node arch-top"><button type="button" class="btn btn-block" data-node="panel" aria-pressed="false">Оператор и панель</button><div class="arch-status text-small">Цель · Start / Stop · наблюдение</div></div>
+      <div class="arch-node arch-mission"><button type="button" class="btn btn-block" data-node="mission" aria-pressed="false">Управление миссией</button><div class="arch-status text-small">Состояние и результат · основа есть</div></div>
+      <div class="arch-node arch-model"><button type="button" class="btn btn-block" data-node="llm" aria-pressed="false">LLM</button><div class="arch-status text-small">Предложения планов · работает</div></div>
+      <div class="arch-node arch-coordinator"><button type="button" class="btn btn-block" data-node="team" aria-pressed="true">Координатор команды</button><div class="arch-status text-small">Распределение задач · в плане</div></div>
+      <div class="arch-node arch-knowledge"><button type="button" class="btn btn-block" data-node="knowledge" aria-pressed="false">Общие знания</button><div class="arch-status text-small">Карта и гипотезы · расширяем</div></div>
+      <div class="arch-node arch-storage"><button type="button" class="btn btn-block" data-node="storage" aria-pressed="false">Хранилище истории</button><div class="arch-status text-small">JSONL сейчас · БД обсуждаем</div></div>
+      <div class="arch-pair arch-researchers">
+        <div class="arch-node"><button type="button" class="btn btn-block" data-node="researcher1" aria-pressed="false">Исследователь 1</button><div class="arch-status text-small">Гипотезы и поиск · основа есть</div></div>
+        <div class="arch-node"><button type="button" class="btn btn-block" data-node="researcher2" aria-pressed="false">Исследователь 2</button><div class="arch-status text-small">Параллельная работа · в плане</div></div>
+      </div>
+      <div class="arch-pair arch-executors">
+        <div class="arch-node"><button type="button" class="btn btn-block" data-node="executor1" aria-pressed="false">Исполнитель 1</button><div class="arch-status text-small">Навигация есть · SLAM в плане</div></div>
+        <div class="arch-node"><button type="button" class="btn btn-block" data-node="executor2" aria-pressed="false">Исполнитель 2</button><div class="arch-status text-small">Движение и безопасность · в плане</div></div>
+      </div>
+      <div class="arch-node arch-world"><button type="button" class="btn btn-block" data-node="world" aria-pressed="false">Среда Gazebo</button><div class="arch-status text-small">easy есть · medium / hard в плане</div></div>
+      <div class="arch-node arch-judge"><button type="button" class="btn btn-block" data-node="judge" aria-pressed="false">Независимый судья</button><div class="arch-status text-small">Сбор · энергия · finish · local</div></div>
+    </div>
+  </div>
+  <div class="arch-cycle text-small">Наблюдение → гипотеза → действие → измерение → вывод → новый план</div>
+  <div class="arch-detail" aria-live="polite"><strong class="arch-detail-title">Координатор команды</strong><p class="arch-detail-text">Назначает участки двум роботам, согласует цели и возврат; получает результаты исследований.</p></div>
+  <script>
+    (() => {
+      const root = document.getElementById('did-full-architecture');
+      const layout = root.querySelector('.arch-layout');
+      const svg = root.querySelector('.arch-connectors');
+      const edgeGroup = root.querySelector('.arch-edges');
+      const buttons = Array.from(root.querySelectorAll('[data-node]'));
+      const byId = Object.fromEntries(buttons.map(button => [button.dataset.node, button]));
+      const descriptions = {
+        panel: ['Оператор и панель', 'Задаёт миссию, показывает карту, батарею, решения и научный журнал. Позволяет запускать и останавливать роботов.'],
+        mission: ['Управление миссией', 'Хранит цель и жизненный цикл прогона. Сводит результаты команды; принимает подтверждение завершения от судьи.'],
+        llm: ['LLM', 'Предлагает подцели и объясняет выбор. Вызовы модели обслуживают логические роли; число блоков на схеме не означает число отдельных моделей. При отказе работает резервный планировщик.'],
+        team: ['Координатор команды', 'Назначает участки двум роботам, согласует цели и возврат; получает результаты исследований.'],
+        knowledge: ['Общие знания', 'Объединяет разрешённые наблюдения: карту, оценки грунта, находки и проверенные гипотезы. Оценки имеют источник и неопределённость.'],
+        storage: ['Хранилище истории', 'Сохраняет миссии, события и измерения для анализа и восстановления. Сейчас журнал лежит в JSONL; технологию БД для полного проекта ещё выбираем.'],
+        researcher1: ['Исследователь 1', 'По датчикам ищет образцы, формулирует гипотезы, планирует эксперименты и сравнивает ожидание с измерением. Передаёт результаты координатору.'],
+        researcher2: ['Исследователь 2', 'Выполняет тот же исследовательский цикл в своём участке и использует знания первого робота. Работа второго робота ещё должна быть реализована и проверена.'],
+        executor1: ['Исполнитель 1', 'Проверяет допустимость действия, строит путь и управляет движением через ROS. Контролирует свежесть данных и остановку. SLAM добавит построение карты и локализацию во время движения.'],
+        executor2: ['Исполнитель 2', 'Отдельно управляет вторым роботом. Команды, датчики и защитная остановка адресуются его экземпляру. Он выполняет согласованные задачи и сообщает результат.'],
+        world: ['Среда Gazebo', 'Моделирует роботов, препятствия, грунты и скрытые образцы. Возвращает показания датчиков. Полная версия включает easy, medium, hard и необъявленные изменения.'],
+        judge: ['Независимый судья', 'Проверяет сборы, расход энергии и завершение у базы. Имеет доступ к скрытой истине; агент получает только разрешённые подтверждения. Сейчас используется локальный судья.']
+      };
+      const links = [
+        ['panel','mission','vertical'], ['mission','team','vertical'],
+        ['llm','team','side'], ['team','knowledge','side'], ['knowledge','storage','vertical'],
+        ['team','researcher1','branch'], ['team','researcher2','branch'],
+        ['researcher1','executor1','vertical'], ['researcher2','executor2','vertical'],
+        ['executor1','world','merge'], ['executor2','world','merge'],
+        ['world','judge','vertical'], ['judge','mission','rail']
+      ];
+      let selected = 'team';
+      function bounds(id) {
+        const base = layout.getBoundingClientRect();
+        const box = byId[id].getBoundingClientRect();
+        const nodeBox = byId[id].parentElement.getBoundingClientRect();
+        return {x:box.left-base.left,y:box.top-base.top,w:box.width,h:box.height,bottom:nodeBox.bottom-base.top,cx:box.left-base.left+box.width/2};
+      }
+      function draw() {
+        const width=layout.clientWidth, height=layout.clientHeight;
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        edgeGroup.replaceChildren();
+        for (const [from,to,kind] of links) {
+          const a=bounds(from), b=bounds(to);
+          let path;
+          if (kind==='rail') {
+            path=`M ${a.x+a.w+3} ${a.y+a.h/2} H ${width-4} V ${b.y+b.h/2} H ${b.x+b.w+5}`;
+          } else if (kind==='side' && width>560) {
+            path=`M ${a.x+a.w+4} ${a.y+a.h/2} H ${b.x-5}`;
+          } else if (kind==='side') {
+            const targetX=to==='team'?b.x+b.w*.25:a.x+a.w*.75;
+            if(to==='team') path=`M ${a.cx} ${a.y-4} V ${a.y-20} H ${targetX} V ${b.bottom+5}`;
+            else path=`M ${targetX} ${a.bottom+4} V ${b.y-20} H ${b.cx} V ${b.y-5}`;
+          } else {
+            const startY=a.bottom+4, endY=b.y-5;
+            const middle=kind==='branch'?endY-20:kind==='merge'?startY+24:(startY+endY)/2;
+            path=`M ${a.cx} ${startY} V ${middle} H ${b.cx} V ${endY}`;
+          }
+          const element=document.createElementNS('http://www.w3.org/2000/svg','path');
+          element.setAttribute('d',path);
+          element.setAttribute('marker-end','url(#did-arch-arrow)');
+          if(kind!=='rail')element.setAttribute('marker-start','url(#did-arch-arrow)');
+          if(from===selected||to===selected)element.classList.add('arch-active');
+          edgeGroup.appendChild(element);
+        }
+      }
+      for(const button of buttons) button.addEventListener('click',()=>{
+        selected=button.dataset.node;
+        for(const peer of buttons)peer.setAttribute('aria-pressed',String(peer===button));
+        root.querySelector('.arch-detail-title').textContent=descriptions[selected][0];
+        root.querySelector('.arch-detail-text').textContent=descriptions[selected][1];
+        draw();
+      });
+      new ResizeObserver(draw).observe(layout);
+      draw();
+    })();
+  </script>
+</div>
