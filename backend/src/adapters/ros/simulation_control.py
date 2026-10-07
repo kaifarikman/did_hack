@@ -7,7 +7,9 @@ from typing import Callable
 
 
 class SupervisorSimulationControl:
-    def __init__(self, supervisor_url: str, on_reset: Callable[[], None], timeout_s: float = 180.0) -> None:
+    def __init__(self, supervisor_url: str, on_reset: Callable[[], None], timeout_s: float = 180.0,
+                 map_mode: str = "static") -> None:
+        self._map_mode = map_mode
         self._url = supervisor_url.rstrip("/")
         self._on_reset = on_reset
         self._timeout_s = timeout_s
@@ -15,7 +17,7 @@ class SupervisorSimulationControl:
     def reset(self, scenario: str, seed: int) -> None:
         self._on_reset()  # старые наблюдения не должны попасть в новый прогон
         request = urllib.request.Request(
-            f"{self._url}/reset", data=json.dumps({"seed": seed, "scenario": scenario}).encode(),
+            f"{self._url}/reset", data=json.dumps({"seed": seed, "scenario": scenario, "map_mode": self._map_mode}).encode(),
             headers={"Content-Type": "application/json"}, method="POST",
         )
         with urllib.request.urlopen(request, timeout=self._timeout_s) as response:  # HTTPError = отказ

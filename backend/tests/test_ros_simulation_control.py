@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from adapters.ros.simulation_control import SupervisorSimulationControl
 
 
-def test_reset_sends_scenario_and_seed_to_supervisor():
+def run_reset(map_mode=None):
     received = []
 
     class Handler(BaseHTTPRequestHandler):
@@ -23,9 +23,18 @@ def test_reset_sends_scenario_and_seed_to_supervisor():
     server = HTTPServer(("127.0.0.1", 0), Handler)
     threading.Thread(target=server.handle_request, daemon=True).start()
     cache_resets = []
+    extra = {"map_mode": map_mode} if map_mode else {}
     control = SupervisorSimulationControl(f"http://127.0.0.1:{server.server_port}",
-                                          lambda: cache_resets.append(1), timeout_s=5)
+                                          lambda: cache_resets.append(1), timeout_s=5, **extra)
     control.reset("hard", 12)
     server.server_close()
-    assert received == [("/reset", {"seed": 12, "scenario": "hard"})]
     assert len(cache_resets) == 2
+    return received
+
+
+def test_reset_sends_scenario_and_seed_to_supervisor():
+    assert run_reset() == [("/reset", {"seed": 12, "scenario": "hard", "map_mode": "static"})]
+
+
+def test_reset_can_request_slam_profile():
+    assert run_reset("slam") == [("/reset", {"seed": 12, "scenario": "hard", "map_mode": "slam"})]
