@@ -35,7 +35,8 @@ def grid_from_slam(
 class RosSlamMapSource:
     """MapSource поверх подписки на /map: None, пока SLAM не опубликовал первую карту."""
 
-    def __init__(self, node, base_world_m: tuple[float, float]) -> None:
+    def __init__(self, node, base_world_m: tuple[float, float], topic: str = "/map") -> None:
+        """topic="/team/map" для командной карты: она уже в мировых координатах, base_world_m=(0.0, 0.0)."""
         from nav_msgs.msg import OccupancyGrid as RosOccupancyGrid
         from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 
@@ -45,7 +46,7 @@ class RosSlamMapSource:
         self._revision = 0
         latched = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                              durability=DurabilityPolicy.TRANSIENT_LOCAL)
-        node.create_subscription(RosOccupancyGrid, "/map", self._on_map, latched)
+        node.create_subscription(RosOccupancyGrid, topic, self._on_map, latched)
 
     def _on_map(self, message) -> None:
         info = message.info
