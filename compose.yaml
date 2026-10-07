@@ -7,14 +7,14 @@ services:
     image: did-sim:dev
     init: true
     environment:
-      ROS_DOMAIN_ID: "7"
-      GZ_PARTITION: did
+      ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-7}"
+      GZ_PARTITION: ${GZ_PARTITION:-did}
       INITIAL_SEED: "0"
     volumes:
       - ./simulation:/workspace/simulation
     command: ["python3", "/workspace/simulation/scripts/supervisor.py"]
     ports:
-      - "6080:6080"   # noVNC для профиля gui
+      - "${GUI_PORT:-6080}:6080"   # noVNC для профиля gui
     expose:
       - "7000"   # HTTP супервизора: POST /reset {"seed": N}, GET /status
     healthcheck:
@@ -33,8 +33,8 @@ services:
     init: true
     network_mode: "service:simulation"  # gz-transport: общий сетевой стек с сервером
     environment:
-      ROS_DOMAIN_ID: "7"
-      GZ_PARTITION: did
+      ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-7}"
+      GZ_PARTITION: ${GZ_PARTITION:-did}
     volumes:
       - ./simulation:/workspace/simulation
     command: ["/workspace/simulation/scripts/gui_entrypoint.sh"]
@@ -47,7 +47,7 @@ services:
       context: backend
     init: true
     environment:
-      ROS_DOMAIN_ID: "7"
+      ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-7}"
       SIMULATION_URL: http://simulation:7000
       MAP_YAML: /workspace/simulation/judge/data/map.yaml
       JOURNAL_DIR: /data/journal
@@ -75,7 +75,7 @@ services:
     environment:
       BACKEND_URL: http://backend:8000
     ports:
-      - "8080:8080"
+      - "${FRONTEND_PORT:-8080}:8080"
     depends_on:
       backend:
         condition: service_healthy
