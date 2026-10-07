@@ -9,7 +9,7 @@ sys.path.insert(0, JUDGE_DIR)
 from did_judge.config import JudgeConfig  # noqa: E402
 from did_judge.engine import JudgeEngine  # noqa: E402
 from did_judge.occupancy import load_occupancy_grid  # noqa: E402
-from did_judge.scenario import Scenario, SoilZone, generate_easy_scenario  # noqa: E402
+from did_judge.scenario import Scenario, SoilZone, generate_scenario  # noqa: E402
 
 
 @pytest.fixture(scope="session")
@@ -24,7 +24,7 @@ def config():
 
 @pytest.fixture
 def scenario(grid, config):
-    return generate_easy_scenario(7, grid, config)
+    return generate_scenario(7, grid, config)
 
 
 @pytest.fixture

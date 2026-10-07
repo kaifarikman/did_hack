@@ -30,6 +30,7 @@ class JudgeConfig:
     score_per_collision: float = 1.0
     score_per_false_collect: float = 2.0
     pose_jump_limit_m: float = 0.5
+    max_round_trip_battery_fraction: float = 0.5
 
     @staticmethod
     def from_json_file(path: str) -> "JudgeConfig":

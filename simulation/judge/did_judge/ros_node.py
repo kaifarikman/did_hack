@@ -18,7 +18,7 @@ from std_srvs.srv import Trigger
 from .config import JudgeConfig
 from .engine import JudgeEngine
 from .occupancy import load_occupancy_grid
-from .scenario import generate_easy_scenario
+from .scenario import generate_scenario
 
 DEFAULT_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 COLLISION_RANGE_M = 0.14  # лидар Burger стоит у центра; радиус корпуса ~0.105 м
@@ -40,7 +40,7 @@ class JudgeNode(Node):
         self.config = JudgeConfig.from_json_file(config_path) if config_path else JudgeConfig()
         grid = load_occupancy_grid(self.get_parameter("map_yaml").value)
         seed = int(self.get_parameter("seed").value)
-        self.engine = JudgeEngine(generate_easy_scenario(seed, grid, self.config), self.config)
+        self.engine = JudgeEngine(generate_scenario(seed, grid, self.config), self.config)
         self.simulation_time_s = 0.0
         self.last_collision_time_s = -COLLISION_COOLDOWN_S
         self.published_events = 0

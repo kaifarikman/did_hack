@@ -1,4 +1,5 @@
 """Сетка занятости: чтение PGM/YAML карты nav2 и достижимость клеток."""
+import heapq
 import math
 import re
 from collections import deque
@@ -63,6 +64,31 @@ class OccupancyGrid:
                         seen.add(neighbour)
                         queue.append(neighbour)
         return sorted(seen)
+
+
+    def path_lengths_from(self, start: Cell) -> dict:
+        """Длины кратчайших путей (м) от start до достижимых клеток; шаги 8-связные."""
+        if not self.is_free(*start):
+            return {}
+        lengths = {start: 0.0}
+        queue = [(0.0, start)]
+        while queue:
+            length, cell = heapq.heappop(queue)
+            if length > lengths[cell]:
+                continue
+            column, row = cell
+            for dc in (-1, 0, 1):
+                for dr in (-1, 0, 1):
+                    neighbour = (column + dc, row + dr)
+                    if (dc or dr) and self.is_free(*neighbour):
+                        if dc and dr and not (self.is_free(column + dc, row)
+                                              and self.is_free(column, row + dr)):
+                            continue
+                        candidate = length + math.hypot(dc, dr) * self.resolution_m
+                        if candidate < lengths.get(neighbour, math.inf):
+                            lengths[neighbour] = candidate
+                            heapq.heappush(queue, (candidate, neighbour))
+        return lengths
 
 
 def _read_pgm(path: str) -> Tuple[int, int, List[int]]:
