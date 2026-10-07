@@ -22,6 +22,7 @@ class JudgeConfig:
     sensor_noise_sigma: float = 0.03
     energy_per_m: float = 1.0
     soil_surcharge_per_m: float = 2.0
+    soil_speed_factor: float = 0.5
     rotation_energy_per_rad: float = 0.1
     idle_energy_per_s: float = 0.0
     collision_penalty_energy: float = 1.0

@@ -87,11 +87,11 @@ class JudgeEngine:
 
     def _travel_cost(self, start: Point, end: Point, distance: float) -> float:
         midpoint = ((start[0] + end[0]) / 2.0, (start[1] + end[1]) / 2.0)
-        in_soil = any(zone.contains(midpoint) for zone in self._soil_zones())
+        in_soil = any(zone.contains(midpoint) for zone in self.soil_zones())
         per_metre = self.config.energy_per_m + (self.config.soil_surcharge_per_m if in_soil else 0.0)
         return distance * per_metre
 
-    def _soil_zones(self):
+    def soil_zones(self):
         if self.schedule is None:
             return self.scenario.soil_zones
         return self.schedule.soil_zones_at(self.scenario, self.simulation_time_s)

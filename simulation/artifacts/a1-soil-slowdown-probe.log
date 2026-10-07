@@ -1,0 +1,2 @@
+seed=0 scenario=easy, судья остановлен, зона (-1.5,-0.5) r=0.6 factor=0.5, команда 0.1 м/с 5 с
+in_zone_m=0.275 outside_m=0.548 ratio=0.501 expected_ratio=0.5

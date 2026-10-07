@@ -20,6 +20,7 @@ from .engine import JudgeEngine
 from .occupancy import load_occupancy_grid
 from .dynamics import generate_event_schedule
 from .scenario import generate_scenario
+from .soil_slowdown import DEFAULT_STATE_PATH, write_soil_state
 
 DEFAULT_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 COLLISION_RANGE_M = 0.14  # лидар Burger стоит у центра; радиус корпуса ~0.105 м
@@ -59,6 +60,7 @@ class JudgeNode(Node):
         self.create_service(Trigger, "/did/finish", self._on_finish)
         self.create_timer(0.2, self._publish_fast)
         self.create_timer(1.0, self._publish_score)
+        self.create_timer(0.2, self._publish_soil_state)
         self.get_logger().info(f"Судья local готов: seed={seed} (истина не публикуется)")
 
     def _on_clock(self, message):
@@ -101,6 +103,11 @@ class JudgeNode(Node):
                 "battery": event.battery,
             })))
         self.published_events = len(self.engine.events)
+
+    def _publish_soil_state(self):
+        """Закрытый канал к стражу скорости внутри контейнера; не ROS-топик."""
+        write_soil_state(DEFAULT_STATE_PATH, self.config.base_world_m, self.engine.soil_zones(),
+                         self.config.soil_speed_factor)
 
     def _publish_score(self):
         engine = self.engine
