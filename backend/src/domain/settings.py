@@ -26,7 +26,9 @@ class MissionSettings:
     max_planner_requests: int = 80  # лимит запросов плана за прогон; дальше — алгоритмический резерв
     min_planner_interval_s: float = 1.0
     max_plan_steps: int = 3
-    sensor_wait_s: float = 15.0  # сколько ждать восстановления неисправного датчика до возврата
+    sensor_wait_s: float = 15.0
+    map_wait_s: float = 20.0  # сколько ждать первой карты SLAM
+    pose_jump_m: float = 0.25  # скачок позы за тик больше этого — коррекция локализации  # сколько ждать восстановления неисправного датчика до возврата
     max_collect_attempts: int = 4
     target_samples: int = 3
     max_decisions: int = 60

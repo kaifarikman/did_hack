@@ -139,6 +139,9 @@ class EnvironmentStatus(Protocol):
     def supported_scenarios(self) -> tuple[str, ...]:
         """Профили, которые среда действительно применяет при reset."""
 
+    def supported_map_modes(self) -> tuple[str, ...]:
+        """Режимы карты среды: static — готовая карта, slam — строится из наблюдений."""
+
 
 class Planner(Protocol):
     """План из нескольких подцелей. Возвращает намерения, не скорости."""

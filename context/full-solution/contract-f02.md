@@ -48,3 +48,11 @@
 2. `RosBridge`: `generation` и `sequence` в наблюдениях, `sample_signal_age_s`, `events_after` с номерами событий, `score()` из `/did/score`, `JudgeReply(..., OperationOutcome.UNKNOWN)` при таймауте сервиса.
 3. Для SLAM — `localization` и `OccupancyGrid.revision`; для двух роботов — отдельные экземпляры портов на каждый `robot_id`.
 4. Тесты адаптеров A сравнивают свои преобразования с `contract_fixtures.load_*` и вызывают `assert_observation_valid`.
+
+## Дополнение B4: SLAM (2026-10-07)
+
+- `POST /runs` принимает `map_mode` (`static` по умолчанию, `slam`); `/health.supported_map_modes`. Точка запуска берёт режимы из `SUPPORTED_MAP_MODES` при `SIMULATION_CONTRACT=2.0`; путь совместимости — только `static`.
+- `MapSource.load()` в SLAM может вернуть `None` в начале: робот стоит до `map_wait_s` (20 с), затем `failed: map_unavailable`. Готовая карта не подставляется.
+- Каждая новая версия карты — новый `OccupancyGrid` с бо́льшим `revision`; размер и `origin` могут меняться. Ядро хранит измерения в координатах `world`, поэтому смена размера их не сдвигает. Ожидаемый идентификатор версии для панели: `map_id#r<revision>`.
+- `localization`/`localization_error_m` наблюдения увеличивают запас возврата (`degraded` — минимум +20 %, ошибка в метрах — до +50 %).
+- Скачок позы больше `pose_jump_m` (0.25 м) за тик считается коррекцией локализации: текущее измерение расхода отбрасывается, измерения сигнала с прошлой коррекции сдвигаются на ту же величину. Если A сможет публиковать явное событие коррекции с преобразованием, ядро заменит эвристику на него.

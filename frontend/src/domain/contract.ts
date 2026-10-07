@@ -14,6 +14,8 @@ export const FINISHED_STATUSES: readonly RunStatus[] = ["completed", "stopped", 
 export type GoalKind = "explore" | "approach" | "collect" | "return";
 export const SCENARIOS = ["easy", "medium", "hard"] as const;
 export type Scenario = (typeof SCENARIOS)[number];
+export const MAP_MODES = ["static", "slam"] as const;
+export type MapMode = (typeof MAP_MODES)[number];
 export type JudgeMode = "local" | "official";
 export type PlannerMode = "llm" | "fallback";
 export type JournalKind = "observation" | "hypothesis" | "experiment" | "decision" | "outcome" | "error";
@@ -137,6 +139,7 @@ export interface MissionSnapshot {
   terrain_estimates: TerrainEstimate[];
   last_error: ErrorInfo | null;
   mission_text: string;
+  map_mode: MapMode;
   target_samples: number | null;
   plan: MissionPlanView | null;
   research: ResearchView | null;
@@ -149,6 +152,8 @@ export interface HealthStatus {
   llm_available: boolean;
   /** Профили, которые среда применяет при reset; старый backend без поля — только easy. */
   supported_scenarios: Scenario[];
+  /** static — готовая карта, slam — строится из наблюдений; у старого backend только static. */
+  supported_map_modes: MapMode[];
 }
 
 export interface MapOrigin {
@@ -194,6 +199,7 @@ export interface StartRunRequest {
   scenario: Scenario;
   seed: number;
   mission_text?: string;
+  map_mode?: MapMode;
 }
 
 export interface StopRunRequest {

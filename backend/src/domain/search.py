@@ -42,6 +42,7 @@ class SignalSearch:
         self._collect_attempts = 0
         self._best_signal: float | None = None
         self._best_point: Point | None = None
+        self._corrected_upto = 0  # с какого индекса истории измерения ещё не исправлены коррекцией позы
         self._decisions_since_improvement = 0
 
     @property
@@ -80,6 +81,7 @@ class SignalSearch:
     def reset_after_collect(self) -> None:
         """После подтверждённого сбора сигнал относится к другому образцу: история устарела."""
         self._history.clear()
+        self._corrected_upto = 0
         self._recent_here.clear()
         self._best_signal = None
         self._best_point = None
@@ -93,6 +95,15 @@ class SignalSearch:
 
     def collect_attempts_near(self, point: Point, radius_m: float = 0.3) -> int:
         return sum(1 for p in self._failed_collect_points if distance_m(p, point) <= radius_m)
+
+    def shift_since_correction(self, delta: Point) -> None:
+        """Коррекция локализации: измерения после прошлой коррекции были в смещённой системе."""
+        start = self._corrected_upto
+        moved = lambda p: Point(p.x_m + delta.x_m, p.y_m + delta.y_m)  # noqa: E731
+        self._history[start:] = [_SignalSample(moved(s.point), s.signal) for s in self._history[start:]]
+        if self._best_point is not None:
+            self._best_point = moved(self._best_point)
+        self._corrected_upto = len(self._history)
 
     def note_target(self, point: Point) -> None:
         """Цель выбрана: повторный выбор той же точки считается признаком цикла."""
@@ -161,18 +172,23 @@ class SignalSearch:
     def rank_candidates(
         self, reachable: list[Point], robot: Point, min_distance_m: float, max_distance_m: float,
         limit: int = 6, focus_signal: float | None = None, focus_radius_m: float = 1.2,
+        frontier: list[Point] | tuple[Point, ...] = (),
     ) -> list[Candidate]:
         """Ценность поиска без учёта энергии: прогноз сигнала, новизна, направление градиента.
 
         При сильном лучшем сигнале (≥ focus_signal) поиск держится в радиусе `focus_radius_m`
         от точки лучшего сигнала: образец рядом, дальние прыжки только тратят энергию.
+        Точки `frontier` (граница с неизвестным на карте SLAM) получают надбавку за открытие карты,
+        которая убывает с ростом лучшего сигнала.
         """
         gradient = self._gradient()
         best = self._best_signal or 0.0
         signal_weight = 1.0 + 2.0 * best
         focus = self._best_point if focus_signal is not None and best >= focus_signal else None
+        frontier_bonus = 0.6 * (1.0 - min(1.0, best))
+        frontier_set = set(frontier)
         ranked = []
-        for point in reachable:
+        for point in [*reachable, *frontier]:
             travel = distance_m(robot, point)
             if not min_distance_m <= travel <= max_distance_m or self._excluded(point):
                 continue
@@ -183,7 +199,7 @@ class SignalSearch:
             novelty = min(nearest_visited, 1.5) / 1.5
             repeat_penalty = 0.5 * self.repeats_near(point)
             score = (signal_weight * predicted + novelty + 0.5 * self._alignment(robot, point, gradient)
-                     - repeat_penalty)
+                     - repeat_penalty + (frontier_bonus if point in frontier_set else 0.0))
             ranked.append(Candidate(point, score, predicted))
         ranked.sort(key=lambda candidate: candidate.score, reverse=True)
         return _spread(ranked, limit)

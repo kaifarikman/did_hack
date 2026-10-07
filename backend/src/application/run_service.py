@@ -68,7 +68,7 @@ class RunService:
             run_id=None, revision=0, status=MissionStatus.IDLE, scenario=None, seed=None,
             judge_mode=self._settings.judge_mode,
             planner_mode="llm" if self._environment.llm_available() else "fallback",
-            simulation_time_s=None, map_id=grid.map_id if grid else None, robot_pose=None,
+            simulation_time_s=None, map_id=grid.versioned_id if grid else None, robot_pose=None,
             base_position=self._settings.base, battery_remaining=None,
             battery_initial=self._settings.battery_initial, sample_signal=None, samples_collected=0,
             return_energy_estimate=None, current_goal=None, trajectory=(), planned_path=(),
@@ -85,11 +85,12 @@ class RunService:
 
     # ---------------------------------------------------------- commands
 
-    def start_run(self, request_id: str, scenario: str, seed: int, mission_text: str | None = None) -> MissionSnapshot:
+    def start_run(self, request_id: str, scenario: str, seed: int, mission_text: str | None = None,
+                  map_mode: str = "static") -> MissionSnapshot:
         text = (mission_text or "").strip() or DEFAULT_MISSION_TEXT
         if len(text) > MISSION_TEXT_MAX:
             raise InvalidRequest(f"Текст миссии длиннее {MISSION_TEXT_MAX} символов.")
-        fingerprint = ("start", scenario, seed, text)
+        fingerprint = ("start", scenario, seed, text, map_mode)
         with self._lock:
             replay = self._replay(request_id, fingerprint)
             if replay is not None:
@@ -101,17 +102,23 @@ class RunService:
             current = self._current
             if current is not None and current.status.is_active:
                 raise RunConflict("Другой прогон ещё активен.")
-            if not self._environment.ros_connected() or self._maps.load() is None:
+            if map_mode not in ("static", "slam"):
+                raise InvalidRequest(f"Режим карты {map_mode!r} неизвестен.")
+            if map_mode not in self._environment.supported_map_modes():
+                raise ScenarioUnavailable(f"Среда пока не поддерживает режим карты {map_mode!r}.")
+            # в SLAM карты в начале может не быть: робот ждёт её сам, а не отказывает старту
+            if not self._environment.ros_connected() or (map_mode == "static" and self._maps.load() is None):
                 raise EnvironmentNotReady("Ожидаются наблюдения ROS и карта.")
             mission = Mission(
                 run_id=self._id_factory(), scenario=scenario, seed=seed,
                 judge_mode=self._settings.judge_mode,
                 planner_mode="llm" if self._environment.llm_available() else "fallback",
-                map_id=self._maps.load().map_id, base=self._settings.base,
+                map_id=self._map_id(), base=self._settings.base,
                 battery_initial=self._settings.battery_initial,
                 generation=self._next_generation(),
                 mission_text=text,
                 target_samples=PUBLIC_PROFILES[scenario].sample_count,
+                map_mode=map_mode,
             )
             # новая память исследователя на каждый прогон: фабрика создаёт свежие объекты
             self._controllers[mission.run_id] = self._controller_factory(mission)
@@ -134,6 +141,10 @@ class RunService:
             mission.request_stop()
             self._commands[request_id] = (fingerprint, run_id)
             return mission.snapshot()
+
+    def _map_id(self) -> str | None:
+        grid = self._maps.load()
+        return grid.versioned_id if grid else None
 
     def _replay(self, request_id: str, fingerprint: tuple) -> Mission | None:
         known = self._commands.get(request_id)

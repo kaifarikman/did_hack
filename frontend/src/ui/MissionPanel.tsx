@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SCENARIOS, type Scenario } from "../domain/contract";
+import { MAP_MODES, SCENARIOS, type MapMode, type Scenario } from "../domain/contract";
 import type { MissionController } from "../application/missionController";
 import { startDisabledReason, stopDisabledReason, type MissionViewState } from "../application/viewState";
 import {
@@ -33,14 +33,17 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
   const [seedText, setSeedText] = useState("42");
   const [scenario, setScenario] = useState<Scenario>("easy");
   const [missionText, setMissionText] = useState("");
+  const [mapMode, setMapMode] = useState<MapMode>("static");
   const { snapshot, health, command } = view;
   const supported = health?.supported_scenarios ?? ["easy"];
+  const mapModes = health?.supported_map_modes ?? ["static"];
   const seed = Number(seedText);
   const seedValid = seedText.trim() !== "" && Number.isInteger(seed);
   const startReason =
     startDisabledReason(view) ??
     (seedValid ? null : "seed должен быть целым числом") ??
-    (supported.includes(scenario) ? null : `профиль ${scenario} не поддерживается средой`);
+    (supported.includes(scenario) ? null : `профиль ${scenario} не поддерживается средой`) ??
+    (mapModes.includes(mapMode) ? null : "режим карты не поддерживается средой");
   const stopReason = stopDisabledReason(view);
   const ratio = snapshot === null ? null : batteryRatio(snapshot.battery_remaining, snapshot.battery_initial);
   const outcome = snapshot === null ? "none" : outcomeKind(snapshot.status);
@@ -92,6 +95,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
             <dd>
               {snapshot.run_id ?? "нет данных"}
               {snapshot.scenario !== null && ` · ${snapshot.scenario}`}
+              {snapshot.map_mode === "slam" && " · SLAM"}
               {snapshot.seed !== null && ` · seed ${snapshot.seed}`}
             </dd>
           </dl>
@@ -143,6 +147,17 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           </select>
         </label>
         <label className="seed-field">
+          Карта
+          <select value={mapMode} onChange={(event) => setMapMode(event.target.value as MapMode)}>
+            {MAP_MODES.map((mode) => (
+              <option key={mode} value={mode} disabled={!mapModes.includes(mode)}>
+                {mode === "static" ? "готовая" : "SLAM"}
+                {mapModes.includes(mode) ? "" : " (нет в среде)"}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="seed-field">
           seed
           <input
             type="text"
@@ -157,7 +172,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           className="button-primary"
           disabled={startReason !== null}
           aria-describedby="command-hint"
-          onClick={() => void controller.startRun(seed, scenario, missionText)}
+          onClick={() => void controller.startRun(seed, scenario, missionText, mapMode)}
         >
           Start
         </button>

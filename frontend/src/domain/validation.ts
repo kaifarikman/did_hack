@@ -8,7 +8,7 @@ import type {
   MissionSnapshot,
   Point,
 } from "./contract";
-import { SCENARIOS, SENSOR_FAULTS, SENSOR_STATES, STEP_STATUSES } from "./contract";
+import { MAP_MODES, SCENARIOS, SENSOR_FAULTS, SENSOR_STATES, STEP_STATUSES } from "./contract";
 import type { HazardView, HypothesisView, MissionPlanView, ResearchView } from "./contract";
 
 export class ContractError extends Error {
@@ -276,6 +276,7 @@ export function parseSnapshot(raw: unknown): MissionSnapshot {
     ),
     last_error: field(source, "last_error", path, nullable(readErrorInfo)),
     mission_text: optionalField(source, "mission_text", path, readString, ""),
+    map_mode: optionalField(source, "map_mode", path, enumReader(MAP_MODES), "static"),
     target_samples: optionalField(source, "target_samples", path, nullable(numberReader({ min: 1 }, true)), null),
     plan: optionalField(source, "plan", path, nullable(readPlan), null),
     research: optionalField(source, "research", path, nullable(readResearch), null),
@@ -294,6 +295,7 @@ export function parseHealth(raw: unknown): HealthStatus {
       source.supported_scenarios === undefined
         ? ["easy"]
         : field(source, "supported_scenarios", path, arrayOf(enumReader(SCENARIOS))),
+    supported_map_modes: optionalField(source, "supported_map_modes", path, arrayOf(enumReader(MAP_MODES)), ["static"]),
   };
 }
 

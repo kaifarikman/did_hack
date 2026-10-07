@@ -299,9 +299,13 @@ class FakeEnvironment:
     ros: bool = True
     llm: bool = False
     scenarios: tuple[str, ...] = ("easy",)
+    map_modes: tuple[str, ...] = ("static",)
 
     def ros_connected(self) -> bool:
         return self.ros
+
+    def supported_map_modes(self) -> tuple[str, ...]:
+        return self.map_modes
 
     def supported_scenarios(self) -> tuple[str, ...]:
         return self.scenarios

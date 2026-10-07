@@ -69,7 +69,7 @@ def test_health_map_and_error_shape(stack):
     client, _, _, environment, maps = stack
     assert client.get("/api/v1/health").json() == {
         "status": "ready", "ros_connected": True, "judge_mode": "local", "llm_available": False,
-        "supported_scenarios": ["easy"]}
+        "supported_scenarios": ["easy"], "supported_map_modes": ["static"]}
     body = client.get("/api/v1/map").json()
     assert set(body) == set(example("map.json")) and len(body["cells"]) == body["width"] * body["height"]
     assert body["origin"].keys() == example("map.json")["origin"].keys()

@@ -100,6 +100,7 @@ class MissionSnapshot:
     last_error: MissionError | None
     mission_text: str = ""
     target_samples: int | None = None
+    map_mode: str = "static"
     plan: MissionPlan | None = None
     plan_statuses: tuple[StepStatus, ...] = ()
     plan_revision_reason: str | None = None
@@ -154,6 +155,7 @@ class Mission:
         generation: int = 1,
         mission_text: str = "",
         target_samples: int | None = None,
+        map_mode: str = "static",
     ) -> None:
         self._lock = threading.RLock()
         self.run_id = run_id
@@ -161,6 +163,7 @@ class Mission:
         self.seed = seed
         self.generation = generation  # поколение прогона: наблюдения и ответы других поколений отбрасываются
         self.mission_text = mission_text
+        self.map_mode = map_mode
         self.target_samples = target_samples
         self._plan: MissionPlan | None = None
         self._plan_statuses: tuple[StepStatus, ...] = ()
@@ -275,6 +278,14 @@ class Mission:
                 self._planner_mode = goal.source
             self._revision += 1
 
+    def set_map_id(self, map_id: str | None) -> None:
+        """SLAM: карта появляется и меняет идентификатор по ходу прогона."""
+        with self._lock:
+            if self._status.is_terminal or map_id == self._map_id:
+                return
+            self._map_id = map_id
+            self._revision += 1
+
     def set_return_estimate(self, estimate: float | None) -> None:
         with self._lock:
             self._return_estimate = estimate
@@ -317,7 +328,6 @@ class Mission:
                 judge_mode=self._judge_mode,
                 planner_mode=self._planner_mode,
                 simulation_time_s=self._simulation_time_s,
-                map_id=self._map_id,
                 robot_pose=self._pose,
                 base_position=self._base,
                 battery_remaining=self._battery,
@@ -333,6 +343,8 @@ class Mission:
                 last_error=self._error,
                 mission_text=self.mission_text,
                 target_samples=self.target_samples,
+                map_mode=self.map_mode,
+                map_id=self._map_id,
                 plan=self._plan,
                 plan_statuses=self._plan_statuses,
                 plan_revision_reason=self._plan_revision_reason,

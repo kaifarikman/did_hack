@@ -20,6 +20,7 @@ from application.motion import MotionExecutor
 from application.navigation_service import NavigationService
 from application.research import TerrainResearch
 from application.planner import FallbackPlanner, ResilientPlanner
+from application.ports import MapMode
 from application.run_service import RunService
 from application.ticker import TickLoop
 from domain.energy import TerrainEstimator
@@ -45,6 +46,7 @@ class _Environment:
     llm_configured: bool
     judge_mode: str = "local"
     scenarios: tuple[str, ...] = LEGACY_SCENARIOS
+    map_modes: tuple[str, ...] = ("static",)
 
     def ros_connected(self) -> bool:
         return self.runtime.bridge.ros_connected()
@@ -54,6 +56,9 @@ class _Environment:
 
     def supported_scenarios(self) -> tuple[str, ...]:
         return self.scenarios
+
+    def supported_map_modes(self) -> tuple[str, ...]:
+        return self.map_modes
 
 
 class _LazyMap:
@@ -79,10 +84,12 @@ def create_default_app() -> FastAPI:
     if os.environ.get("SIMULATION_CONTRACT", "legacy") == "2.0":
         # адаптер A подтверждает ResetRequest сам; профили перечисляет среда
         simulation, scenarios = supervisor, tuple(os.environ.get("SUPPORTED_SCENARIOS", "easy").split(","))
+        map_modes = tuple(os.environ.get("SUPPORTED_MAP_MODES", "static").split(","))
     else:
         # Супервизор MVP принимает только seed: обёртка честно отклоняет medium/hard, SLAM и второго робота.
         simulation, scenarios = LegacySimulationControl(supervisor), LEGACY_SCENARIOS
-    environment = _Environment(runtime, llm_config is not None, settings.judge_mode, scenarios)
+        map_modes = ("static",)
+    environment = _Environment(runtime, llm_config is not None, settings.judge_mode, scenarios, map_modes)
     # События и счёт подключаются, когда мост A их реализует (контракт 2.0); иначе ядро работает как в MVP.
     events = bridge if hasattr(bridge, "events_after") else None
     score = bridge if hasattr(bridge, "score") else None
@@ -99,7 +106,7 @@ def create_default_app() -> FastAPI:
             motion=MotionExecutor(bridge, StuckDetector(), run_settings.arrival_tolerance_m),
             judge=bridge, simulation=simulation, planner=planner, journal=journal,
             navigation=NavigationService(grid, estimator, run_settings, hazards), clock=clock,
-            events=events, score=score,
+            events=events, score=score, map_mode=MapMode(mission.map_mode),
         )
         research = TerrainResearch(estimator, HypothesisBook(), hazards=hazards)
         return MissionController(mission, ports, run_settings, research, SignalSearch(),

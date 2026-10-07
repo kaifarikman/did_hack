@@ -25,6 +25,7 @@ class StartRunBody(BaseModel):
     scenario: StrictStr
     seed: StrictInt
     mission_text: StrictStr | None = None
+    map_mode: StrictStr = "static"
 
 
 class StopRunBody(BaseModel):
@@ -64,6 +65,7 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
             "judge_mode": environment.judge_mode,
             "llm_available": environment.llm_available(),
             "supported_scenarios": list(environment.supported_scenarios()),
+            "supported_map_modes": list(environment.supported_map_modes()),
         }
 
     @app.get("/api/v1/state")
@@ -79,7 +81,7 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
 
     @app.post("/api/v1/runs", status_code=202)
     def start_run(body: StartRunBody) -> dict:
-        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed, body.mission_text))
+        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed, body.mission_text, body.map_mode))
 
     @app.post("/api/v1/runs/{run_id}/stop", status_code=202)
     def stop_run(run_id: str, body: StopRunBody) -> dict:

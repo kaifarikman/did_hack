@@ -48,6 +48,7 @@ export const readyHealth: HealthStatus = {
   judge_mode: "local",
   llm_available: true,
   supported_scenarios: ["easy", "medium", "hard"],
+  supported_map_modes: ["static", "slam"],
 };
 
 /** Виртуальные часы: время идёт только через advance. */

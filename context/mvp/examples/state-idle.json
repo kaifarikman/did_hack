@@ -28,5 +28,6 @@
   "mission_text": "",
   "target_samples": null,
   "plan": null,
-  "research": null
+  "research": null,
+  "map_mode": "static"
 }

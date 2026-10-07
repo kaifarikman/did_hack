@@ -80,9 +80,12 @@ class MissionController:
         self._simulation_time_s: float | None = None
         self._return_estimate: float | None = None
         self._return_estimate_at: Point | None = None
-        self._return_estimate_revision = -1
+        self._return_estimate_revision: tuple = ()
         self._published_terrain_revision = -1
         self._localization_lost_since_s: float | None = None
+        self._map_missing_since_s: float | None = None
+        self._seen_map_revision: int | None = None
+        self._last_pose_point: Point | None = None
         self._events: EventFeed | None = None
 
     # ---------------------------------------------------------------- tick
@@ -101,6 +104,9 @@ class MissionController:
         if observation is None:
             return
         self._ingest(observation)
+        if not self._map_ready():
+            return
+        self._check_map_change(observation)
         pose = observation.pose
         motion_state = self._ports.motion.step(pose, self._ports.clock.monotonic_s())
         if motion_state is MotionState.MOVING:
@@ -111,6 +117,59 @@ class MissionController:
             self._on_stuck(observation)
         else:
             self._decide(observation)
+
+    # ------------------------------------------------------------ карта
+
+    def _map_ready(self) -> bool:
+        """SLAM: карты может ещё не быть. Стоим, ждём ограниченное время, затем честный отказ."""
+        if self._ports.navigation.map_available:
+            self._map_missing_since_s = None
+            return True
+        self._ports.motion.stop()
+        now = self._ports.clock.monotonic_s()
+        if self._map_missing_since_s is None:
+            self._map_missing_since_s = now
+            self._log(JournalKind.OBSERVATION, "Ожидание карты", "Карты ещё нет: движение не начинается, пока нет известных свободных клеток.")
+        elif now - self._map_missing_since_s > self._settings.map_wait_s:
+            self._fail("map_unavailable", "Карта не появилась; без неё маршрут и возврат не проверяются.", True)
+        return False
+
+    def _check_map_change(self, observation: Observation) -> None:
+        """Новая версия карты: маршрут через ставшие запретными клетки прерывается."""
+        revision = self._ports.navigation.map_revision
+        if revision == self._seen_map_revision:
+            return
+        first = self._seen_map_revision is None
+        self._seen_map_revision = revision
+        self._mission.set_map_id(self._ports.navigation.map_id)
+        if first or self._goal is None:
+            return
+        path = self._mission.snapshot().planned_path
+        if not self._ports.navigation.path_blocked(observation.pose.point, path):
+            return
+        self._ports.motion.stop()
+        goal, self._goal = self._goal, None
+        self._plans.invalidate(f"карта обновлена (версия {revision}): маршрут пересекает препятствие или неизвестное")
+        self._last_replan = ("обновление карты", None)
+        self._log(JournalKind.DECISION, "Перепланирование",
+                  f"Карта версии {revision}: маршрут к {goal.kind.value} больше недопустим и прерван.")
+
+    def _check_pose_jump(self, observation: Observation) -> None:
+        """Скачок позы без соответствующего движения — коррекция локализации, не путь по грунту."""
+        previous, self._last_pose_point = self._last_pose_point, observation.pose.point
+        if previous is None:
+            return
+        jump = distance_m(previous, observation.pose.point)
+        if jump < self._settings.pose_jump_m:
+            return
+        delta = Point(observation.pose.x_m - previous.x_m, observation.pose.y_m - previous.y_m)
+        self._research.discard_segment()
+        self._search.shift_since_correction(delta)
+        self._log(
+            JournalKind.OBSERVATION, "Коррекция позы",
+            f"Поза сместилась на {jump:.2f} м за один тик. Текущее измерение расхода отброшено; "
+            "измерения сигнала с прошлой коррекции сдвинуты на ту же величину.",
+        )
 
     # ------------------------------------------------------------ lifecycle
 
@@ -219,6 +278,7 @@ class MissionController:
 
     def _ingest(self, observation: Observation) -> None:
         self._simulation_time_s = observation.simulation_time_s
+        self._check_pose_jump(observation)
         pose = observation.pose
         self._mission.update_telemetry(
             observation.simulation_time_s, pose, observation.battery_remaining, observation.sample_signal
@@ -295,14 +355,18 @@ class MissionController:
         moved = (
             self._return_estimate_at is None
             or distance_m(position, self._return_estimate_at) >= RETURN_ESTIMATE_REFRESH_M
-            or self._estimator.revision != self._return_estimate_revision
+            or self._model_key() != self._return_estimate_revision
         )
         if not moved:
             return
         self._return_estimate = self._ports.navigation.return_energy(position)
         self._return_estimate_at = position
-        self._return_estimate_revision = self._estimator.revision
+        self._return_estimate_revision = self._model_key()
         self._mission.set_return_estimate(self._return_estimate)
+
+    def _model_key(self) -> tuple:
+        """Версия всего, от чего зависит оценка возврата: модель среды и карта."""
+        return self._research.revision, self._ports.navigation.map_revision
 
     def _return_estimate_or_conservative(self, position: Point) -> float:
         """Неизвестная оценка не равна нулю: берём прямое расстояние с запасом и prior."""
@@ -312,8 +376,14 @@ class MissionController:
         return straight * self._estimator.prior_energy_per_m * self._settings.return_safety_factor
 
     def _reserve_low(self, observation: Observation) -> bool:
-        needed = self._return_estimate_or_conservative(observation.pose.point) + self._settings.return_reserve
-        return observation.battery_remaining < needed
+        needed = self._return_estimate_or_conservative(observation.pose.point) * self._localization_margin(observation)
+        return observation.battery_remaining < needed + self._settings.return_reserve
+
+    def _localization_margin(self, observation: Observation) -> float:
+        """Неточная поза удлиняет фактический путь домой: запас растёт с оценкой ошибки."""
+        if observation.localization is LocalizationStatus.DEGRADED:
+            return 1.0 + max(0.2, min(0.5, observation.localization_error_m or 0.0))
+        return 1.0 + min(0.5, observation.localization_error_m or 0.0)
 
     # -------------------------------------------------------------- events
 
@@ -444,6 +514,7 @@ class MissionController:
             navigation.lattice_points(pose.point), pose.point,
             settings.candidate_min_distance_m, settings.candidate_max_distance_m, limit=10,
             focus_signal=settings.approach_signal_threshold,
+            frontier=navigation.frontier_points(pose.point) if self._ports.map_mode is MapMode.SLAM else (),
         )
         candidates = rank_by_utility(
             valued, pose.point, settings.base, observation.battery_remaining, settings.battery_initial,
@@ -651,7 +722,7 @@ class MissionController:
             return
         after = self._ports.navigation.return_energy(observation.pose.point)
         self._return_estimate, self._return_estimate_at = after, observation.pose.point
-        self._return_estimate_revision = self._research.revision
+        self._return_estimate_revision = self._model_key()
         self._mission.set_return_estimate(after)
         hypothesis = self._research.hypotheses.find(hypothesis_id)
         self._log(

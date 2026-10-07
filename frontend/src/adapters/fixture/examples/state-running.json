@@ -134,5 +134,6 @@
     "last_replan_reason": "наблюдаемая опасность",
     "last_replan_detection_id": "hazard-1",
     "planner_requests": 4
-  }
+  },
+  "map_mode": "static"
 }

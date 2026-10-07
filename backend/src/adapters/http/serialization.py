@@ -66,6 +66,7 @@ def snapshot_json(snapshot: MissionSnapshot) -> dict:
             "code": error.code, "message": error.message, "retryable": error.retryable,
         },
         "mission_text": snapshot.mission_text,
+        "map_mode": snapshot.map_mode,
         "target_samples": snapshot.target_samples,
         "plan": plan_json(snapshot),
         "research": research_json(snapshot),
@@ -123,7 +124,7 @@ def research_json(snapshot: MissionSnapshot) -> dict | None:
 
 def map_json(grid: OccupancyGrid) -> dict:
     return {
-        "map_id": grid.map_id,
+        "map_id": grid.versioned_id,
         "resolution_m": grid.resolution_m,
         "width": grid.width,
         "height": grid.height,

@@ -38,6 +38,11 @@ class OccupancyGrid:
         self.revision = revision  # растёт при каждом изменении карты (SLAM); статичная карта — 0
         self.frame_id = frame_id  # система координат клеток; агент работает только в world
 
+    @property
+    def versioned_id(self) -> str:
+        """Идентификатор конкретной версии: панель перезагружает карту при его смене (SLAM)."""
+        return self.map_id if self.revision == 0 else f"{self.map_id}#r{self.revision}"
+
     def index(self, column: int, row: int) -> int:
         return row * self.width + column
 
@@ -64,7 +69,11 @@ class OccupancyGrid:
         return (column, row) if self.contains(column, row) else None
 
     def inflated_blocked(self, clearance_m: float) -> frozenset[int]:
-        """Индексы клеток, где центр робота недопустим: препятствия, неизвестное и запас."""
+        """Индексы клеток, где центр робота недопустим: препятствия, неизвестное и запас.
+
+        Проход только по свободным клеткам: на строящейся карте SLAM их мало относительно размера
+        карты, а безопасна лишь свободная клетка, у которой все клетки в радиусе запаса свободны.
+        """
         radius_cells = math.ceil(clearance_m / self.resolution_m)
         offsets = [
             (d_col, d_row)
@@ -72,12 +81,16 @@ class OccupancyGrid:
             for d_row in range(-radius_cells, radius_cells + 1)
             if math.hypot(d_col, d_row) * self.resolution_m <= clearance_m + 1e-9
         ]
-        blocked: set[int] = set()
-        for row in range(self.height):
-            for column in range(self.width):
-                if self.cells[self.index(column, row)] == FREE:
-                    continue
-                for d_col, d_row in offsets:
-                    if self.contains(column + d_col, row + d_row):
-                        blocked.add(self.index(column + d_col, row + d_row))
-        return frozenset(blocked)
+        cells, width, height = self.cells, self.width, self.height
+        safe: set[int] = set()
+        for index, value in enumerate(cells):
+            if value != FREE:
+                continue
+            row, column = divmod(index, width)
+            if all(
+                not (0 <= column + d_col < width and 0 <= row + d_row < height)
+                or cells[(row + d_row) * width + column + d_col] == FREE
+                for d_col, d_row in offsets
+            ):
+                safe.add(index)
+        return frozenset(set(range(width * height)) - safe)

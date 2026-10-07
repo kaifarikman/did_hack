@@ -45,6 +45,7 @@ const FIXTURE_HEALTH: HealthStatus = {
   judge_mode: "local",
   llm_available: true,
   supported_scenarios: ["easy"],
+  supported_map_modes: ["static"],
 };
 
 function clone<T>(value: T): T {
