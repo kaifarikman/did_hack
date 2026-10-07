@@ -70,9 +70,12 @@ class Simulation:
             ids_literal = "[" + ",".join(robot_ids) + "]"
             commands.append(f"cd {SIM_DIR}/judge && exec python3 -m did_judge.team_node --ros-args "
                             f"-p seed:={seed} -p config_path:={config} -p robot_ids:=\"{ids_literal}\"")
-        if map_mode == "slam":
+        if map_mode == "slam" and robots == 1:
             commands.append(f"exec ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true "
                             f"slam_params_file:={SIM_DIR}/config/slam_params.yaml")
+        elif map_mode == "slam":
+            commands.append(f"exec ros2 launch {SIM_DIR}/launch/team_slam.launch.py robot_count:={robots}")
+            commands.append(f"exec python3 {SIM_DIR}/mapping/merge_node.py")
         for index, command in enumerate(commands):
             self._processes.append(subprocess.Popen(ros_shell(command), start_new_session=True))
             if index == 0:
@@ -106,9 +109,12 @@ class Simulation:
         else:
             topics = [f"/robot_{index + 1}/{name}" for index in range(self.robots)
                       for name in ("odom", "scan", "did/battery")]
-        topics += ["/map"] if self.map_mode == "slam" else []
+        if self.map_mode == "slam":
+            topics.append("/map" if self.robots == 1 else "/team/map")
+        ready = set()  # топик, из которого пришло сообщение, остаётся готовым: проверка discovery под нагрузкой шумит
         while time.monotonic() < deadline:
-            if all(self._has_message(topic) for topic in topics):
+            ready.update(topic for topic in topics if topic not in ready and self._has_message(topic))
+            if len(ready) == len(topics):
                 return True
             time.sleep(1.0)
         return False
