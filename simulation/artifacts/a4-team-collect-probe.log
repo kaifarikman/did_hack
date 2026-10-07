@@ -1,0 +1,7 @@
+python3 scripts/stack.py up --robots 2 --scenario easy --seed 1 ; simulation/scripts/probe_team_collect.py (seed найден find_shared_sample_seed.py: образец (-1.67,-1.57) виден по прямой из обеих баз)
+Оба робота едут go-to-point к одному образцу по физической позе; robot_1 вплотную, robot_2 останавливается в радиусе сбора.
+checks (все true): robot_1_reached_sample, robot_2_reached_sample_vicinity, first_collect_succeeds, second_collect_rejected,
+                   sample_credited_once, both_returned, both_finish_ok, individual_results_reported
+итог: robot_1 collected=1 score=10 finish_success=true battery=57.48; robot_2 collected=0 false_collects=1 score=-2 finish_success=true battery=53.93
+team_collected=1 team_score=8.0 collisions=0, симуляция 53.8 с
+Ограничения: образец один и собран последовательно (не одновременный вызов collect в один тик); пути без препятствий; управление пробы, не агента.
