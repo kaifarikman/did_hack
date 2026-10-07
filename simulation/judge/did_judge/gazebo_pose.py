@@ -28,23 +28,29 @@ def extract_robot_pose(pose_vector, entity_name: str = ROBOT_ENTITY_NAME) -> Opt
 
 
 class GazeboPoseSource:
-    """Хранит последнюю физическую позу; читается из потока ROS без гонок."""
+    """Хранит последние физические позы роботов; читается из потока ROS без гонок."""
 
-    def __init__(self) -> None:
+    def __init__(self, entity_names: Tuple[str, ...] = (ROBOT_ENTITY_NAME,)) -> None:
         from gz.msgs10.pose_v_pb2 import Pose_V
         from gz.transport13 import Node
+        self._entity_names = tuple(entity_names)
         self._lock = threading.Lock()
-        self._latest: Optional[Pose] = None
+        self._latest = {}
         self._node = Node()
         if not self._node.subscribe(Pose_V, POSE_TOPIC, self._on_message):
             raise RuntimeError(f"Не удалось подписаться на {POSE_TOPIC}")
 
     def _on_message(self, message) -> None:
-        pose = extract_robot_pose(message)
-        if pose is not None:
-            with self._lock:
-                self._latest = pose
+        for name in self._entity_names:
+            pose = extract_robot_pose(message, name)
+            if pose is not None:
+                with self._lock:
+                    self._latest[name] = pose
+
+    def latest_for(self, entity_name: str) -> Optional[Pose]:
+        with self._lock:
+            return self._latest.get(entity_name)
 
     def latest(self) -> Optional[Pose]:
-        with self._lock:
-            return self._latest
+        """Поза единственного (или первого) робота — для одиночного режима."""
+        return self.latest_for(self._entity_names[0])
