@@ -4,7 +4,7 @@ import content from "../examples/scenarios/journalLong.json"
 import type { FixtureScript, ScriptedJournalEntry } from "../script"
 import { standardMission } from "../standardMission"
 
-export const LONG_JOURNAL_SIZE = 420
+const LONG_JOURNAL_SIZE = 420
 const TEMPLATE_COUNT = content.templates.length
 
 type Template = (typeof content.templates)[number]

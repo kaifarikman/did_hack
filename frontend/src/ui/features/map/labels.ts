@@ -5,11 +5,11 @@ import type { MapLabelText } from "./layers/frame"
 import type { MapRole } from "./mapTheme"
 import type { MapScene } from "./scene"
 
-export type MapKey = Extract<MessageKey, `map:${string}`>
-export type MapMessage = Message
-export type MapFormatters = Pick<Formatters, "number">
+type MapKey = Extract<MessageKey, `map:${string}`>
+type MapMessage = Message
+type MapFormatters = Pick<Formatters, "number">
 
-export type MapTextResolver = (message: MapMessage) => string
+type MapTextResolver = (message: MapMessage) => string
 export type LegendShape = "marker" | "line" | "dashed" | "ring" | "cell"
 
 export interface LegendItem {
@@ -82,7 +82,7 @@ export function terrainLabelMessage(
   return { key: "map:label.terrainSpreadRegime", params: { energy, spread, regime } }
 }
 
-export function hazardLabelMessage(hits: number): MapMessage {
+function hazardLabelMessage(hits: number): MapMessage {
   return { key: "map:label.hazard", params: { hits } }
 }
 
@@ -96,7 +96,7 @@ export function createMapLabelText(
   }
 }
 
-export interface MapAvailability {
+interface MapAvailability {
   readonly map: MapData | null
   readonly snapshot: MissionSnapshot | null
   readonly mapError: string | null

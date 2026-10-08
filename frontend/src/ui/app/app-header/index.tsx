@@ -3,7 +3,7 @@ import type { ConnectionStatus } from "@/application/viewState"
 import { type IconName, StatusBadge, type StatusTone } from "@/ui/shared/ui"
 import styles from "./styles.module.css"
 
-export type HeaderConnection = ConnectionStatus
+type HeaderConnection = ConnectionStatus
 
 export interface AppHeaderProps {
   readonly title: string

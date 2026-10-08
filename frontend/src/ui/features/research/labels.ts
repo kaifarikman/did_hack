@@ -9,10 +9,10 @@ import type { Message, MessageKey } from "@/domain/message"
 import type { Formatters } from "@/ui/shared/i18n"
 
 type ResearchKey = Extract<MessageKey, `research:${string}`>
-export type ResearchMessage = Message
-export type ResearchFormatters = Pick<Formatters, "number">
+type ResearchMessage = Message
+type ResearchFormatters = Pick<Formatters, "number">
 
-export type SensorTone = "positive" | "attention" | "critical"
+type SensorTone = "positive" | "attention" | "critical"
 
 export const PLAN_SOURCE_LABELS: Readonly<Record<PlannerMode, ResearchKey>> = {
   llm: "research:source.llm",
@@ -33,7 +33,7 @@ export const SENSOR_STATE_LABELS: Readonly<Record<SensorState, ResearchKey>> = {
   recovering: "research:sensor.recovering",
 }
 
-export const SENSOR_TONES: Readonly<Record<SensorState, SensorTone>> = {
+const SENSOR_TONES: Readonly<Record<SensorState, SensorTone>> = {
   ok: "positive",
   suspected: "attention",
   degraded: "critical",
@@ -54,7 +54,7 @@ export const HYPOTHESIS_STATUSES = [
   "deferred",
   "unverified",
 ] as const
-export type HypothesisStatus = (typeof HYPOTHESIS_STATUSES)[number]
+type HypothesisStatus = (typeof HYPOTHESIS_STATUSES)[number]
 
 export const HYPOTHESIS_STATUS_LABELS: Readonly<Record<HypothesisStatus, ResearchKey>> = {
   proposed: "research:hypothesis.proposed",
@@ -66,7 +66,7 @@ export const HYPOTHESIS_STATUS_LABELS: Readonly<Record<HypothesisStatus, Researc
 }
 
 export const HYPOTHESIS_KINDS = ["costly_terrain", "terrain_change"] as const
-export type HypothesisKind = (typeof HYPOTHESIS_KINDS)[number]
+type HypothesisKind = (typeof HYPOTHESIS_KINDS)[number]
 
 export const HYPOTHESIS_KIND_LABELS: Readonly<Record<HypothesisKind, ResearchKey>> = {
   costly_terrain: "research:hypothesisKind.costlyTerrain",
@@ -87,7 +87,7 @@ export function hypothesisKindMessage(kind: string): ResearchMessage {
   return { key: "research:hypothesisKind.unknown", params: { kind } }
 }
 
-export interface SensorLabels {
+interface SensorLabels {
   readonly state: ResearchKey
   readonly fault: ResearchKey | null
   readonly tone: SensorTone

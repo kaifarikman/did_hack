@@ -110,7 +110,7 @@ export const INITIAL_VIEW: MissionViewState = {
   exportState: IDLE_EXPORT,
 }
 
-export function isCommandBusy(command: CommandState): boolean {
+function isCommandBusy(command: CommandState): boolean {
   return (
     command.phase === "sending" || command.phase === "awaiting" || command.phase === "unknown"
   )

@@ -49,7 +49,7 @@ const [HAZARD_TESTING, HAZARD_UNVERIFIED] = hypothesesFrom([
   content.hypotheses.hazardUnverified,
 ])
 
-export function sensorAt(index: number): ResearchView["sensor"] {
+function sensorAt(index: number): ResearchView["sensor"] {
   const phase = SENSOR_PHASES.filter((item) => item.from <= index).at(-1)
   const state = phase?.state ?? "ok"
   return { state, fault: phase?.fault ?? null, quality: QUALITY[state] }

@@ -2,7 +2,7 @@ import type { ExportPhase } from "@/application/viewState"
 import type { JournalKind } from "@/domain/contract"
 import type { MessageKey } from "@/domain/message"
 
-export type JournalKey = Extract<MessageKey, `journal:${string}`>
+type JournalKey = Extract<MessageKey, `journal:${string}`>
 export type KindFilter = JournalKind | "all"
 
 export { JOURNAL_KINDS } from "@/domain/contract"

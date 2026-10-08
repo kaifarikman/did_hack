@@ -3,7 +3,7 @@ import type { MissionSnapshot } from "@/domain/contract"
 import { isActiveStatus, isFinishedStatus } from "@/domain/status"
 import { withViewTransition } from "@/ui/shared/motion"
 
-export type MissionLayout = "setup" | "run" | "summary"
+type MissionLayout = "setup" | "run" | "summary"
 
 export function missionLayoutOf(snapshot: MissionSnapshot | null): MissionLayout {
   if (snapshot === null) return "setup"

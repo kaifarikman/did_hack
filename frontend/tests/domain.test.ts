@@ -8,9 +8,9 @@ import {
   worldToScreen,
 } from "../src/domain/geometry"
 import {
-  buildHypothesisChain,
   buildJournalExport,
   filterJournal,
+  listHypothesisIds,
   mergeJournalEntries,
 } from "../src/domain/journal"
 import { ContractError, parseMap, parseSnapshot } from "../src/domain/validation"
@@ -142,17 +142,14 @@ describe("journal", () => {
     expect(filterJournal(entries, "all")).toHaveLength(3)
   })
 
-  it("does not invent a conclusion for an unfinished hypothesis", () => {
+  it("lists hypothesis ids once in order of appearance", () => {
     const entries = [
-      entry(1, { kind: "hypothesis", hypothesis_id: "h1", expected: "lower" }),
-      entry(2, { kind: "experiment", hypothesis_id: "h1" }),
-      entry(3, { hypothesis_id: "h2", conclusion: "other" }),
+      entry(1, { hypothesis_id: "h2" }),
+      entry(2, { hypothesis_id: "h1" }),
+      entry(3),
+      entry(4, { hypothesis_id: "h2" }),
     ]
-    const chain = buildHypothesisChain(entries, "h1")
-    expect(chain.expectations).toEqual(["lower"])
-    expect(chain.experiments).toHaveLength(1)
-    expect(chain.observations).toEqual([])
-    expect(chain.conclusions).toEqual([])
+    expect(listHypothesisIds(entries)).toEqual(["h2", "h1"])
   })
 
   it("keeps run_id, the boundary and every entry in the export", () => {

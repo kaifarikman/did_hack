@@ -23,7 +23,7 @@ const CANVAS_TOKENS = {
 
 export type CanvasRole = keyof typeof CANVAS_TOKENS
 
-export type CanvasPalette = Readonly<Record<CanvasRole, string>>
+type CanvasPalette = Readonly<Record<CanvasRole, string>>
 
 export function readCanvasPalette(element?: Element): CanvasPalette {
   const entries = Object.entries(CANVAS_TOKENS).map(([role, token]) => [

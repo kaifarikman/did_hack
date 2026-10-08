@@ -14,14 +14,14 @@ import { GOAL_REASONS, SAMPLE_PLACE } from "./baseline"
 import { manhattanRoute, point, poseOnRoute, round, routeHeading, turnBetween } from "./route"
 import type { FrameOverlay } from "./timeline"
 
-export interface TeamOptions {
+interface TeamOptions {
   finalOutcome: TeamOutcome
   lostAtFrame: number | null
   lostError: ErrorInfo | null
 }
 
-export const PARTNER_BASE: Point = point(-2, 0.5)
-export const PARTNER_SAMPLE: Point = point(0, 0.5)
+const PARTNER_BASE: Point = point(-2, 0.5)
+const PARTNER_SAMPLE: Point = point(0, 0.5)
 const PARTNER_COLLECT_FRAMES = 2
 const PARTNER_BATTERY = 60
 

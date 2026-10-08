@@ -3,7 +3,7 @@ import { outcomeKind } from "@/domain/status"
 import type { Formatters } from "@/ui/shared/i18n"
 import type { MissionMessage, OutcomeKind } from "./labels"
 
-export type MissionFormatters = Pick<Formatters, "number" | "unit">
+type MissionFormatters = Pick<Formatters, "number" | "unit">
 
 const BATTERY_DIGITS = 1
 const SIGNAL_DIGITS = 2

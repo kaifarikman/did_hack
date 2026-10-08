@@ -22,7 +22,7 @@ export interface FixtureControls {
   setScenario(name: FixtureScenarioName): void
 }
 
-export interface FixtureGatewayOptions {
+interface FixtureGatewayOptions {
   wait?: (delayMs: number) => Promise<void>
 }
 

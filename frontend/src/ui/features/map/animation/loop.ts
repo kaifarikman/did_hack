@@ -1,4 +1,4 @@
-export interface FrameScheduler {
+interface FrameScheduler {
   request(callback: (now: number) => void): number
   cancel(handle: number): void
 }

@@ -16,7 +16,7 @@
 }
 
 .surface[data-stale="true"] {
-  opacity: 0.55;
+  opacity: var(--opacity-stale);
 }
 
 .skeleton {

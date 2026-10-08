@@ -1,7 +1,7 @@
 import { type DurationToken, motionMs } from "./cssTokens"
 import { prefersReducedMotion } from "./useReducedMotion"
 
-export const EXIT_FALLBACK_FACTOR = 1.5
+const EXIT_FALLBACK_FACTOR = 1.5
 
 export type ReducedFadeToken = "--reduced-fade" | "--reduced-fade-exit"
 

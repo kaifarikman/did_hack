@@ -5,12 +5,12 @@ export interface Viewport {
   height: number
 }
 
-export interface ScreenPoint {
+interface ScreenPoint {
   x: number
   y: number
 }
 
-export interface AffineMatrix {
+interface AffineMatrix {
   a: number
   b: number
   c: number
@@ -19,7 +19,7 @@ export interface AffineMatrix {
   f: number
 }
 
-export interface WorldBounds {
+interface WorldBounds {
   minX: number
   maxX: number
   minY: number
@@ -33,7 +33,7 @@ export interface ViewTransform {
   bounds: WorldBounds
 }
 
-export function localToWorld(origin: MapOrigin, localX: number, localY: number): Point {
+function localToWorld(origin: MapOrigin, localX: number, localY: number): Point {
   const cos = Math.cos(origin.heading_rad)
   const sin = Math.sin(origin.heading_rad)
   return {
@@ -50,7 +50,7 @@ export function cellCenterWorld(map: MapData, column: number, row: number): Poin
   )
 }
 
-export function mapWorldBounds(map: MapData): WorldBounds {
+function mapWorldBounds(map: MapData): WorldBounds {
   const widthM = map.width * map.resolution_m
   const heightM = map.height * map.resolution_m
   const corners = [

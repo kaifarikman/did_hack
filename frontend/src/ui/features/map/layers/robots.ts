@@ -61,7 +61,7 @@ function drawReservation(frame: LayerFrame, robot: SceneRobot, color: string): v
   context.globalAlpha = 1
 }
 
-export function robotColor(frame: LayerFrame, robot: SceneRobot): string {
+function robotColor(frame: LayerFrame, robot: SceneRobot): string {
   if (robot.lost) return frame.palette.css.critical
   return robot.partner ? frame.palette.css.robotPartner : frame.palette.css.robot
 }

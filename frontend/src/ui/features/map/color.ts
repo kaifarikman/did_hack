@@ -56,10 +56,6 @@ export function mixColor(from: Rgba, to: Rgba, ratio: number): Rgba {
   ]
 }
 
-export function withAlpha(color: Rgba, alpha: number): Rgba {
-  return [color[0], color[1], color[2], color[3] * alpha]
-}
-
 export function toCss(color: Rgba): string {
   const [red, green, blue, alpha] = color
   return `rgba(${Math.round(red)}, ${Math.round(green)}, ${Math.round(blue)}, ${Number(alpha.toFixed(3))})`

@@ -5,7 +5,7 @@ import styles from "./styles.module.css"
 
 export type FlagCode = "ru" | "gb"
 
-export const FLAG_SOURCES: Readonly<Record<FlagCode, string>> = { ru, gb }
+const FLAG_SOURCES: Readonly<Record<FlagCode, string>> = { ru, gb }
 
 const FLAG_WIDTH = 20
 const FLAG_HEIGHT = 15

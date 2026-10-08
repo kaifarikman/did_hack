@@ -11,9 +11,14 @@ import "./ui/shared/styles/global.css"
 
 type DataSource = "live" | "fixture"
 
+const CONFIG_TIMEOUT_MS = 2000
+
 async function readConfiguredSource(): Promise<DataSource | null> {
   try {
-    const response = await fetch("/config.json", { headers: { Accept: "application/json" } })
+    const response = await fetch("/config.json", {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(CONFIG_TIMEOUT_MS),
+    })
     if (!response.ok) return null
     const config: unknown = await response.json()
     const source = (config as { data_source?: unknown }).data_source

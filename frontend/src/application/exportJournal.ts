@@ -19,7 +19,7 @@ export class ExportFailedError extends LocalizedError {
   }
 }
 
-export interface ExportOptions {
+interface ExportOptions {
   signal?: AbortSignal | undefined
   isCancelled: () => boolean
 }

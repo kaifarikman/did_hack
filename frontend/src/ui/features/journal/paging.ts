@@ -1,6 +1,6 @@
 export const JOURNAL_PAGE_SIZE = 40
 
-export interface JournalWindow<T> {
+interface JournalWindow<T> {
   readonly entries: readonly T[]
   readonly hidden: number
 }

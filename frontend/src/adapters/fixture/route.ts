@@ -1,6 +1,6 @@
 import type { Point, RobotPose } from "../../domain/contract"
 
-export const ROUTE_STEP_M = 0.1
+const ROUTE_STEP_M = 0.1
 
 export function point(x: number, y: number): Point {
   return { position_x_m: Number(x.toFixed(3)), position_y_m: Number(y.toFixed(3)) }
@@ -13,7 +13,7 @@ export function distance(first: Point, second: Point): number {
   )
 }
 
-export function headingBetween(from: Point, to: Point): number {
+function headingBetween(from: Point, to: Point): number {
   return Math.atan2(to.position_y_m - from.position_y_m, to.position_x_m - from.position_x_m)
 }
 

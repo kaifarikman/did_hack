@@ -1,7 +1,7 @@
 import type { TeamOutcome, TeamView } from "@/domain/contract"
 import type { MessageKey } from "@/domain/message"
 
-export type TeamKey = Extract<MessageKey, `team:${string}`>
+type TeamKey = Extract<MessageKey, `team:${string}`>
 export type TeamTone = "neutral" | "progress" | "positive" | "attention" | "critical"
 
 export const TEAM_OUTCOME_LABELS: Readonly<Record<TeamOutcome, TeamKey>> = {
@@ -12,7 +12,7 @@ export const TEAM_OUTCOME_LABELS: Readonly<Record<TeamOutcome, TeamKey>> = {
   stopped: "team:outcome.stopped",
 }
 
-export const TEAM_OUTCOME_TONES: Readonly<Record<TeamOutcome, TeamTone>> = {
+const TEAM_OUTCOME_TONES: Readonly<Record<TeamOutcome, TeamTone>> = {
   running: "progress",
   success: "positive",
   partial: "attention",
@@ -20,7 +20,7 @@ export const TEAM_OUTCOME_TONES: Readonly<Record<TeamOutcome, TeamTone>> = {
   stopped: "attention",
 }
 
-export interface TeamBadge {
+interface TeamBadge {
   readonly key: TeamKey
   readonly tone: TeamTone
   readonly swapKey: string

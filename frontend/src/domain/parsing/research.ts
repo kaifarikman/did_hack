@@ -35,7 +35,7 @@ import {
   readUnitInterval,
 } from "./readers"
 
-export const readGoalKind = enumReader(GOAL_KINDS)
+const readGoalKind = enumReader(GOAL_KINDS)
 
 export const readRunStatus = enumReader(RUN_STATUSES)
 

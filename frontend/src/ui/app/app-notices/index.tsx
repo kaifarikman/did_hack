@@ -7,7 +7,7 @@ export interface AppNoticesProps {
   readonly view: MissionViewState
 }
 
-export function isStale(view: MissionViewState): boolean {
+function isStale(view: MissionViewState): boolean {
   return connectionStatus(view) === "stale"
 }
 

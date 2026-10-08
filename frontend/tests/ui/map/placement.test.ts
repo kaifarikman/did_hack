@@ -6,7 +6,7 @@ import { MapMotion } from "../../../src/ui/features/map/animation/motion"
 import { linear } from "../../../src/ui/features/map/easing"
 import { legendPresence, visibleLegend } from "../../../src/ui/features/map/labels"
 import type { LayerFrame } from "../../../src/ui/features/map/layers/frame"
-import { LabelSink, placeLabels } from "../../../src/ui/features/map/layers/labels"
+import { LabelSink } from "../../../src/ui/features/map/layers/labels"
 import { drawBase, placeMarks } from "../../../src/ui/features/map/layers/markers"
 import { reservationRadius } from "../../../src/ui/features/map/layers/robots"
 import { readMapPalette } from "../../../src/ui/features/map/mapTheme"
@@ -59,8 +59,12 @@ const at = (x: number, y: number) => ({ position_x_m: x, position_y_m: y })
 
 describe("label placement", () => {
   it("treats markers as obstacles", () => {
-    const label = { x: 0, y: 0, width: 10, height: 10 }
-    expect(placeLabels([label], [{ x: 5, y: 5, width: 4, height: 4 }])).toEqual([])
+    const { context } = fakeContext()
+    const sink = new LabelSink()
+    sink.begin(context, "600 12px sans-serif")
+    sink.reserve(5, 5, 4, 4)
+    expect(sink.isFree(0, 0, 10, 10)).toBe(false)
+    expect(sink.isFree(20, 20, 10, 10)).toBe(true)
   })
 
   it("moves a label to its alternate position when the first one is taken", () => {

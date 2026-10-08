@@ -17,7 +17,7 @@ export interface SceneRobot {
   readonly reservation: Point | null
 }
 
-export interface ScenePlanStep {
+interface ScenePlanStep {
   readonly number: number
   readonly target: Point
 }
@@ -33,7 +33,7 @@ export interface MapScene {
   readonly planSteps: readonly ScenePlanStep[]
 }
 
-export const LEADER_ID = "robot_1"
+const LEADER_ID = "robot_1"
 const ROUTE_TOLERANCE_M = 0.02
 
 export const EMPTY_SCENE: MapScene = {

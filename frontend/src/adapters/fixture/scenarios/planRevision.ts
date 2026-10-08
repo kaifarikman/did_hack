@@ -6,7 +6,7 @@ import { manhattanRoute } from "../route"
 import type { FixtureScript } from "../script"
 import { progressPlan, standardMission } from "../standardMission"
 
-export const REVISION_AT = 12
+const REVISION_AT = 12
 const DETOUR_FRAMES = 4
 const PATH_PREVIEW = 6
 const REVISED_PLAN = planFrom(content.revisedPlan)

@@ -5,7 +5,7 @@ import { createFrameLoop } from "../../../src/ui/features/map/animation/loop"
 import { linear } from "../../../src/ui/features/map/easing"
 import { cellRole, fillCells } from "../../../src/ui/features/map/layers/grid"
 import { appearMark } from "../../../src/ui/features/map/layers/hazards"
-import { LabelSink, placeLabels } from "../../../src/ui/features/map/layers/labels"
+import { LabelSink } from "../../../src/ui/features/map/layers/labels"
 import { pathLength, tracePrefix } from "../../../src/ui/features/map/layers/paths"
 import { samplePop } from "../../../src/ui/features/map/layers/samples"
 import {
@@ -67,12 +67,6 @@ describe("map layers: pure parts", () => {
   })
 
   it("skips overlapping labels", () => {
-    const boxes = [
-      { x: 0, y: 0, width: 10, height: 10 },
-      { x: 5, y: 5, width: 10, height: 10 },
-      { x: 20, y: 0, width: 10, height: 10 },
-    ]
-    expect(placeLabels(boxes)).toEqual([boxes[0], boxes[2]])
     const { context, calls } = fakeContext()
     const sink = new LabelSink()
     sink.begin(context, theme.font)

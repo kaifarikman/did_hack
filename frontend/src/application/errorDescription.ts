@@ -43,7 +43,7 @@ const KIND_KEY: Readonly<Record<ErrorKind, MessageKey>> = {
   unknown: "errors:kind.unknown",
 }
 
-export function isKnownApiCode(code: string): code is KnownApiCode {
+function isKnownApiCode(code: string): code is KnownApiCode {
   return (KNOWN_API_CODES as readonly string[]).includes(code)
 }
 

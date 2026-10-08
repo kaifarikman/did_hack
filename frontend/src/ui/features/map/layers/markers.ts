@@ -21,7 +21,7 @@ const STEP_OFFSETS: readonly (readonly [number, number])[] = [
   [0, 1.5],
 ]
 
-export interface StepMark {
+interface StepMark {
   readonly number: number
   readonly targetX: number
   readonly targetY: number

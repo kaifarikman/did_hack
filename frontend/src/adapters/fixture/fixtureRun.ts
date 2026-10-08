@@ -3,7 +3,7 @@ import { ACTIVE_STATUSES } from "../../domain/contract"
 import type { JournalContent } from "./content"
 import { type FixtureScript, IDLE_FRAME_INDEX } from "./script"
 
-export interface FixtureRunOptions {
+interface FixtureRunOptions {
   runId: string
   seed: number
   script: FixtureScript

@@ -6,7 +6,7 @@ import {
   shortestAngle,
   trackDuration,
 } from "../../../src/ui/features/map/animation/interpolate"
-import { mixColor, parseColor, toCss, withAlpha } from "../../../src/ui/features/map/color"
+import { mixColor, parseColor, toCss } from "../../../src/ui/features/map/color"
 import { cubicBezier, linear, parseEasing } from "../../../src/ui/features/map/easing"
 
 describe("map interpolation", () => {
@@ -67,6 +67,6 @@ describe("map colors", () => {
 
   it("mixes colors and prints css", () => {
     expect(mixColor([0, 0, 0, 1], [255, 255, 255, 0], 0.5)).toEqual([127.5, 127.5, 127.5, 0.5])
-    expect(toCss(withAlpha([10, 20, 30, 1], 0.25))).toBe("rgba(10, 20, 30, 0.25)")
+    expect(toCss([10, 20, 30, 0.25])).toBe("rgba(10, 20, 30, 0.25)")
   })
 })

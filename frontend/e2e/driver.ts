@@ -41,6 +41,7 @@ export function buttonByText(page: Page, locale: Locale, key: string): Locator {
 
 const TICK_MS = 250
 const SETTLE_MS = 60
+const ANIMATION_WAIT_MS = 3000
 const OPTION_CLOSE_MS = 500
 export const ACTION_KEYS = {
   start: "mission:action.start",
@@ -102,6 +103,26 @@ export async function settle(page: Page): Promise<void> {
   await page.waitForTimeout(SETTLE_MS)
 }
 
+async function finiteAnimationsRunning(page: Page): Promise<boolean> {
+  return page.evaluate(() =>
+    document
+      .getAnimations()
+      .some(
+        (animation) =>
+          animation.timeline === document.timeline &&
+          animation.playState === "running" &&
+          animation.effect?.getComputedTiming().iterations !== Number.POSITIVE_INFINITY,
+      ),
+  )
+}
+
+async function settleAnimations(page: Page): Promise<void> {
+  for (let waited = 0; waited < ANIMATION_WAIT_MS; waited += SETTLE_MS) {
+    if (!(await finiteAnimationsRunning(page))) return
+    await page.waitForTimeout(SETTLE_MS)
+  }
+}
+
 export function shotPath(run: RunContext, frame: string): string {
   return path.join(
     ARTIFACTS_DIR,
@@ -122,11 +143,27 @@ export interface AxeRecord {
   width: number
   motion: string
   frame: string
-  violations: Array<{ id: string; impact: string | null; nodes: number; help: string }>
+  violations: Array<{
+    id: string
+    impact: string | null
+    nodes: number
+    help: string
+    targets: string[]
+  }>
+}
+
+type AxeResults = Awaited<ReturnType<AxeBuilder["analyze"]>>
+
+async function analyzeAtRest(page: Page): Promise<AxeResults> {
+  await settleAnimations(page)
+  const first = await new AxeBuilder({ page }).analyze()
+  if (first.violations.length === 0) return first
+  await settleAnimations(page)
+  return new AxeBuilder({ page }).analyze()
 }
 
 export async function audit(run: RunContext, frame: string): Promise<AxeRecord> {
-  const result = await new AxeBuilder({ page: run.page }).analyze()
+  const result = await analyzeAtRest(run.page)
   const record: AxeRecord = {
     scenario: run.scenario,
     locale: run.locale,
@@ -138,6 +175,9 @@ export async function audit(run: RunContext, frame: string): Promise<AxeRecord> 
       impact: violation.impact ?? null,
       nodes: violation.nodes.length,
       help: violation.help,
+      targets: violation.nodes.map(
+        (node) => `${node.target.join(" ")} :: ${node.failureSummary ?? ""}`,
+      ),
     })),
   }
   const target = path.join(

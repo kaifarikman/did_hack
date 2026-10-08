@@ -19,7 +19,7 @@ interface Glide {
   readonly to: IndicatorBox
 }
 
-export function measureIndicator(list: HTMLElement, item: HTMLElement): IndicatorBox {
+function measureIndicator(list: HTMLElement, item: HTMLElement): IndicatorBox {
   const listBox = list.getBoundingClientRect()
   const itemBox = item.getBoundingClientRect()
   const start = itemBox.left - listBox.left - list.clientLeft

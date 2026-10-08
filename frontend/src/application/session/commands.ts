@@ -12,7 +12,7 @@ import {
 } from "./commandRules"
 import type { ControllerSession } from "./session"
 
-export interface CommandHooks {
+interface CommandHooks {
   readonly generateId: () => string
   readonly onSnapshot: (snapshot: MissionSnapshot, seq: number) => void
   readonly onAccepted: () => void

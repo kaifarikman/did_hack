@@ -4,7 +4,7 @@ import { NumberField, Segmented, TextArea } from "@/ui/shared/ui"
 import { MAP_MODE_LABELS, SCENARIO_LABELS } from "../labels"
 import styles from "./styles.module.css"
 
-export const ROBOT_COUNTS = ["1", "2"] as const
+const ROBOT_COUNTS = ["1", "2"] as const
 export type RobotCount = (typeof ROBOT_COUNTS)[number]
 
 export interface MissionDraft {

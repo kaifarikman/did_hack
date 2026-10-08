@@ -5,7 +5,7 @@ import type { FixtureScript } from "../script"
 import { standardMission } from "../standardMission"
 import { teamLayer } from "../team"
 
-export const PARTNER_LOST_AT = 20
+const PARTNER_LOST_AT = 20
 
 export function buildTeamPartial(): FixtureScript {
   const mission = standardMission()

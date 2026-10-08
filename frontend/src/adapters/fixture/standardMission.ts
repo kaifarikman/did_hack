@@ -19,12 +19,12 @@ import {
   type TimelineOptions,
 } from "./timeline"
 
-export interface StandardOptions {
+interface StandardOptions {
   llmFailsAtFrame: number | null
   timeline: Partial<TimelineOptions>
 }
 
-export interface StandardMission {
+interface StandardMission {
   timeline: MissionTimeline
   frames: MissionSnapshot[]
   journal: ScriptedJournalEntry[]
@@ -37,8 +37,8 @@ const HYPOTHESIS_TESTING_AT = 18
 const COMPARISON_DONE_AT = 22
 const HYPOTHESIS_VERDICT_AT = 24
 
-export const LLM_PLAN: MissionPlanView = planFrom(standardContent.llmPlan)
-export const FALLBACK_PLAN: MissionPlanView = planFrom(standardContent.fallbackPlan)
+const LLM_PLAN: MissionPlanView = planFrom(standardContent.llmPlan)
+const FALLBACK_PLAN: MissionPlanView = planFrom(standardContent.fallbackPlan)
 
 const [COSTLY_PROPOSED, COSTLY_TESTING, COSTLY_CONFIRMED, RETURN_PROPOSED] = hypothesesFrom([
   standardContent.hypotheses.costlyProposed,
@@ -84,7 +84,7 @@ export function standardHypotheses(index: number, marks: TimelineMarks): Hypothe
   return [costly, returning].filter((item): item is HypothesisView => item !== undefined)
 }
 
-export function standardResearch(index: number, marks: TimelineMarks): ResearchView {
+function standardResearch(index: number, marks: TimelineMarks): ResearchView {
   return {
     sensor: { state: "ok", fault: null, quality: 1 },
     hazards: [],

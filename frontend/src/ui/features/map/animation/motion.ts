@@ -27,7 +27,7 @@ interface TerrainTrack {
   start: number
 }
 
-export interface TerrainLook {
+interface TerrainLook {
   cost: number
   confidence: number
 }

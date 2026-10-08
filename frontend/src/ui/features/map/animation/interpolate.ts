@@ -8,7 +8,7 @@ export interface MutablePose {
 
 const FULL_TURN = Math.PI * 2
 
-export function clamp01(value: number): number {
+function clamp01(value: number): number {
   return Math.min(Math.max(value, 0), 1)
 }
 

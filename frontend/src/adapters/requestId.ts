@@ -1,4 +1,4 @@
-export interface RandomSource {
+interface RandomSource {
   readonly randomUUID?: (() => string) | undefined
   readonly getRandomValues?: (<T extends Uint8Array>(array: T) => T) | undefined
 }

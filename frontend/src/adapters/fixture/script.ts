@@ -11,7 +11,7 @@ export interface MapRevision {
   map: MapData | null
 }
 
-export interface OutagePlan {
+interface OutagePlan {
   atFrame: number
   requests: number
 }

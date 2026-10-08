@@ -22,7 +22,7 @@ interface CanvasSize {
 
 type ZoomAware = HTMLCanvasElement & { readonly currentCSSZoom?: number }
 
-export function cssZoomOf(canvas: HTMLCanvasElement): number {
+function cssZoomOf(canvas: HTMLCanvasElement): number {
   return (canvas as ZoomAware).currentCSSZoom ?? 1
 }
 

@@ -2,7 +2,7 @@ import { DEFAULT_BEHAVIOR, scriptOf } from "../baseline"
 import type { FixtureScript } from "../script"
 import { standardMission } from "../standardMission"
 
-export const OUTAGE_FRAME_INDEX = 14
+const OUTAGE_FRAME_INDEX = 14
 export const OUTAGE_REQUEST_COUNT = 24
 
 export function buildDisconnect(): FixtureScript {

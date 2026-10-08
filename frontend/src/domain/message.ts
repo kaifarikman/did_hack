@@ -3,7 +3,7 @@ export interface MessageCatalog {}
 
 export type MessageKey = keyof MessageCatalog & string
 
-export type MessageParams = Readonly<Record<string, string | number>>
+type MessageParams = Readonly<Record<string, string | number>>
 
 export interface Message {
   readonly key: MessageKey

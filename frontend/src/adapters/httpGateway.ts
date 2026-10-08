@@ -9,7 +9,7 @@ import {
   parseSnapshot,
 } from "../domain/validation"
 
-export interface HttpGatewayConfig {
+interface HttpGatewayConfig {
   baseUrl?: string
   fetchFn?: typeof fetch
   timeoutMs?: number

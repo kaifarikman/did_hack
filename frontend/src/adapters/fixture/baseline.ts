@@ -16,7 +16,7 @@ import stateRunningExample from "./examples/state-running.json"
 import { point } from "./route"
 import type { FixtureScript, GatewayBehavior, ScriptedJournalEntry } from "./script"
 
-export const idleSnapshot: MissionSnapshot = parseSnapshot(stateIdleExample)
+const idleSnapshot: MissionSnapshot = parseSnapshot(stateIdleExample)
 export const fixtureMap: MapData = parseMap(mapExample)
 export const runningTemplate: MissionSnapshot = parseSnapshot(stateRunningExample)
 
@@ -64,7 +64,7 @@ export function timed(frame: number, entry: JournalContent): ScriptedJournalEntr
   return { atFrame: frame, entry: { ...entry, simulation_time_s: frame } }
 }
 
-export function sortJournal(entries: ScriptedJournalEntry[]): ScriptedJournalEntry[] {
+function sortJournal(entries: ScriptedJournalEntry[]): ScriptedJournalEntry[] {
   return [...entries].sort((first, second) => first.atFrame - second.atFrame)
 }
 

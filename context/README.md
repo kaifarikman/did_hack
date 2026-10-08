@@ -21,7 +21,7 @@
 | Поднимать Docker и проверять условия запуска | [environment.md](environment.md) |
 | Посмотреть отменённый стиль «Лаборатория» (заменён Zoox 2026-10-08, не применять) | [visual-style.md](visual-style.md) |
 | Писать фронтенд: лимиты, архитектура, i18n RU/EN, CSS, анимации, скиллы, проверки | [frontend-rules.md](frontend-rules.md) |
-| Улучшать фронтенд двумя агентами: F1 система, F2 экраны, рубежи, критерии (утверждён 2026-10-08; F1 и F2 завершены, исправления после аудита — X1/X2, `frontend-reports/fix-x1.md`, `fix-x2.md`) | [frontend-plan.md](frontend-plan.md) |
+| Улучшать фронтенд двумя агентами: F1 система, F2 экраны, рубежи, критерии (утверждён 2026-10-08; F1 и F2 завершены, исправления после аудита X1/X2 завершены — `frontend-reports/fix-x1.md`, `fix-x2.md`. Ветка `frontend`: `npm run verify` зелёный, 29 ratchet-баз пустые, e2e 223/223, axe 0, fps ≈55–60 в зависимости от загрузки машины) | [frontend-plan.md](frontend-plan.md) |
 | Договориться об именах токенов и API примитивов фронтенда (F1 и F2) | [frontend-contracts.md](frontend-contracts.md) |
 | Узнать, что сделали агенты фронтенда | [frontend-reports/](frontend-reports/) |
 | Проверить, что каждое состояние панели покрыто сценарием демо, тестом и скриншотом | [frontend-coverage.md](frontend-coverage.md) |

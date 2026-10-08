@@ -8,7 +8,7 @@ export class ContractError extends Error {
 }
 
 export type Reader<T> = (value: unknown, path: string) => T
-export type JsonObject = Record<string, unknown>
+type JsonObject = Record<string, unknown>
 
 const PREVIEW_LENGTH = 40
 
@@ -43,7 +43,7 @@ export const readBoolean: Reader<boolean> = (value, path) => {
   return value
 }
 
-export interface NumberBounds {
+interface NumberBounds {
   min?: number
   max?: number
   greaterThan?: number

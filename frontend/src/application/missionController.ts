@@ -9,7 +9,7 @@ import { ControllerSession, type SessionTiming } from "./session/session"
 import { StatePolling } from "./session/statePolling"
 import { EMPTY_JOURNAL, type MissionViewState } from "./viewState"
 
-export interface ControllerOptions {
+interface ControllerOptions {
   gateway: MissionGateway
   scheduler: Scheduler
   generateId: () => string
@@ -21,7 +21,7 @@ export interface ControllerOptions {
   awaitTimeoutMs?: number
 }
 
-export const DEFAULT_TIMING: SessionTiming = {
+const DEFAULT_TIMING: SessionTiming = {
   pollIntervalMs: 500,
   staleAfterMs: 3000,
   healthIntervalMs: 2000,

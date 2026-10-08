@@ -1,4 +1,4 @@
-export interface LabelBox {
+interface LabelBox {
   x: number
   y: number
   width: number
@@ -15,27 +15,13 @@ const OBSTACLE_LIMIT = 64
 const PADDING_X = 4
 const PADDING_Y = 2
 
-export function overlaps(first: LabelBox, second: LabelBox): boolean {
+function overlaps(first: LabelBox, second: LabelBox): boolean {
   return (
     first.x < second.x + second.width &&
     second.x < first.x + first.width &&
     first.y < second.y + second.height &&
     second.y < first.y + first.height
   )
-}
-
-export function placeLabels<T extends LabelBox>(
-  labels: readonly T[],
-  obstacles: readonly LabelBox[] = [],
-): T[] {
-  const placed: T[] = []
-  for (const label of labels) {
-    const blocked =
-      obstacles.some((other) => overlaps(label, other)) ||
-      placed.some((other) => overlaps(label, other))
-    if (!blocked) placed.push(label)
-  }
-  return placed
 }
 
 function emptyBox(): LabelBox {

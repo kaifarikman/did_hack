@@ -1,0 +1,17 @@
+.scroll {
+  max-block-size: min(32rem, 60dvh);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.more {
+  justify-self: start;
+}
+
+.entries {
+  display: grid;
+  gap: var(--space-4);
+}

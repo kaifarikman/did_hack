@@ -5,7 +5,7 @@ import { describeError } from "../errorDescription"
 import type { JournalState } from "../viewState"
 import type { ControllerSession } from "./session"
 
-export function needsJournalSync(snapshot: MissionSnapshot, journal: JournalState): boolean {
+function needsJournalSync(snapshot: MissionSnapshot, journal: JournalState): boolean {
   if (snapshot.run_id === null || journal.runId !== snapshot.run_id) return false
   const upToDate =
     !isActiveStatus(snapshot.status) &&
@@ -14,7 +14,7 @@ export function needsJournalSync(snapshot: MissionSnapshot, journal: JournalStat
   return !upToDate
 }
 
-export function withJournalPage(
+function withJournalPage(
   journal: JournalState,
   page: JournalPage,
   revision: number,

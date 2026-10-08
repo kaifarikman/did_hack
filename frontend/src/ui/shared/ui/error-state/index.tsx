@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Button } from "../button"
 import { Icon } from "../icon"
@@ -6,7 +7,7 @@ import styles from "./styles.module.css"
 
 export interface ErrorStateProps {
   readonly title: string
-  readonly description?: string | undefined
+  readonly description?: ReactNode | undefined
   readonly onRetry?: (() => void) | undefined
   readonly retryPending?: boolean | undefined
   readonly className?: string | undefined

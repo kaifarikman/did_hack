@@ -19,14 +19,6 @@ export function filterJournal(
   return kind === "all" ? [...entries] : entries.filter((entry) => entry.kind === kind)
 }
 
-export interface HypothesisChain {
-  hypothesis_id: string
-  expectations: string[]
-  experiments: JournalEntry[]
-  observations: string[]
-  conclusions: string[]
-}
-
 export function listHypothesisIds(entries: readonly JournalEntry[]): string[] {
   const ids: string[] = []
   for (const entry of entries) {
@@ -34,22 +26,6 @@ export function listHypothesisIds(entries: readonly JournalEntry[]): string[] {
       ids.push(entry.hypothesis_id)
   }
   return ids
-}
-
-export function buildHypothesisChain(
-  entries: readonly JournalEntry[],
-  hypothesisId: string,
-): HypothesisChain {
-  const related = entries.filter((entry) => entry.hypothesis_id === hypothesisId)
-  const textsOf = (pick: (entry: JournalEntry) => string | null): string[] =>
-    related.map(pick).filter((text): text is string => text !== null)
-  return {
-    hypothesis_id: hypothesisId,
-    expectations: textsOf((entry) => entry.expected),
-    experiments: related.filter((entry) => entry.kind === "experiment"),
-    observations: textsOf((entry) => entry.observed),
-    conclusions: textsOf((entry) => entry.conclusion),
-  }
 }
 
 export interface JournalExport {

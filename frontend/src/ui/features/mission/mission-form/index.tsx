@@ -17,7 +17,7 @@ import {
 } from "../mission-fields"
 import styles from "./styles.module.css"
 
-export interface StartRequest {
+interface StartRequest {
   readonly seed: number
   readonly scenario: Scenario
   readonly missionText: string

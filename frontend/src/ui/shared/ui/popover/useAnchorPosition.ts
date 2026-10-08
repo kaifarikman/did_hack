@@ -6,13 +6,13 @@ export type Placement = "bottom-start" | "bottom-end" | "top-start" | "top-end"
 
 export type Side = "top" | "bottom"
 
-export interface AnchoredLayout {
+interface AnchoredLayout {
   readonly top: number
   readonly left: number
   readonly side: Side
 }
 
-export interface LayoutInput {
+interface LayoutInput {
   readonly anchor: DOMRect
   readonly layerWidth: number
   readonly layerHeight: number

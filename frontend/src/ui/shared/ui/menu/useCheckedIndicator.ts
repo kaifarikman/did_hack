@@ -1,6 +1,6 @@
 import { type RefObject, useLayoutEffect } from "react"
 
-export const CHECKED_ITEM = '[aria-checked="true"]'
+const CHECKED_ITEM = '[aria-checked="true"]'
 
 export function placeIndicator(menu: HTMLElement, indicator: HTMLElement): boolean {
   const checked = menu.querySelector<HTMLElement>(CHECKED_ITEM)

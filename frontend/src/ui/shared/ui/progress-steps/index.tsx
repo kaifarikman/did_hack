@@ -19,7 +19,7 @@ export interface ProgressStepsProps {
   readonly className?: string | undefined
 }
 
-export const STEP_ICON: Readonly<Record<ProgressStepStatus, IconName>> = {
+const STEP_ICON: Readonly<Record<ProgressStepStatus, IconName>> = {
   pending: "pending",
   active: "target",
   done: "check",

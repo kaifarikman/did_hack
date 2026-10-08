@@ -2,9 +2,9 @@ import type { MissionSnapshot } from "../../domain/contract"
 import { describeError } from "../errorDescription"
 import type { ControllerSession } from "./session"
 
-export const STALE_CHECK_MAX_MS = 500
+const STALE_CHECK_MAX_MS = 500
 
-export interface StatePollingHooks {
+interface StatePollingHooks {
   readonly onSnapshot: (snapshot: MissionSnapshot, seq: number) => void
   readonly onTick: () => void
 }
