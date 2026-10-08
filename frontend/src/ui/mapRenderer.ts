@@ -23,6 +23,7 @@ export const MAP_COLORS = {
   hazard: "#d0021b",
   planStep: "#5a2d91",
   partner: "#0b7a75",
+  userTarget: "#c2185b",
 } as const;
 
 const mapImageCache = new WeakMap<MapData, HTMLCanvasElement>();
@@ -56,6 +57,59 @@ function mapImage(map: MapData): HTMLCanvasElement {
 export interface Scene {
   map: MapData;
   snapshot: MissionSnapshot | null;
+  /** Выбранная, но ещё не отправленная точка навигации. */
+  draftTarget?: Point | null;
+}
+
+function drawCrosshair(context: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
+  context.beginPath();
+  context.moveTo(x - radius - 5, y);
+  context.lineTo(x + radius + 5, y);
+  context.moveTo(x, y - radius - 5);
+  context.lineTo(x, y + radius + 5);
+  context.stroke();
+}
+
+/** Цель пользователя (круг допуска, сплошная) и черновик (штриховая) — отдельно от подцели робота. */
+function drawNavigationMarkers(
+  context: CanvasRenderingContext2D,
+  transform: ViewTransform,
+  snapshot: MissionSnapshot | null,
+  draftTarget: Point | null,
+): void {
+  const navigation = snapshot?.navigation ?? null;
+  context.save();
+  context.strokeStyle = MAP_COLORS.userTarget;
+  if (navigation !== null) {
+    const place = worldToScreen(transform, navigation.target);
+    const tolerance = Math.max(navigation.arrival_tolerance_m * transform.scale, 6);
+    context.beginPath();
+    context.arc(place.x, place.y, tolerance, 0, Math.PI * 2);
+    context.fillStyle = navigation.target_reached ? "rgba(194, 24, 91, 0.28)" : "rgba(194, 24, 91, 0.12)";
+    context.fill();
+    context.lineWidth = 2.5;
+    context.stroke();
+    drawCrosshair(context, place.x, place.y, tolerance);
+    context.fillStyle = MAP_COLORS.userTarget;
+    context.font = "700 11px system-ui, sans-serif";
+    context.textAlign = "center";
+    context.fillText(navigation.target_reached ? "Цель достигнута" : "Цель", place.x, place.y - tolerance - 8);
+  }
+  if (draftTarget !== null) {
+    const place = worldToScreen(transform, draftTarget);
+    context.setLineDash([4, 3]);
+    context.lineWidth = 2;
+    context.beginPath();
+    context.arc(place.x, place.y, 10, 0, Math.PI * 2);
+    context.stroke();
+    drawCrosshair(context, place.x, place.y, 10);
+    context.setLineDash([]);
+    context.fillStyle = MAP_COLORS.userTarget;
+    context.font = "700 11px system-ui, sans-serif";
+    context.textAlign = "center";
+    context.fillText("Выбрано", place.x, place.y + 26);
+  }
+  context.restore();
 }
 
 function tracePath(context: CanvasRenderingContext2D, transform: ViewTransform, points: Point[]): void {
@@ -69,6 +123,7 @@ function tracePath(context: CanvasRenderingContext2D, transform: ViewTransform, 
 
 export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport, scene: Scene): ViewTransform {
   const { map, snapshot } = scene;
+  const draftTarget = scene.draftTarget ?? null;
   const transform = createViewTransform(map, viewport);
   context.clearRect(0, 0, viewport.width, viewport.height);
 
@@ -87,7 +142,10 @@ export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport,
   context.drawImage(mapImage(map), 0, 0, map.width, map.height);
   context.restore();
 
-  if (snapshot === null) return transform;
+  if (snapshot === null) {
+    drawNavigationMarkers(context, transform, null, draftTarget);
+    return transform;
+  }
 
   const labels: Array<{ x: number; y: number; width: number; height: number; text: string; color: string }> = [];
   context.font = "600 11px system-ui, sans-serif";
@@ -209,6 +267,8 @@ export function drawScene(context: CanvasRenderingContext2D, viewport: Viewport,
     context.fillStyle = MAP_COLORS.goal;
     context.fill();
   }
+
+  drawNavigationMarkers(context, transform, snapshot, draftTarget);
 
   // остальные роботы команды: траектория, бронь и корпус своим цветом
   for (const partner of (snapshot.team?.robots ?? []).slice(1)) {

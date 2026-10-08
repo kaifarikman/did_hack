@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { MAP_MODES, SCENARIOS, type MapMode, type Scenario } from "../domain/contract";
+import { MAP_MODES, SCENARIOS, type MapMode, type NavigationTarget, type Scenario, type TaskType } from "../domain/contract";
+import { isGoalLocked } from "../domain/navigationPresentation";
+import { NavigationRunPanel } from "./NavigationPanel";
 import type { MissionController } from "../application/missionController";
-import { startDisabledReason, stopDisabledReason, type MissionViewState } from "../application/viewState";
+import {
+  navigationStartDisabledReason,
+  startDisabledReason,
+  stopDisabledReason,
+  type MissionViewState,
+} from "../application/viewState";
 import {
   batteryRatio,
   formatBattery,
@@ -18,9 +25,20 @@ import {
   type OutcomeKind,
 } from "../domain/presentation";
 
+/** Выбор типа задачи и черновик цели живут в App: карта и панель работают с одним черновиком. */
+export interface TaskSelection {
+  taskType: TaskType;
+  onTaskTypeChange: (next: TaskType) => void;
+  /** Готовая к отправке цель или null; причина запрета — в navigationBlock. */
+  target: NavigationTarget | null;
+  navigationBlock: string | null;
+  form: React.ReactNode;
+}
+
 interface MissionPanelProps {
   view: MissionViewState;
   controller: MissionController;
+  task: TaskSelection;
 }
 
 const OUTCOME_TEXT: Record<Exclude<OutcomeKind, "none">, string> = {
@@ -29,27 +47,35 @@ const OUTCOME_TEXT: Record<Exclude<OutcomeKind, "none">, string> = {
   failure: "Миссия завершилась ошибкой. Успех не засчитан.",
 };
 
-export function MissionPanel({ view, controller }: MissionPanelProps) {
+export function MissionPanel({ view, controller, task }: MissionPanelProps) {
   const [seedText, setSeedText] = useState("42");
   const [scenario, setScenario] = useState<Scenario>("easy");
   const [missionText, setMissionText] = useState("");
   const [mapMode, setMapMode] = useState<MapMode>("static");
   const [robotCount, setRobotCount] = useState(1);
   const { snapshot, health, command } = view;
+  const navigationMode = task.taskType === "navigation";
+  const taskTypes = health?.supported_task_types ?? ["research"];
   const supported = health?.supported_scenarios ?? ["easy"];
   const mapModes = health?.supported_map_modes ?? ["static"];
   const robotCounts = health?.supported_robot_counts ?? [1];
+  const effectiveScenario: Scenario = navigationMode ? "easy" : scenario;
+  const effectiveMapMode: MapMode = navigationMode ? "static" : mapMode;
+  const effectiveRobotCount = navigationMode ? 1 : robotCount;
   const seed = Number(seedText);
   const seedValid = seedText.trim() !== "" && Number.isInteger(seed);
   const startReason =
     startDisabledReason(view) ??
     (seedValid ? null : "seed должен быть целым числом") ??
-    (supported.includes(scenario) ? null : `профиль ${scenario} не поддерживается средой`) ??
-    (mapModes.includes(mapMode) ? null : "режим карты не поддерживается средой") ??
-    (robotCounts.includes(robotCount) ? null : "столько роботов среда не поднимает");
+    (supported.includes(effectiveScenario) ? null : `профиль ${effectiveScenario} не поддерживается средой`) ??
+    (mapModes.includes(effectiveMapMode) ? null : "режим карты не поддерживается средой") ??
+    (robotCounts.includes(effectiveRobotCount) ? null : "столько роботов среда не поднимает") ??
+    (navigationMode ? navigationStartDisabledReason(view) : null) ??
+    (navigationMode ? task.navigationBlock : null);
   const stopReason = stopDisabledReason(view);
   const ratio = snapshot === null ? null : batteryRatio(snapshot.battery_remaining, snapshot.battery_initial);
-  const outcome = snapshot === null ? "none" : outcomeKind(snapshot.status);
+  const navigationRun = snapshot?.task_type === "navigation";
+  const outcome = snapshot === null || navigationRun ? "none" : outcomeKind(snapshot.status);
   const goal = snapshot?.current_goal ?? null;
 
   return (
@@ -80,6 +106,8 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           <dl className="metrics">
             <dt>Время симуляции</dt>
             <dd>{formatSimulationTime(snapshot.simulation_time_s)}</dd>
+            <dt>Поколение / измерение</dt>
+            <dd>{snapshot.generation === null ? "—" : `${snapshot.generation} / ${snapshot.observation_sequence ?? "нет данных"}`}</dd>
             <dt>Батарея</dt>
             <dd>
               {formatBattery(snapshot.battery_remaining, snapshot.battery_initial)}
@@ -88,7 +116,9 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
             <dt>Оценка энергии возврата</dt>
             <dd>{formatReturnEstimate(snapshot.return_energy_estimate)}</dd>
             <dt>Сигнал образца</dt>
-            <dd>{formatSampleSignal(snapshot.sample_signal)}</dd>
+            <dd>{formatSampleSignal(snapshot.sample_signal)}
+              {snapshot.sample_signal_age_s !== null && ` · ${snapshot.sample_signal_age_s.toFixed(2)} с`}
+            </dd>
             <dt>Подтверждённых сборов</dt>
             <dd>
               {snapshot.samples_collected}
@@ -107,6 +137,9 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
             <p className="mission-text"><strong>Миссия:</strong> {snapshot.mission_text}</p>
           )}
 
+          {snapshot.navigation !== null && <NavigationRunPanel snapshot={snapshot} />}
+
+          {!navigationRun && (
           <div className="goal">
             <h3>Текущая цель</h3>
             {goal === null ? (
@@ -117,6 +150,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
               </p>
             )}
           </div>
+          )}
 
           {snapshot.last_error !== null && (
             <p className="notice notice-failure" role="alert">
@@ -127,6 +161,35 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
         </>
       )}
 
+      <fieldset className="task-type">
+        <legend>Тип задачи</legend>
+        <label>
+          <input
+            type="radio"
+            name="task-type"
+            checked={!navigationMode}
+            disabled={isGoalLocked(snapshot)}
+            onChange={() => task.onTaskTypeChange("research")}
+          />{" "}
+          Исследование
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="task-type"
+            checked={navigationMode}
+            disabled={!taskTypes.includes("navigation") || isGoalLocked(snapshot)}
+            onChange={() => task.onTaskTypeChange("navigation")}
+          />{" "}
+          В заданную точку
+          {taskTypes.includes("navigation") ? "" : " (backend не поддерживает)"}
+        </label>
+      </fieldset>
+      {navigationMode && (
+        <p className="hint">Профиль навигации: easy, готовая карта (static), один робот.</p>
+      )}
+      {navigationMode && task.form}
+      {!navigationMode && (
       <label className="mission-field">
         Текст миссии (необязательно)
         <textarea
@@ -137,7 +200,9 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           onChange={(event) => setMissionText(event.target.value)}
         />
       </label>
+      )}
       <div className="controls">
+        {!navigationMode && (<>
         <label className="seed-field">
           Профиль
           <select value={scenario} onChange={(event) => setScenario(event.target.value as Scenario)}>
@@ -171,6 +236,7 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
             ))}
           </select>
         </label>
+        </>)}
         <label className="seed-field">
           seed
           <input
@@ -186,9 +252,13 @@ export function MissionPanel({ view, controller }: MissionPanelProps) {
           className="button-primary"
           disabled={startReason !== null}
           aria-describedby="command-hint"
-          onClick={() => void controller.startRun(seed, scenario, missionText, mapMode, robotCount)}
+          onClick={() =>
+            navigationMode
+              ? void controller.startRun(seed, "easy", "", "static", 1, task.target)
+              : void controller.startRun(seed, scenario, missionText, mapMode, robotCount)
+          }
         >
-          Start
+          {navigationMode ? "Запустить к точке" : "Start"}
         </button>
         <button
           type="button"

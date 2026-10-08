@@ -50,6 +50,7 @@ export const readyHealth: HealthStatus = {
   supported_scenarios: ["easy", "medium", "hard"],
   supported_map_modes: ["static", "slam"],
   supported_robot_counts: [1, 2],
+  supported_task_types: ["research", "navigation"],
 };
 
 /** Виртуальные часы: время идёт только через advance. */

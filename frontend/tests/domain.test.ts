@@ -108,6 +108,35 @@ describe("валидация контракта", () => {
     expect(() => parseSnapshot({ ...running(), robot_pose: { position_x_m: "1" } })).toThrow(/robot_pose\.position_x_m/);
   });
 
+  it("schema 1.3 отдаёт идентификатор робота, независимые revisions и freshness источников", () => {
+    const snapshot = parseSnapshot(running());
+    expect(snapshot.robot_id).toBe("robot_1");
+    expect(snapshot.route_revision).toBeGreaterThanOrEqual(0);
+    expect(snapshot.plan_revision).toBeGreaterThanOrEqual(0);
+    expect(snapshot.freshness.scan.fresh).toBe(true);
+  });
+
+  it("мигрирует schema 1.2 к неизвестным freshness и нулевым revision", () => {
+    const legacy = structuredClone(running()) as unknown as Record<string, unknown>;
+    legacy.schema_version = "1.2";
+    delete legacy.robot_id;
+    delete legacy.route_revision;
+    delete legacy.plan_revision;
+    delete legacy.map_revision;
+    delete legacy.model_revision;
+    delete legacy.freshness;
+    const snapshot = parseSnapshot(legacy);
+    expect(snapshot.robot_id).toBe("robot_1");
+    expect(snapshot.route_revision).toBe(0);
+    expect(snapshot.freshness.scan).toEqual({ age_s: null, fresh: null });
+  });
+
+  it("schema 1.3 отклоняет некорректную свежесть источника", () => {
+    const raw = structuredClone(running()) as { freshness: { scan: { age_s: number; fresh: boolean } } };
+    raw.freshness.scan.age_s = -1;
+    expect(() => parseSnapshot(raw)).toThrow(/freshness\.scan\.age_s/);
+  });
+
   it("отклоняет карту с неверным числом клеток", () => {
     expect(() => parseMap({ ...exampleMap(), cells: [0, 0] })).toThrow(/cells/);
   });

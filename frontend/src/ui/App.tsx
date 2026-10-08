@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { MissionController } from "../application/missionController";
 import type { FixtureControls } from "../adapters/fixture/fixtureGateway";
 import { FIXTURE_SCENARIOS, type FixtureScenarioName } from "../adapters/fixture/scenarios";
 import { JournalPanel } from "./JournalPanel";
 import { MapView } from "./MapView";
+import type { Point, TaskType } from "../domain/contract";
+import { isMapMismatch } from "../domain/presentation";
+import { isGoalLocked } from "../domain/navigationPresentation";
+import { draftFromPoint, EMPTY_DRAFT, evaluateDraft, type NavigationDraft } from "../domain/navigationDraft";
 import { MissionPanel } from "./MissionPanel";
+import { NavigationDraftForm } from "./NavigationPanel";
 import { ResearchPanel } from "./ResearchPanel";
 import { TeamPanel } from "./TeamPanel";
 import { useMission } from "./useMission";
@@ -18,6 +23,38 @@ export function App({ controller, fixtureControls }: AppProps) {
   const view = useMission(controller);
   const [scenario, setScenario] = useState<FixtureScenarioName>(fixtureControls?.getScenario() ?? "success");
   const stale = view.connection === "stale";
+  const [taskType, setTaskType] = useState<TaskType>("research");
+  const [draft, setDraft] = useState<NavigationDraft>(EMPTY_DRAFT);
+  const currentMapId = view.map?.map_id ?? null;
+  const goalLocked = isGoalLocked(view.snapshot);
+  const mapMismatch = isMapMismatch(view.snapshot, view.map);
+  const evaluation = useMemo(() => evaluateDraft(draft, view.map, mapMismatch), [draft, view.map, mapMismatch]);
+
+  // потеря связи: выбор нужно подтвердить заново на актуальной карте
+  useEffect(() => {
+    if (view.connection !== "live") setDraft((current) => (current.mapId === null ? current : { ...current, mapId: null }));
+  }, [view.connection]);
+
+  const pickPoint = (point: Point) => setDraft(draftFromPoint(point, currentMapId));
+  const lockedReason = goalLocked
+    ? "Миссия выполняется: цель изменить нельзя. Нажмите Stop, чтобы выбрать другую точку."
+    : null;
+  const picker = taskType === "navigation" ? { lockedReason, onPick: pickPoint } : null;
+  const task = {
+    taskType,
+    onTaskTypeChange: setTaskType,
+    target: evaluation.target,
+    navigationBlock: evaluation.problem === null ? null : `точка не готова — ${evaluation.problem === "empty" ? "не выбрана" : "см. пояснение под полями"}`,
+    form: (
+      <NavigationDraftForm
+        draft={draft}
+        evaluation={evaluation}
+        snapshot={view.snapshot}
+        onChange={(next) => setDraft({ ...next, mapId: currentMapId })}
+        onConfirm={() => setDraft((current) => ({ ...current, mapId: currentMapId }))}
+      />
+    ),
+  };
 
   return (
     <div className="app">
@@ -57,9 +94,16 @@ export function App({ controller, fixtureControls }: AppProps) {
       )}
 
       <main className="layout">
-        <MapView map={view.map} snapshot={view.snapshot} mapError={view.mapError} stale={stale} />
+        <MapView
+          map={view.map}
+          snapshot={view.snapshot}
+          mapError={view.mapError}
+          stale={stale}
+          draftTarget={taskType === "navigation" && !goalLocked ? evaluation.point : null}
+          picker={picker}
+        />
         <div className="side">
-          <MissionPanel view={view} controller={controller} />
+          <MissionPanel view={view} controller={controller} task={task} />
           <TeamPanel snapshot={view.snapshot} />
           <ResearchPanel snapshot={view.snapshot} />
           <JournalPanel view={view} controller={controller} />

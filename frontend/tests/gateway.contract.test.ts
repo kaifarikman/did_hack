@@ -122,3 +122,40 @@ describe("HTTP-адаптер", () => {
     expect(sentBody).toEqual({ request_id: "abc", scenario: "easy", seed: 7 });
   });
 });
+
+describe("HTTP-шлюз и D1", () => {
+  const target = { position_x_m: -0.75, position_y_m: 0.5, map_id: "fixture-map-v1" };
+  const request = { request_id: "n1", scenario: "easy" as const, seed: 7, task_type: "navigation" as const, navigation_target: target };
+
+  it("отправляет navigation_target как есть в POST /runs и читает state 1.4", async () => {
+    let sentBody: unknown = null;
+    const state = {
+      ...structuredClone(running()),
+      schema_version: "1.4",
+      task_type: "navigation",
+      navigation: { target, phase: "pending", target_reached: false, target_reached_at_s: null, arrival_tolerance_m: 0.12 },
+    };
+    const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      expect(`${init?.method} ${String(input)}`).toBe("POST /api/v1/runs");
+      sentBody = JSON.parse(String(init?.body));
+      return Response.json(state, { status: 202 });
+    }) as typeof fetch;
+    const snapshot = await new HttpMissionGateway({ fetchFn }).startRun(request);
+    expect(sentBody).toEqual(request);
+    expect(snapshot.navigation?.phase).toBe("pending");
+  });
+
+  it("ошибки D1 приходят как ApiError с кодом и признаком retryable", async () => {
+    const reject = (status: number, code: string, retryable: boolean): typeof fetch =>
+      (async () => Response.json({ error: { code, message: "m", retryable } }, { status })) as typeof fetch;
+    await expect(new HttpMissionGateway({ fetchFn: reject(422, "navigation_target_unreachable", false) }).startRun(request)).rejects.toMatchObject({
+      status: 422,
+      code: "navigation_target_unreachable",
+      retryable: false,
+    });
+    await expect(new HttpMissionGateway({ fetchFn: reject(503, "environment_not_ready", true) }).startRun(request)).rejects.toMatchObject({
+      status: 503,
+      retryable: true,
+    });
+  });
+});

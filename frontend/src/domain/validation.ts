@@ -6,9 +6,12 @@ import type {
   MapData,
   MissionGoal,
   MissionSnapshot,
+  NavigationTarget,
+  NavigationView,
   Point,
+  SourceFreshness,
 } from "./contract";
-import { MAP_MODES, SCENARIOS, SENSOR_FAULTS, SENSOR_STATES, STEP_STATUSES } from "./contract";
+import { MAP_MODES, NAVIGATION_PHASES, SCENARIOS, TASK_TYPES, SENSOR_FAULTS, SENSOR_STATES, STEP_STATUSES } from "./contract";
 import type { HazardView, HypothesisView, MissionPlanView, ResearchView, TeamView } from "./contract";
 import { TEAM_OUTCOMES } from "./contract";
 
@@ -103,11 +106,46 @@ function optionalField<T>(source: JsonObject, key: string, path: string, reader:
 
 const readStrings = arrayOf(readString);
 
+const readSourceFreshness: Reader<SourceFreshness> = (value, path) => {
+  const source = readObject(value, path);
+  return {
+    age_s: field(source, "age_s", path, nullable(numberReader({ min: 0 }))),
+    fresh: field(source, "fresh", path, nullable(readBoolean)),
+  };
+};
+
+type FreshnessSet = Record<"odom" | "scan" | "battery" | "clock", SourceFreshness>;
+const readFreshness: Reader<FreshnessSet> = (value, path) => {
+  const sources = readObject(value, path);
+  return {
+    odom: field(sources, "odom", path, readSourceFreshness),
+    scan: field(sources, "scan", path, readSourceFreshness),
+    battery: field(sources, "battery", path, readSourceFreshness),
+    clock: field(sources, "clock", path, readSourceFreshness),
+  };
+};
+
 const readPoint: Reader<Point> = (value, path) => {
   const source = readObject(value, path);
   return {
     position_x_m: field(source, "position_x_m", path, readNumber),
     position_y_m: field(source, "position_y_m", path, readNumber),
+  };
+};
+
+const readNavigationTarget: Reader<NavigationTarget> = (value, path) => {
+  const source = readObject(value, path);
+  return { ...readPoint(source, path), map_id: field(source, "map_id", path, readString) };
+};
+
+const readNavigation: Reader<NavigationView> = (value, path) => {
+  const source = readObject(value, path);
+  return {
+    target: field(source, "target", path, readNavigationTarget),
+    phase: field(source, "phase", path, enumReader(NAVIGATION_PHASES)),
+    target_reached: field(source, "target_reached", path, readBoolean),
+    target_reached_at_s: field(source, "target_reached_at_s", path, nullable(numberReader({ min: 0 }))),
+    arrival_tolerance_m: field(source, "arrival_tolerance_m", path, numberReader({ greaterThan: 0 })),
   };
 };
 
@@ -222,6 +260,12 @@ const readTeam: Reader<TeamView> = (value, path) => {
         const robot = readObject(item, itemPath);
         return {
           robot_id: field(robot, "robot_id", itemPath, readString),
+          freshness: optionalField(robot, "freshness", itemPath, readFreshness, {
+            odom: { age_s: null, fresh: null },
+            scan: { age_s: null, fresh: null },
+            battery: { age_s: null, fresh: null },
+            clock: { age_s: null, fresh: null },
+          }),
           status: field(robot, "status", itemPath, readRunStatus),
           robot_pose: field(robot, "robot_pose", itemPath, nullable(readPose)),
           battery_remaining: field(robot, "battery_remaining", itemPath, nullable(numberReader({ min: 0 }))),
@@ -243,18 +287,46 @@ const readPose: Reader<{ position_x_m: number; position_y_m: number; heading_rad
 };
 
 export function parseSnapshot(raw: unknown): MissionSnapshot {
+  const snapshot = parseSnapshotFields(raw);
+  if (snapshot.task_type === "navigation" && snapshot.navigation === null) {
+    fail("state.navigation", "объект цели для task_type=navigation", null);
+  }
+  return snapshot;
+}
+
+function parseSnapshotFields(raw: unknown): MissionSnapshot {
   const path = "state";
   const source = readObject(raw, path);
   const schemaVersion = field(source, "schema_version", path, readString);
-  if (!schemaVersion.startsWith("1.")) {
+  if (!["1.0", "1.1", "1.2", "1.3", "1.4"].includes(schemaVersion)) {
     throw new ContractError(`Неподдерживаемая версия схемы состояния: ${schemaVersion}`);
   }
+  const legacyRevisions = schemaVersion !== "1.3" && schemaVersion !== "1.4";
+  const hasTaskFields = schemaVersion === "1.4";
+  const legacyFreshness = {
+    odom: { age_s: null, fresh: null },
+    scan: { age_s: null, fresh: null },
+    battery: { age_s: null, fresh: null },
+    clock: { age_s: null, fresh: null },
+  } as const;
   const unitInterval = numberReader({ min: 0, max: 1 });
   const nonNegative = numberReader({ min: 0 });
   return {
     schema_version: schemaVersion,
     run_id: field(source, "run_id", path, nullable(readString)),
+    robot_id: optionalField(source, "robot_id", path, readString, "robot_1"),
+    generation: field(source, "generation", path, nullable(numberReader({ min: 1 }, true))),
+    observation_sequence: field(source, "observation_sequence", path,
+      nullable(numberReader({ min: 1 }, true))),
+    sample_signal_age_s: field(source, "sample_signal_age_s", path, nullable(nonNegative)),
     revision: field(source, "revision", path, numberReader({ min: 0 }, true)),
+    route_revision: legacyRevisions ? 0 : field(source, "route_revision", path, numberReader({ min: 0 }, true)),
+    plan_revision: legacyRevisions ? 0 : field(source, "plan_revision", path, numberReader({ min: 0 }, true)),
+    map_revision: legacyRevisions ? 0 : field(source, "map_revision", path, numberReader({ min: 0 }, true)),
+    model_revision: legacyRevisions ? 0 : field(source, "model_revision", path, numberReader({ min: 0 }, true)),
+    freshness: legacyRevisions
+      ? legacyFreshness
+      : field(source, "freshness", path, readFreshness),
     status: field(source, "status", path, readRunStatus),
     scenario: field(source, "scenario", path, nullable(enumReader(SCENARIOS))),
     seed: field(source, "seed", path, nullable(numberReader({}, true))),
@@ -317,6 +389,8 @@ export function parseSnapshot(raw: unknown): MissionSnapshot {
     plan: optionalField(source, "plan", path, nullable(readPlan), null),
     research: optionalField(source, "research", path, nullable(readResearch), null),
     team: optionalField(source, "team", path, nullable(readTeam), null),
+    task_type: hasTaskFields ? field(source, "task_type", path, enumReader(TASK_TYPES)) : "research",
+    navigation: hasTaskFields ? field(source, "navigation", path, nullable(readNavigation)) : null,
   };
 }
 
@@ -333,6 +407,7 @@ export function parseHealth(raw: unknown): HealthStatus {
         ? ["easy"]
         : field(source, "supported_scenarios", path, arrayOf(enumReader(SCENARIOS))),
     supported_map_modes: optionalField(source, "supported_map_modes", path, arrayOf(enumReader(MAP_MODES)), ["static"]),
+    supported_task_types: optionalField(source, "supported_task_types", path, arrayOf(enumReader(TASK_TYPES)), ["research"]),
     supported_robot_counts: optionalField(
       source,
       "supported_robot_counts",

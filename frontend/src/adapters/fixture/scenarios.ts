@@ -5,7 +5,15 @@ import mapExample from "./examples/map.json";
 import stateIdleExample from "./examples/state-idle.json";
 import stateRunningExample from "./examples/state-running.json";
 
-export type FixtureScenarioName = "success" | "llm_fallback" | "disconnect" | "failed" | "start_rejected";
+import type { NavigationFixtureScenario } from "./navigationFixture";
+
+export type FixtureScenarioName =
+  | "success"
+  | "llm_fallback"
+  | "disconnect"
+  | "failed"
+  | "start_rejected"
+  | NavigationFixtureScenario;
 
 export const FIXTURE_SCENARIOS: ReadonlyArray<{ name: FixtureScenarioName; label: string }> = [
   { name: "success", label: "Успешная миссия" },
@@ -13,10 +21,21 @@ export const FIXTURE_SCENARIOS: ReadonlyArray<{ name: FixtureScenarioName; label
   { name: "disconnect", label: "Разрыв связи посреди миссии" },
   { name: "failed", label: "Миссия завершается ошибкой" },
   { name: "start_rejected", label: "Старт отклонён: среда не готова" },
+  { name: "nav_success", label: "Навигация: цель → возврат → finish" },
+  { name: "nav_not_reached", label: "Навигация: цель не достигнута (энергия)" },
+  { name: "nav_map_changed", label: "Навигация: карта изменилась" },
+  { name: "nav_refused", label: "Навигация: backend отказал" },
+  { name: "nav_disconnect", label: "Навигация: потеря связи (stale)" },
 ];
+
+export function isNavigationScenario(name: FixtureScenarioName): name is NavigationFixtureScenario {
+  return name.startsWith("nav_");
+}
 
 /** Номер кадра (с нуля), перед которым в сценарии «disconnect» пропадает связь. */
 export const OUTAGE_FRAME_INDEX = 14;
+/** Номер кадра, перед которым в навигационном сценарии пропадает связь. */
+export const NAVIGATION_OUTAGE_FRAME_INDEX = 6;
 /** Число подряд неудачных запросов состояния: при 2 Гц это ~4,5 с, больше порога устаревания 3 с. */
 export const OUTAGE_REQUEST_COUNT = 9;
 
@@ -78,7 +97,7 @@ interface ScenarioParams {
   failAtReturnStep: number | null;
 }
 
-const PARAMS: Record<FixtureScenarioName, ScenarioParams> = {
+const PARAMS: Record<Exclude<FixtureScenarioName, NavigationFixtureScenario>, ScenarioParams> = {
   success: { llmFailsAtFrame: null, failAtReturnStep: null },
   disconnect: { llmFailsAtFrame: null, failAtReturnStep: null },
   start_rejected: { llmFailsAtFrame: null, failAtReturnStep: null },
@@ -86,7 +105,7 @@ const PARAMS: Record<FixtureScenarioName, ScenarioParams> = {
   failed: { llmFailsAtFrame: null, failAtReturnStep: 10 },
 };
 
-export function buildScript(name: FixtureScenarioName): FixtureScript {
+export function buildScript(name: Exclude<FixtureScenarioName, NavigationFixtureScenario>): FixtureScript {
   const params = PARAMS[name];
   const outbound = buildOutboundRoute();
   const returning = [...outbound].reverse();

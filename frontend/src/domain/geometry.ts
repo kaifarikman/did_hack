@@ -111,3 +111,49 @@ export function localToScreenMatrix(transform: ViewTransform, origin: MapOrigin)
 export function headingToScreenAngle(headingRad: number): number {
   return -headingRad;
 }
+
+/** Обратное преобразование: мировая точка → локальные метры карты (до поворота origin). */
+export function worldToLocal(origin: MapOrigin, point: Point): { x: number; y: number } {
+  const cos = Math.cos(origin.heading_rad);
+  const sin = Math.sin(origin.heading_rad);
+  const deltaX = point.position_x_m - origin.position_x_m;
+  const deltaY = point.position_y_m - origin.position_y_m;
+  return { x: cos * deltaX + sin * deltaY, y: -sin * deltaX + cos * deltaY };
+}
+
+export interface CellLookup {
+  column: number;
+  row: number;
+  /** Значение клетки occupancy grid: 0 свободно, 100 занято, -1 неизвестно. */
+  value: number;
+}
+
+/** Клетка карты под мировой точкой; null, если точка вне карты. Правая/верхняя граница не входит. */
+export function cellAtWorld(map: MapData, point: Point): CellLookup | null {
+  const local = worldToLocal(map.origin, point);
+  const column = Math.floor(local.x / map.resolution_m);
+  const row = Math.floor(local.y / map.resolution_m);
+  if (!Number.isFinite(column) || !Number.isFinite(row)) return null;
+  if (column < 0 || row < 0 || column >= map.width || row >= map.height) return null;
+  return { column, row, value: map.cells[row * map.width + column] ?? -1 };
+}
+
+/**
+ * Координата клика на canvas → мировая точка карты.
+ * Размер canvas в CSS-пикселях берётся из viewport преобразования, поэтому devicePixelRatio не влияет;
+ * разница между отрисованным и логическим размером (масштаб страницы) учитывается через rect.
+ */
+export function canvasClickToWorld(
+  transform: ViewTransform,
+  viewport: Viewport,
+  rect: { left: number; top: number; width: number; height: number },
+  client: { x: number; y: number },
+): Point | null {
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  const screen = {
+    x: ((client.x - rect.left) * viewport.width) / rect.width,
+    y: ((client.y - rect.top) * viewport.height) / rect.height,
+  };
+  if (screen.x < 0 || screen.y < 0 || screen.x > viewport.width || screen.y > viewport.height) return null;
+  return screenToWorld(transform, screen);
+}

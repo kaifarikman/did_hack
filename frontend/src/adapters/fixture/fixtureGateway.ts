@@ -9,12 +9,16 @@ import type {
   StartRunRequest,
   StopRunRequest,
 } from "../../domain/contract";
+import { cellAtWorld } from "../../domain/geometry";
 import { isActiveStatus } from "../../domain/presentation";
+import { buildNavigationScript, planGridRoute } from "./navigationFixture";
 import {
   buildScript,
   fixtureMap,
   idleSnapshot,
+  isNavigationScenario,
   OUTAGE_FRAME_INDEX,
+  NAVIGATION_OUTAGE_FRAME_INDEX,
   OUTAGE_REQUEST_COUNT,
   type FixtureScenarioName,
   type FixtureScript,
@@ -47,7 +51,11 @@ const FIXTURE_HEALTH: HealthStatus = {
   supported_scenarios: ["easy"],
   supported_map_modes: ["static"],
   supported_robot_counts: [1],
+  supported_task_types: ["research", "navigation"],
 };
+
+/** Карта после «изменения» в сценарии nav_map_changed: тот же план, новая версия. */
+const CHANGED_MAP_ID = "fixture-map-v2";
 
 function clone<T>(value: T): T {
   return structuredClone(value);
@@ -60,7 +68,8 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
   private run: FixtureRun | null = null;
   private outageRemaining = 0;
   private startRejectionsLeft = 0;
-  private readonly startedRequests = new Map<string, MissionSnapshot>();
+  private readonly startedRequests = new Map<string, { fingerprint: string; snapshot: MissionSnapshot }>();
+  private mapId = fixtureMap.map_id;
 
   getScenario(): FixtureScenarioName {
     return this.scenario;
@@ -76,17 +85,18 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
   }
 
   async getMap(): Promise<MapData> {
-    return clone(fixtureMap);
+    return { ...clone(fixtureMap), map_id: this.mapId };
   }
 
   async getState(): Promise<MissionSnapshot> {
     const run = this.run;
-    if (run === null) return clone(idleSnapshot);
+    if (run === null) return { ...clone(idleSnapshot), map_id: this.mapId };
     if (this.outageRemaining > 0) {
       this.outageRemaining -= 1;
       throw new NetworkError("Демо: имитация разрыва связи с backend");
     }
-    if (run.scenario === "disconnect" && !run.outageTriggered && run.nextFrame === OUTAGE_FRAME_INDEX) {
+    const outageFrame = run.scenario === "nav_disconnect" ? NAVIGATION_OUTAGE_FRAME_INDEX : OUTAGE_FRAME_INDEX;
+    if ((run.scenario === "disconnect" || run.scenario === "nav_disconnect") && !run.outageTriggered && run.nextFrame === outageFrame) {
       run.outageTriggered = true;
       this.outageRemaining = OUTAGE_REQUEST_COUNT - 1;
       throw new NetworkError("Демо: имитация разрыва связи с backend");
@@ -101,7 +111,9 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
     }
     if (run.stopPhase === "stopping" || run.stopPhase === "stopped") {
       run.stopPhase = "stopped";
-      return this.emit(run, { ...run.lastSnapshot, status: "stopped", current_goal: null, planned_path: [] }, true);
+      const stopped: MissionSnapshot = { ...run.lastSnapshot, status: "stopped", current_goal: null, planned_path: [] };
+      if (stopped.navigation !== null) stopped.navigation = { ...stopped.navigation, phase: "stopped" };
+      return this.emit(run, stopped, true);
     }
     const frame = run.script.frames[Math.min(run.nextFrame, run.script.frames.length - 1)];
     if (frame === undefined) return run.lastSnapshot;
@@ -124,20 +136,41 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
   }
 
   async startRun(request: StartRunRequest): Promise<MissionSnapshot> {
+    const fingerprint = JSON.stringify({ ...request, request_id: undefined });
     const known = this.startedRequests.get(request.request_id);
-    if (known !== undefined) return clone(known);
+    if (known !== undefined) {
+      if (known.fingerprint !== fingerprint) {
+        throw new ApiError(409, "run_conflict", "request_id уже использован с другими параметрами.", false);
+      }
+      return clone(known.snapshot);
+    }
     if (!Number.isInteger(request.seed)) {
       throw new ApiError(422, "invalid_request", "seed должен быть целым числом", false);
+    }
+    const navigation = request.task_type === "navigation";
+    if (navigation !== (request.navigation_target !== undefined)) {
+      throw new ApiError(422, "invalid_request", "navigation_target обязателен для navigation и запрещён для research.", false);
+    }
+    if (navigation && (request.scenario !== "easy" || (request.map_mode ?? "static") !== "static" || (request.robot_count ?? 1) !== 1)) {
+      throw new ApiError(409, "scenario_unavailable", "Навигация доступна только в профиле easy/static/1.", false);
+    }
+    if (this.scenario === "nav_refused" && navigation) {
+      throw new ApiError(409, "scenario_unavailable", "Демо: backend отказал в запуске навигации.", false);
     }
     if (this.startRejectionsLeft > 0) {
       this.startRejectionsLeft -= 1;
       throw new ApiError(503, "environment_not_ready", "Ожидаются наблюдения ROS.", true);
     }
     if (this.run !== null && isActiveStatus(this.run.lastSnapshot.status)) {
-      throw new ApiError(409, "run_active", "Другой прогон уже выполняется.", false);
+      throw new ApiError(409, "run_conflict", "Другой прогон уже выполняется.", false);
     }
+    if (navigation && this.scenario === "nav_map_changed" && this.mapId !== CHANGED_MAP_ID) {
+      this.mapId = CHANGED_MAP_ID;
+    }
+    const script = navigation
+      ? this.buildNavigation(request)
+      : buildScript(isNavigationScenario(this.scenario) ? "success" : this.scenario);
     this.runCounter += 1;
-    const script = buildScript(this.scenario);
     this.run = {
       runId: `fixture-run-${String(this.runCounter).padStart(3, "0")}`,
       seed: request.seed,
@@ -151,8 +184,32 @@ export class FixtureMissionGateway implements MissionGateway, FixtureControls {
       outageTriggered: false,
     };
     const snapshot = this.nextSnapshot(this.run);
-    this.startedRequests.set(request.request_id, snapshot);
+    this.startedRequests.set(request.request_id, { fingerprint, snapshot });
     return clone(snapshot);
+  }
+
+  /** Проверки D1 против текущей карты: тип/карта/границы/клетка/путь туда. Возврат на базу — тот же путь. */
+  private buildNavigation(request: StartRunRequest): FixtureScript {
+    const target = request.navigation_target;
+    if (target === undefined || !Number.isFinite(target.position_x_m) || !Number.isFinite(target.position_y_m)) {
+      throw new ApiError(422, "invalid_request", "Координаты цели должны быть конечными числами.", false);
+    }
+    if (target.map_id !== this.mapId) {
+      throw new ApiError(409, "map_changed", "Карта изменилась.", false);
+    }
+    const cell = cellAtWorld(fixtureMap, target);
+    const base = idleSnapshot.base_position;
+    const route = base === null || cell === null ? null : planGridRoute(fixtureMap, base, target);
+    if (base === null || route === null) {
+      throw new ApiError(422, "navigation_target_unreachable", "Цель вне карты, в запретной зоне или без пути.", false);
+    }
+    return buildNavigationScript({
+      scenario: isNavigationScenario(this.scenario) ? this.scenario : "nav_success",
+      target,
+      route,
+      base,
+      mapId: this.mapId,
+    });
   }
 
   async stopRun(runId: string, _request: StopRunRequest): Promise<MissionSnapshot> {

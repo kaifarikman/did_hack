@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type { MapData, MissionSnapshot } from "../domain/contract";
+import type { MapData, MissionSnapshot, Point } from "../domain/contract";
+import { canvasClickToWorld, cellAtWorld, createViewTransform } from "../domain/geometry";
+import { formatCoordinate } from "../domain/navigationDraft";
 import { isMapMismatch } from "../domain/presentation";
 import { drawScene, MAP_COLORS } from "./mapRenderer";
 
@@ -8,12 +10,17 @@ interface MapViewProps {
   snapshot: MissionSnapshot | null;
   mapError: string | null;
   stale: boolean;
+  /** Выбранная, но не отправленная точка навигации. */
+  draftTarget?: Point | null;
+  /** Выбор точки кликом; null — режим без навигации. lockedReason != null — клик объясняет, почему цель менять нельзя. */
+  picker?: { lockedReason: string | null; onPick: (point: Point) => void } | null;
 }
 
 const LEGEND: ReadonlyArray<{ label: string; color: string; shape: "square" | "line" | "dashed" | "ring" }> = [
   { label: "Робот (острие — направление)", color: MAP_COLORS.robot, shape: "square" },
   { label: "База", color: MAP_COLORS.base, shape: "square" },
-  { label: "Текущая цель", color: MAP_COLORS.goal, shape: "ring" },
+  { label: "Текущая подцель робота", color: MAP_COLORS.goal, shape: "ring" },
+  { label: "Цель пользователя (круг — допуск прибытия)", color: MAP_COLORS.userTarget, shape: "ring" },
   { label: "Пройденная траектория", color: MAP_COLORS.trajectory, shape: "line" },
   { label: "Планируемый путь", color: MAP_COLORS.plannedPath, shape: "dashed" },
   { label: "Подтверждённый сбор", color: MAP_COLORS.collected, shape: "square" },
@@ -26,10 +33,11 @@ const LEGEND: ReadonlyArray<{ label: string; color: string; shape: "square" | "l
   { label: "Неизвестно", color: MAP_COLORS.unknown, shape: "square" },
 ];
 
-export function MapView({ map, snapshot, mapError, stale }: MapViewProps) {
+export function MapView({ map, snapshot, mapError, stale, draftTarget = null, picker = null }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const [pickNotice, setPickNotice] = useState<string | null>(null);
   const mismatch = isMapMismatch(snapshot, map);
   const drawable = map !== null && !mismatch;
 
@@ -57,8 +65,33 @@ export function MapView({ map, snapshot, mapError, stale }: MapViewProps) {
       context.clearRect(0, 0, size.width, size.height);
       return;
     }
-    drawScene(context, size, { map, snapshot });
-  }, [map, snapshot, size, drawable]);
+    drawScene(context, size, { map, snapshot, draftTarget });
+  }, [map, snapshot, size, drawable, draftTarget]);
+
+  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (picker === null) return;
+    if (picker.lockedReason !== null) {
+      setPickNotice(picker.lockedReason);
+      return;
+    }
+    if (map === null || !drawable) {
+      setPickNotice("Карта ещё не загружена или не совпадает с состоянием: точку выбрать нельзя.");
+      return;
+    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    const transform = createViewTransform(map, size);
+    const world = canvasClickToWorld(transform, size, rect, { x: event.clientX, y: event.clientY });
+    if (world === null || cellAtWorld(map, world) === null) {
+      setPickNotice("Клик вне карты проигнорирован: выберите точку внутри карты.");
+      return;
+    }
+    const rounded = {
+      position_x_m: Number(formatCoordinate(world.position_x_m)),
+      position_y_m: Number(formatCoordinate(world.position_y_m)),
+    };
+    setPickNotice(null);
+    picker.onPick(rounded);
+  };
 
   const description = describeScene(snapshot, drawable);
   let overlay: string | null = null;
@@ -69,9 +102,23 @@ export function MapView({ map, snapshot, mapError, stale }: MapViewProps) {
     <section className="panel map-panel" aria-labelledby="map-title">
       <h2 id="map-title">Карта</h2>
       <div className={`map-canvas-wrap${stale ? " is-stale" : ""}`} ref={containerRef}>
-        <canvas ref={canvasRef} role="img" aria-label={description} style={{ width: size.width, height: size.height }} />
+        <canvas
+          ref={canvasRef}
+          role="img"
+          aria-label={description}
+          data-testid="map-canvas"
+          style={{ width: size.width, height: size.height, cursor: picker !== null && picker.lockedReason === null ? "crosshair" : "default" }}
+          onClick={handleCanvasClick}
+        />
         {overlay !== null && <p className="map-overlay" role="status">{overlay}</p>}
       </div>
+      {picker !== null && (
+        <p className="hint pick-hint" role="status" data-testid="pick-notice">
+          {pickNotice ??
+            (picker.lockedReason ??
+              "Кликните по карте, чтобы выбрать точку: клик только выбирает её, робот не двигается. Координаты можно ввести числами в панели миссии.")}
+        </p>
+      )}
       <ul className="legend" aria-label="Легенда карты">
         {LEGEND.map((item) => (
           <li key={item.label}>

@@ -124,7 +124,18 @@ describe("демо-сценарии", () => {
   });
 
   it("перечень сценариев не пуст и совпадает с поддерживаемыми", () => {
-    expect(FIXTURE_SCENARIOS.map((item) => item.name)).toEqual(["success", "llm_fallback", "disconnect", "failed", "start_rejected"]);
+    expect(FIXTURE_SCENARIOS.map((item) => item.name)).toEqual([
+      "success",
+      "llm_fallback",
+      "disconnect",
+      "failed",
+      "start_rejected",
+      "nav_success",
+      "nav_not_reached",
+      "nav_map_changed",
+      "nav_refused",
+      "nav_disconnect",
+    ]);
   });
 });
 

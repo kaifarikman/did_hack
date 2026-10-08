@@ -82,6 +82,7 @@ describe("fixtures команды и SLAM", () => {
     const snapshot = parseSnapshot(structuredClone(stateTeamPartial));
     expect(snapshot.team?.robots.map((robot) => robot.robot_id)).toEqual(["robot_1", "robot_2"]);
     expect(snapshot.team?.lost_robots).toEqual(["robot_2"]);
+    expect(snapshot.team?.robots.every((robot) => robot.freshness.battery.fresh === true)).toBe(true);
     expect(["partial", "failed"]).toContain(snapshot.team?.outcome);
     expect(snapshot.status).toBe("failed");
   });

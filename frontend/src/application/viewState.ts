@@ -59,6 +59,18 @@ export function startDisabledReason(view: MissionViewState): string | null {
   return null;
 }
 
+/** Дополнительные условия запуска навигации: возможность объявляет сам backend. */
+export function navigationStartDisabledReason(view: MissionViewState): string | null {
+  if (view.health === null) return "Готовность среды неизвестна";
+  if (!view.health.supported_task_types.includes("navigation")) {
+    return "Backend не объявляет поддержку навигации к точке";
+  }
+  if (!view.health.supported_scenarios.includes("easy")) return "Профиль easy недоступен в среде";
+  if (!view.health.supported_map_modes.includes("static")) return "Готовая карта (static) недоступна в среде";
+  if (!view.health.supported_robot_counts.includes(1)) return "Запуск одного робота недоступен в среде";
+  return null;
+}
+
 export function stopDisabledReason(view: MissionViewState): string | null {
   if (view.snapshot === null || view.snapshot.run_id === null) return "Нет активного прогона";
   if (view.connection !== "live") return "Нет актуальной связи с backend";

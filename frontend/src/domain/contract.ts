@@ -16,6 +16,8 @@ export const SCENARIOS = ["easy", "medium", "hard"] as const;
 export type Scenario = (typeof SCENARIOS)[number];
 export const MAP_MODES = ["static", "slam"] as const;
 export type MapMode = (typeof MAP_MODES)[number];
+export const TASK_TYPES = ["research", "navigation"] as const;
+export type TaskType = (typeof TASK_TYPES)[number];
 export type JudgeMode = "local" | "official";
 export type PlannerMode = "llm" | "fallback";
 export type JournalKind = "observation" | "hypothesis" | "experiment" | "decision" | "outcome" | "error";
@@ -114,10 +116,36 @@ export interface ResearchView {
   planner_requests: number;
 }
 
+export interface NavigationTarget extends Point {
+  /** Версия карты, на которой выбрана точка (из /api/v1/map). */
+  map_id: string;
+}
+
+export const NAVIGATION_PHASES = ["pending", "moving_to_target", "returning", "finished", "stopped", "failed"] as const;
+export type NavigationPhase = (typeof NAVIGATION_PHASES)[number];
+
+/** Состояние пользовательской цели; null у исследования и у state до 1.4. */
+export interface NavigationView {
+  target: NavigationTarget;
+  phase: NavigationPhase;
+  target_reached: boolean;
+  target_reached_at_s: number | null;
+  arrival_tolerance_m: number;
+}
+
 export interface MissionSnapshot {
   schema_version: string;
   run_id: string | null;
+  robot_id: string;
+  generation: number | null;
+  observation_sequence: number | null;
+  sample_signal_age_s: number | null;
+  freshness: Record<"odom" | "scan" | "battery" | "clock", SourceFreshness>;
   revision: number;
+  route_revision: number;
+  plan_revision: number;
+  map_revision: number;
+  model_revision: number;
   status: RunStatus;
   scenario: Scenario | null;
   seed: number | null;
@@ -145,10 +173,19 @@ export interface MissionSnapshot {
   research: ResearchView | null;
   /** Командный прогон; null у одного робота и у backend до 1.1. */
   team: TeamView | null;
+  /** research по умолчанию; у state до 1.4 всегда research. */
+  task_type: TaskType;
+  navigation: NavigationView | null;
+}
+
+export interface SourceFreshness {
+  age_s: number | null;
+  fresh: boolean | null;
 }
 
 export interface TeamRobotView {
   robot_id: string;
+  freshness: Record<"odom" | "scan" | "battery" | "clock", SourceFreshness>;
   status: RunStatus;
   robot_pose: RobotPose | null;
   battery_remaining: number | null;
@@ -181,6 +218,8 @@ export interface HealthStatus {
   /** static — готовая карта, slam — строится из наблюдений; у старого backend только static. */
   supported_map_modes: MapMode[];
   supported_robot_counts: number[];
+  /** Отсутствие поля означает только research: navigation не предлагается вслепую. */
+  supported_task_types: TaskType[];
 }
 
 export interface MapOrigin {
@@ -228,6 +267,8 @@ export interface StartRunRequest {
   mission_text?: string;
   map_mode?: MapMode;
   robot_count?: number;
+  task_type?: TaskType;
+  navigation_target?: NavigationTarget;
 }
 
 export interface StopRunRequest {

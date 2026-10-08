@@ -1,4 +1,5 @@
-import type { MapMode, MissionSnapshot, Scenario, StartRunRequest } from "../domain/contract";
+import type { MapMode, MissionSnapshot, NavigationTarget, Scenario, StartRunRequest } from "../domain/contract";
+import { ApiError } from "./errors";
 import { mergeJournalEntries, type JournalExport } from "../domain/journal";
 import { isActiveStatus } from "../domain/presentation";
 import { describeError, isUnknownOutcome } from "./errorMessages";
@@ -6,6 +7,7 @@ import { ExportCancelledError, exportFullJournal } from "./exportJournal";
 import type { MissionGateway, Scheduler } from "./ports";
 import {
   IDLE_COMMAND,
+  navigationStartDisabledReason,
   startDisabledReason,
   stopDisabledReason,
   type JournalState,
@@ -344,9 +346,11 @@ export class MissionController {
     missionText = "",
     mapMode: MapMode = "static",
     robotCount = 1,
+    navigationTarget: NavigationTarget | null = null,
   ): Promise<void> {
     const snapshot = this.view.snapshot;
     if (snapshot === null || startDisabledReason(this.view) !== null) return;
+    if (navigationTarget !== null && !this.canStartNavigation(scenario, mapMode, robotCount, navigationTarget)) return;
     const requestId = this.generateId();
     this.pending = {
       kind: "start",
@@ -355,9 +359,12 @@ export class MissionController {
         request_id: requestId,
         scenario,
         seed,
-        ...(missionText.trim() === "" ? {} : { mission_text: missionText.trim() }),
+        ...(navigationTarget !== null || missionText.trim() === "" ? {} : { mission_text: missionText.trim() }),
         ...(mapMode === "static" ? {} : { map_mode: mapMode }),
         ...(robotCount === 1 ? {} : { robot_count: robotCount }),
+        ...(navigationTarget === null
+          ? {}
+          : { task_type: "navigation" as const, navigation_target: { ...navigationTarget } }),
       },
       baselineRunId: snapshot.run_id,
       stopRunId: null,
@@ -365,6 +372,26 @@ export class MissionController {
       failedAtSeq: null,
     };
     await this.dispatchPending();
+  }
+
+  /** Навигация только в профиле D1, на карте, которую интерфейс сейчас показывает и проверил. */
+  private canStartNavigation(
+    scenario: Scenario,
+    mapMode: MapMode,
+    robotCount: number,
+    target: NavigationTarget,
+  ): boolean {
+    if (navigationStartDisabledReason(this.view) !== null) return false;
+    if (scenario !== "easy" || mapMode !== "static" || robotCount !== 1) return false;
+    const currentMapId = this.view.map?.map_id ?? null;
+    return currentMapId !== null && currentMapId === target.map_id;
+  }
+
+  /** После map_changed карта могла смениться: перечитать её сразу, не дожидаясь периода повтора. */
+  private async reloadMapAfterConflict(): Promise<void> {
+    if (!this.running || this.mapInFlight) return;
+    this.lastMapAttemptAt = this.scheduler.now();
+    await this.loadMap();
   }
 
   async stopRun(): Promise<void> {
@@ -438,6 +465,7 @@ export class MissionController {
         this.update({
           command: { phase: "failed", kind: pending.kind, message: describeError(error), canRetry: false },
         });
+        if (error instanceof ApiError && error.code === "map_changed") void this.reloadMapAfterConflict();
       }
     }
   }
