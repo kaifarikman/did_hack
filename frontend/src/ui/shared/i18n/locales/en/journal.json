@@ -31,5 +31,15 @@
     "cancelled": "Export cancelled: the run changed.",
     "done": "Journal exported"
   },
-  "sequence": "#{{number}}"
+  "sequence": "#{{number}}",
+  "group": {
+    "count": "×{{count}}",
+    "label": "{{title}}, repeated {{count}} times",
+    "range": "#{{first}}–{{last}}"
+  },
+  "verdict": {
+    "confirmed": "Confirmed",
+    "refuted": "Refuted",
+    "inconclusive": "Not enough data"
+  }
 }

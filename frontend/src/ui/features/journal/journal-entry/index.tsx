@@ -1,13 +1,15 @@
 import { memo, useState } from "react"
 import type { JournalEntry as Entry } from "@/domain/contract"
 import { BackendText, useFormatters, useMessageText } from "@/ui/shared/i18n"
-import { Button, Disclosure, Icon, type IconName } from "@/ui/shared/ui"
-import { CHAIN_LABELS, KIND_LABELS } from "../labels"
+import { Button, Disclosure, type Verdict, VerdictMark } from "@/ui/shared/ui"
+import { JournalNode } from "../journal-node"
+import { CHAIN_LABELS, KIND_LABELS, VERDICT_LABELS } from "../labels"
 import styles from "./styles.module.css"
 
 export interface JournalEntryProps {
   readonly entry: Entry
   readonly fresh: boolean
+  readonly verdict: Verdict | null
   readonly hypothesisNumber: number | null
   readonly onShowChain: (hypothesisId: string) => void
 }
@@ -15,15 +17,6 @@ export interface JournalEntryProps {
 interface ChainRowProps {
   readonly label: string
   readonly value: string | null
-}
-
-const KIND_ICONS: Readonly<Record<Entry["kind"], IconName>> = {
-  observation: "observation",
-  hypothesis: "hypothesis",
-  experiment: "experiment",
-  decision: "decision",
-  outcome: "confirmed",
-  error: "critical",
 }
 
 function ChainRow({ label, value }: ChainRowProps) {
@@ -36,32 +29,47 @@ function ChainRow({ label, value }: ChainRowProps) {
   )
 }
 
-function JournalEntryView({ entry, fresh, hypothesisNumber, onShowChain }: JournalEntryProps) {
+function JournalEntryView({
+  entry,
+  fresh,
+  verdict,
+  hypothesisNumber,
+  onShowChain,
+}: JournalEntryProps) {
   const [arrived] = useState(fresh)
   const text = useMessageText()
   const format = useFormatters()
   const time =
     entry.simulation_time_s === null ? null : format.duration(entry.simulation_time_s)
+  const kindLabel = text({ key: KIND_LABELS[entry.kind] })
+  const verdictLabel = verdict === null ? null : text({ key: VERDICT_LABELS[verdict] })
   const summary = (
     <span className={styles.summary}>
-      <Icon name={KIND_ICONS[entry.kind]} />
-      <span className={styles.meta}>
-        <span>
-          {text({
-            key: "journal:sequence",
-            params: { number: format.integer(entry.sequence) },
-          })}
-        </span>
-        {time !== null && <span>{time}</span>}
-      </span>
-      <span className={styles.kind}>{text({ key: KIND_LABELS[entry.kind] })}</span>
       <BackendText className={styles.title}>{entry.title}</BackendText>
+      {verdict !== null && verdictLabel !== null && (
+        <VerdictMark verdict={verdict} label={verdictLabel} />
+      )}
+      <span className={styles.sequence}>
+        {text({ key: "journal:sequence", params: { number: format.integer(entry.sequence) } })}
+      </span>
     </span>
   )
   const hypothesisId = entry.hypothesis_id
   return (
-    <li className={styles.entry} data-kind={entry.kind} data-fresh={arrived} data-motion="fade">
-      <Disclosure summary={summary}>
+    <li
+      className={styles.entry}
+      data-kind={entry.kind}
+      data-verdict={verdict ?? undefined}
+      data-fresh={arrived}
+      data-motion="fade"
+    >
+      <span className={styles.time}>{time}</span>
+      <JournalNode
+        kind={entry.kind}
+        verdict={verdict}
+        label={verdictLabel === null ? kindLabel : `${kindLabel}: ${verdictLabel}`}
+      />
+      <Disclosure summary={summary} className={styles.disclosure}>
         <div className={styles.body}>
           {entry.detail !== "" && <BackendText as="p">{entry.detail}</BackendText>}
           <dl className={styles.chains}>

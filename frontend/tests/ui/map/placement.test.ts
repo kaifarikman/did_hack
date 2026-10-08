@@ -20,6 +20,8 @@ const TIMINGS = {
   fadeMs: 0,
   minTrackMs: 0,
   maxTrackMs: 0,
+  scanMs: 0,
+  scanTravelMs: 0,
   easing: linear,
 }
 const palette = readMapPalette()
@@ -112,13 +114,14 @@ describe("plan step markers", () => {
 })
 
 describe("base marker", () => {
-  it("draws a square with a hollow centre and nothing without a base", () => {
+  it("draws a house with an inner contour and nothing without a base", () => {
     const withBase = frameFor({ ...EMPTY_SCENE, base: at(0, 0) })
     drawBase(withBase)
-    expect(fakeCalls(withBase).filter((name) => name === "fillRect")).toHaveLength(2)
+    expect(fakeCalls(withBase).filter((name) => name === "closePath")).toHaveLength(3)
+    expect(fakeCalls(withBase).filter((name) => name === "stroke")).toHaveLength(2)
     const empty = frameFor(EMPTY_SCENE)
     drawBase(empty)
-    expect(fakeCalls(empty).filter((name) => name === "fillRect")).toHaveLength(0)
+    expect(fakeCalls(empty)).toHaveLength(0)
   })
 })
 

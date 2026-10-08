@@ -3,8 +3,8 @@
   "label": {
     "terrain": "{{energy}} усл. ед./м",
     "terrainSpread": "{{energy}} ± {{spread}} усл. ед./м",
-    "terrainRegime": "{{energy}} усл. ед./м · режим {{regime}}",
-    "terrainSpreadRegime": "{{energy}} ± {{spread}} усл. ед./м · режим {{regime}}",
+    "terrainRegime": "{{energy}} усл. ед./м, режим {{regime}}",
+    "terrainSpreadRegime": "{{energy}} ± {{spread}} усл. ед./м, режим {{regime}}",
     "hazard": "опасность ×{{hits}}"
   },
   "legend": {
@@ -24,7 +24,8 @@
     "unknown": "Неизвестно",
     "robotNote": "Острие показывает направление.",
     "terrainNote": "Оценка агента, не истина; ± — неопределённость.",
-    "hazardNote": "Найдена по событиям, граница неизвестна."
+    "hazardNote": "Найдена по событиям, граница неизвестна.",
+    "open": "Обозначения"
   },
   "state": {
     "loading": "Карта загружается…",

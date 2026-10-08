@@ -10,7 +10,17 @@ type MapMessage = Message
 type MapFormatters = Pick<Formatters, "number">
 
 type MapTextResolver = (message: MapMessage) => string
-export type LegendShape = "marker" | "line" | "dashed" | "ring" | "cell"
+export type LegendShape =
+  | "robot"
+  | "base"
+  | "goal"
+  | "trail"
+  | "path"
+  | "sample"
+  | "terrain"
+  | "hazard"
+  | "planStep"
+  | "cell"
 
 export interface LegendItem {
   readonly role: MapRole
@@ -20,21 +30,26 @@ export interface LegendItem {
 }
 
 export const LEGEND: readonly LegendItem[] = [
-  { role: "robot", shape: "marker", label: "map:legend.robot", note: "map:legend.robotNote" },
-  { role: "base", shape: "marker", label: "map:legend.base" },
-  { role: "goal", shape: "ring", label: "map:legend.goal" },
-  { role: "trail", shape: "line", label: "map:legend.trail" },
-  { role: "path", shape: "dashed", label: "map:legend.plannedPath" },
-  { role: "sample", shape: "marker", label: "map:legend.sample" },
+  { role: "robot", shape: "robot", label: "map:legend.robot", note: "map:legend.robotNote" },
+  { role: "base", shape: "base", label: "map:legend.base" },
+  { role: "goal", shape: "goal", label: "map:legend.goal" },
+  { role: "trail", shape: "trail", label: "map:legend.trail" },
+  { role: "path", shape: "path", label: "map:legend.plannedPath" },
+  { role: "sample", shape: "sample", label: "map:legend.sample" },
   {
     role: "soilHigh",
-    shape: "ring",
+    shape: "terrain",
     label: "map:legend.terrain",
     note: "map:legend.terrainNote",
   },
-  { role: "hazard", shape: "ring", label: "map:legend.hazard", note: "map:legend.hazardNote" },
-  { role: "planStep", shape: "ring", label: "map:legend.planStep" },
-  { role: "robotPartner", shape: "marker", label: "map:legend.partner" },
+  {
+    role: "hazard",
+    shape: "hazard",
+    label: "map:legend.hazard",
+    note: "map:legend.hazardNote",
+  },
+  { role: "planStep", shape: "planStep", label: "map:legend.planStep" },
+  { role: "robotPartner", shape: "robot", label: "map:legend.partner" },
   { role: "obstacle", shape: "cell", label: "map:legend.obstacle" },
   { role: "free", shape: "cell", label: "map:legend.free" },
   { role: "unknown", shape: "cell", label: "map:legend.unknown" },

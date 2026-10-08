@@ -33,5 +33,15 @@
     "cancelled": "Выгрузка отменена: сменился прогон.",
     "done": "Журнал выгружен"
   },
-  "sequence": "№ {{number}}"
+  "sequence": "№ {{number}}",
+  "group": {
+    "count": "×{{count}}",
+    "label": "{{title}}, повторов: {{count}}",
+    "range": "№ {{first}}–{{last}}"
+  },
+  "verdict": {
+    "confirmed": "Подтверждена",
+    "refuted": "Опровергнута",
+    "inconclusive": "Мало данных"
+  }
 }

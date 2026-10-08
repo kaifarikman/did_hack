@@ -83,6 +83,11 @@ export const MAP_MODE_LABELS: Readonly<Record<MapMode, MissionKey>> = {
   slam: "mission:mapMode.slam",
 }
 
+export const MAP_MODE_INLINE_LABELS: Readonly<Record<MapMode, MissionKey>> = {
+  static: "mission:mapModeInline.static",
+  slam: "mission:mapModeInline.slam",
+}
+
 export const METRIC_LABELS = {
   battery: "mission:metric.battery",
   signal: "mission:metric.signal",

@@ -1,35 +1,20 @@
-import type { Point, RobotPose } from "@/domain/contract"
+import type { Point } from "@/domain/contract"
 import { headingToScreenAngle } from "@/domain/geometry"
 import type { SceneRobot } from "../scene"
 import { circle, type LayerFrame, screenX, screenY } from "./frame"
+import { drawRobotGlyph, ROBOT_RADIUS, type RobotInk } from "./glyphs"
 
-const NOSE = 18
-const TAIL = 12
-const NOTCH = 6
 const OUTLINE_WIDTH = 2
 const RESERVATION_RADIUS_M = 0.4
 const RESERVATION_MIN_RADIUS_M = 0.1
 const RESERVATION_DASH: number[] = [3, 3]
 const NO_DASH: number[] = []
 const LOST_ALPHA = 0.55
-
-function drawBody(
-  context: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  pose: RobotPose,
-): void {
-  context.save()
-  context.translate(x, y)
-  context.rotate(headingToScreenAngle(pose.heading_rad))
-  context.beginPath()
-  context.moveTo(NOSE, 0)
-  context.lineTo(-TAIL, TAIL)
-  context.lineTo(-NOTCH, 0)
-  context.lineTo(-TAIL, -TAIL)
-  context.closePath()
-  context.restore()
-}
+const PULSE_REACH = 3.4
+const PULSE_ALPHA = 0.55
+const PULSE_WIDTH = 1.5
+export const ROBOT_SCALE = 1.4
+const ROBOT_SIZE = ROBOT_RADIUS * ROBOT_SCALE
 
 export function reservationRadius(frame: LayerFrame, center: Point): number {
   const { bounds, scale } = frame.transform
@@ -66,19 +51,55 @@ function robotColor(frame: LayerFrame, robot: SceneRobot): string {
   return robot.partner ? frame.palette.css.robotPartner : frame.palette.css.robot
 }
 
+const robotInk = { body: "", halo: "", wheel: "", accent: "", shadow: "" }
+
+function inkFor(frame: LayerFrame, color: string): RobotInk {
+  const { css } = frame.palette
+  robotInk.body = color
+  robotInk.halo = css.labelHalo
+  robotInk.wheel = css.label
+  robotInk.accent = css.sampleCore
+  robotInk.shadow = css.shadow
+  return robotInk
+}
+
+function drawPulse(
+  frame: LayerFrame,
+  robot: SceneRobot,
+  x: number,
+  y: number,
+  color: string,
+): void {
+  const ratio = frame.motion.scan.pulse(robot.id, frame.now)
+  if (ratio < 0) return
+  const eased = frame.easing(ratio)
+  const { context } = frame
+  circle(context, x, y, ROBOT_SIZE + (PULSE_REACH - 1) * ROBOT_SIZE * eased)
+  context.globalAlpha = PULSE_ALPHA * (1 - ratio)
+  context.strokeStyle = color
+  context.lineWidth = PULSE_WIDTH
+  context.stroke()
+  context.globalAlpha = 1
+}
+
 function drawRobot(frame: LayerFrame, robot: SceneRobot): void {
-  const { context, transform, palette, motion } = frame
+  const { context, transform, motion } = frame
   const color = robotColor(frame, robot)
   if (robot.partner) drawReservation(frame, robot, color)
   const pose = motion.pose(robot.id)
   if (pose === null) return
-  drawBody(context, screenX(transform, pose), screenY(transform, pose), pose)
+  const x = screenX(transform, pose)
+  const y = screenY(transform, pose)
+  if (!robot.lost) drawPulse(frame, robot, x, y, color)
   context.globalAlpha = robot.lost ? LOST_ALPHA : 1
-  context.fillStyle = color
-  context.fill()
-  context.strokeStyle = palette.css.labelHalo
-  context.lineWidth = OUTLINE_WIDTH
-  context.stroke()
+  drawRobotGlyph(
+    context,
+    x,
+    y,
+    headingToScreenAngle(pose.heading_rad),
+    inkFor(frame, color),
+    ROBOT_SCALE,
+  )
   context.globalAlpha = 1
 }
 

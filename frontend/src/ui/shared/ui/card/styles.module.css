@@ -31,6 +31,19 @@
   --card-title-tracking: var(--tracking-body);
 }
 
+.section {
+  --card-gap: var(--space-element);
+  --card-surface: transparent;
+  --card-radius: 0;
+  --card-padding: 0;
+  --card-title-size: var(--font-size-body);
+  --card-title-leading: var(--line-height-body);
+  --card-title-tracking: var(--tracking-body);
+
+  padding-block-start: var(--space-card);
+  border-block-start: var(--hairline) solid var(--border-hairline);
+}
+
 .inverse {
   --card-surface: var(--surface-inverse);
   --card-text: var(--text-on-inverse);

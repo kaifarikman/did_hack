@@ -1,9 +1,9 @@
 :root {
   --radius-flag: 3px;
-  --radius-check: 6px;
-  --radius-button: 12px;
-  --radius-inner: 16px;
-  --radius-badge: 20px;
-  --radius-card: 36px;
+  --radius-check: 4px;
+  --radius-button: 10px;
+  --radius-inner: 12px;
+  --radius-badge: 14px;
+  --radius-card: 20px;
   --radius-round: 9999px;
 }

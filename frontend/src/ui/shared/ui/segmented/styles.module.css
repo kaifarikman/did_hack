@@ -5,6 +5,7 @@
   position: relative;
   display: inline-flex;
   align-items: stretch;
+  align-self: flex-start;
   justify-self: start;
   gap: var(--segment-gap);
   min-inline-size: 0;
@@ -17,6 +18,7 @@
 .labelled {
   display: inline-flex;
   flex-direction: column;
+  align-self: flex-start;
   justify-self: start;
   gap: var(--space-8);
   min-inline-size: 0;

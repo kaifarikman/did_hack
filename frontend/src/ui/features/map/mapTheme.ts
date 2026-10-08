@@ -7,6 +7,8 @@ export type MapRole = CanvasRole
 
 export const MAP_ROLES = [
   "sample",
+  "sampleCore",
+  "shadow",
   "hazard",
   "robot",
   "robotPartner",
@@ -37,6 +39,8 @@ export interface MapTimings {
   readonly fadeMs: number
   readonly minTrackMs: number
   readonly maxTrackMs: number
+  readonly scanMs: number
+  readonly scanTravelMs: number
   readonly easing: Easing
 }
 
@@ -82,14 +86,25 @@ export function readMapPalette(): MapPalette {
 
 export function readMapTimings(reducedMotion: boolean): MapTimings {
   if (reducedMotion || !canRead()) {
-    return { drawMs: 0, eventMs: 0, fadeMs: 0, minTrackMs: 0, maxTrackMs: 0, easing: linear }
+    return {
+      drawMs: 0,
+      eventMs: 0,
+      fadeMs: 0,
+      minTrackMs: 0,
+      maxTrackMs: 0,
+      scanMs: 0,
+      scanTravelMs: 0,
+      easing: linear,
+    }
   }
   return {
     drawMs: motionMs("--dur-draw"),
     eventMs: motionMs("--dur-slow"),
     fadeMs: motionMs("--dur-base"),
     minTrackMs: motionMs("--dur-fast"),
-    maxTrackMs: motionMs("--dur-draw"),
+    maxTrackMs: 2 * motionMs("--dur-draw"),
+    scanMs: motionMs("--dur-draw") + 2 * motionMs("--dur-slow"),
+    scanTravelMs: motionMs("--dur-draw"),
     easing: parseEasing(readEasing("--ease-out")),
   }
 }

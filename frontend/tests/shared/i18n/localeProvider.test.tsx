@@ -31,7 +31,7 @@ describe("LocaleProvider", () => {
     )
     expect(screen.getByRole("button").textContent).toBe(ru.action.close)
     expect(document.documentElement.lang).toBe("ru")
-    expect(document.title).toBe(ru.app.title)
+    expect(document.title).toBe(ru.app.documentTitle)
   })
 
   it("translates the document title with the interface", async () => {
@@ -41,7 +41,7 @@ describe("LocaleProvider", () => {
       </LocaleProvider>,
     )
     await act(async () => screen.getByRole("button").click())
-    expect(document.title).toBe(en.app.title)
+    expect(document.title).toBe(en.app.documentTitle)
   })
 
   it("switches language, stores the choice and updates lang", async () => {

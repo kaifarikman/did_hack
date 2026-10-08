@@ -7,7 +7,7 @@ import {
 import type { FixtureControls } from "@/adapters/fixture/fixtureGateway"
 import type { MissionController } from "@/application/missionController"
 import { navigationStartDisabledReason } from "@/application/navigation"
-import { connectionStatus, type MissionViewState } from "@/application/viewState"
+import type { MissionViewState } from "@/application/viewState"
 import type { TeamRobotView } from "@/domain/contract"
 import { DemoPicker } from "@/ui/features/demo/demo-picker"
 import { JournalCard } from "@/ui/features/journal/journal-card"
@@ -49,7 +49,6 @@ export function AppShell({ controller, fixtureControls }: AppShellProps) {
   const [scenario, setScenario] = useState<FixtureScenarioName>(
     fixtureControls?.getScenario() ?? DEFAULT_FIXTURE_SCENARIO,
   )
-  const connection = connectionStatus(view)
   const snapshot = view.snapshot
   const robotStatusLabel = (robot: TeamRobotView) => text({ key: STATUS_LABELS[robot.status] })
   const goalLabel = (robot: TeamRobotView) =>
@@ -76,9 +75,7 @@ export function AppShell({ controller, fixtureControls }: AppShellProps) {
       extraLabel={text({ key: "mission:panels.research" })}
       header={
         <AppHeader
-          title={text({ key: "common:app.title" })}
-          connection={connection}
-          connectionLabel={text({ key: `common:connection.${connection}` })}
+          brand={text({ key: "common:app.name" })}
           demo={demo}
           locale={<LocaleSwitch />}
         />
@@ -124,17 +121,19 @@ export function AppShell({ controller, fixtureControls }: AppShellProps) {
         />
       }
       primary={
-        <TeamCard
-          team={snapshot?.team ?? null}
-          batteryInitial={snapshot?.battery_initial ?? 1}
-          robotStatusLabel={robotStatusLabel}
-          goalLabel={goalLabel}
-          motionIndex={2}
-        />
+        <>
+          <TeamCard
+            team={snapshot?.team ?? null}
+            batteryInitial={snapshot?.battery_initial ?? 1}
+            robotStatusLabel={robotStatusLabel}
+            goalLabel={goalLabel}
+            motionIndex={2}
+          />
+          <ResearchCard snapshot={snapshot} motionIndex={3} />
+        </>
       }
       secondary={
         <>
-          <ResearchCard snapshot={snapshot} motionIndex={3} />
           <JournalCard
             view={view}
             controller={controller}

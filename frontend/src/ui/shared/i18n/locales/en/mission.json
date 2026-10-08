@@ -64,7 +64,7 @@
     "missionPlaceholder": "Collect as many samples as possible and return to base",
     "unsupported": "The environment does not support this",
     "seedInvalid": "Seed must be a whole number",
-    "runParameters": "{{scenario}} · {{mapMode}} · seed {{seed}}"
+    "runParameters": "{{scenario}}, {{mapMode}}, seed {{seed}}"
   },
   "action": {
     "start": "Start",
@@ -142,7 +142,7 @@
     "unsupported": "The environment does not advertise easy/static/1 navigation.",
     "locked": "The target is locked until the run finishes or stops.",
     "target": "User target",
-    "coordinates": "X {{x}} m · Y {{y}} m",
+    "coordinates": "X {{x}} m, Y {{y}} m",
     "tolerance": "Arrival tolerance: {{value}} m",
     "reached": "Target reached",
     "notReached": "Target arrival not confirmed",
@@ -185,5 +185,9 @@
       "returning": "Target reached. Success requires return to base and confirmed finish."
     },
     "planner": "Algorithmic navigation"
+  },
+  "mapModeInline": {
+    "static": "static map",
+    "slam": "SLAM"
   }
 }

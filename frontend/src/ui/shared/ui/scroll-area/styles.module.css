@@ -1,5 +1,7 @@
 .root {
   --scroll-fade-surface: var(--surface-card);
+  --scrollbar-thumb: var(--scrollbar-thumb-card);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-card-hover);
 
   position: relative;
   display: grid;
@@ -15,6 +17,8 @@
 
 .canvas {
   --scroll-fade-surface: var(--surface-canvas);
+  --scrollbar-thumb: var(--scrollbar-thumb-canvas);
+  --scrollbar-thumb-hover: var(--scrollbar-thumb-canvas-hover);
 }
 
 .viewport {

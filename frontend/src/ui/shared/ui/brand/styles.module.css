@@ -1,0 +1,41 @@
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22em;
+  color: var(--text-primary);
+  font-size: var(--brand-size, 2rem);
+  line-height: 1;
+}
+
+.mark {
+  inline-size: 1em;
+  block-size: 1em;
+  flex: none;
+  overflow: visible;
+}
+
+.word {
+  block-size: 0.92em;
+  inline-size: auto;
+  overflow: visible;
+}
+
+.line,
+.letter {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.line {
+  stroke-width: 2.8;
+}
+
+.letter {
+  stroke-width: 3.6;
+}
+
+.dot {
+  fill: var(--action-primary);
+}

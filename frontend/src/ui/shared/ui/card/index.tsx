@@ -4,7 +4,7 @@ import { staggerStyle } from "../../motion"
 import { Eyebrow } from "../eyebrow"
 import styles from "./styles.module.css"
 
-export type CardLevel = "top" | "inner"
+export type CardLevel = "top" | "inner" | "section"
 export type CardTone = "default" | "inverse"
 
 export interface CardProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
@@ -70,6 +70,7 @@ export function Card({
         styles.card,
         titled && styles.titled,
         level === "inner" && styles.inner,
+        level === "section" && styles.section,
         tone === "inverse" && styles.inverse,
         entering && styles.entering,
         className,

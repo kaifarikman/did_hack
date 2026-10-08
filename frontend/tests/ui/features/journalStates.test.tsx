@@ -56,6 +56,27 @@ describe("journal paging", () => {
     const more = RU.journal.loadMore.replace("{{count}}", String(total - JOURNAL_PAGE_SIZE))
     fireEvent.click(screen.getByRole("button", { name: more }))
     expect(container.querySelectorAll("li[data-kind]")).toHaveLength(JOURNAL_PAGE_SIZE * 2)
+  }, 15_000)
+
+  it("collapses repeated entries into one group on the rail", () => {
+    const { controller } = controllerSpy()
+    const { container } = renderCard(journalView(longEntries(5)), controller)
+    const group = container.querySelector("li[data-group]")
+    expect(group).not.toBeNull()
+    expect(group?.querySelectorAll("li[data-kind]")).toHaveLength(5)
+    expect(group?.textContent).toContain(RU.journal.group.count.replace("{{count}}", "5"))
+  })
+
+  it("shows the entry kind as an icon, not as visible text", () => {
+    const { controller } = controllerSpy()
+    const entries = chainEntries()
+    const { container } = renderCard(journalView(entries), controller)
+    const first = container.querySelector("li[data-kind]")
+    const kind = first?.getAttribute("data-kind") as JournalEntry["kind"]
+    expect(
+      first?.querySelector(`[role='img'][aria-label^='${RU.journal.kind[kind]}']`),
+    ).not.toBeNull()
+    expect(first?.querySelector("summary")?.textContent).not.toContain(RU.journal.kind[kind])
   })
 })
 

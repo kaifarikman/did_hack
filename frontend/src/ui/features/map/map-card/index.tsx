@@ -64,6 +64,7 @@ export function MapCard({
       motionIndex={motionIndex}
       className={styles.card}
       title={text({ key: "map:title" })}
+      actions={<MapLegend items={legend} />}
     >
       <div
         className={styles.surface}
@@ -90,7 +91,6 @@ export function MapCard({
           </div>
         )}
       </div>
-      <MapLegend items={legend} />
       {(draftTarget !== null || snapshot?.navigation != null) && (
         <p>{text({ key: "map:navigationMarks" })}</p>
       )}

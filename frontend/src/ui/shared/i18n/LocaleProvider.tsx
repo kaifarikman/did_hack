@@ -31,7 +31,7 @@ export function LocaleProvider({ children, instance = defaultInstance }: LocaleP
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.title = instance.getFixedT(locale, "common")("app.title")
+    document.title = instance.getFixedT(locale, "common")("app.documentTitle")
     if (instance.language !== locale) void instance.changeLanguage(locale)
   }, [instance, locale])
 

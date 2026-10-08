@@ -30,3 +30,9 @@ export const CHAIN_LABELS = {
 } as const satisfies Record<string, JournalKey>
 
 export const FILTER_ALL_LABEL: JournalKey = "journal:filter.all"
+
+export const VERDICT_LABELS = {
+  confirmed: "journal:verdict.confirmed",
+  refuted: "journal:verdict.refuted",
+  inconclusive: "journal:verdict.inconclusive",
+} as const satisfies Record<string, JournalKey>

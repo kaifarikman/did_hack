@@ -38,6 +38,10 @@
   --border-invalid: var(--carbon);
   --scrollbar-thumb: color-mix(in oklab, var(--slate) 45%, transparent);
   --scrollbar-thumb-hover: color-mix(in oklab, var(--slate) 70%, transparent);
+  --scrollbar-thumb-card: color-mix(in oklab, var(--slate) 45%, transparent);
+  --scrollbar-thumb-card-hover: color-mix(in oklab, var(--slate) 70%, transparent);
+  --scrollbar-thumb-canvas: var(--pure-white);
+  --scrollbar-thumb-canvas-hover: color-mix(in oklab, var(--pure-white), var(--carbon) 10%);
   --surface-track-off: var(--pure-white);
   --surface-option-active: var(--surface-tint);
   --surface-tooltip: var(--carbon);
@@ -49,14 +53,16 @@
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
 
-  --data-sample: var(--data-ochre);
+  --data-sample: var(--carbon);
+  --data-sample-core: var(--vivid-teal);
   --data-hazard: var(--data-clay);
   --data-robot: var(--carbon);
   --data-robot-partner: var(--data-dusk);
   --data-path: var(--graphite);
   --data-plan-step: color-mix(in oklab, var(--graphite) 55%, transparent);
   --data-goal: var(--carbon);
-  --data-trail: color-mix(in oklab, var(--slate) 50%, transparent);
+  --data-trail: color-mix(in oklab, var(--slate) 85%, transparent);
+  --data-shadow: color-mix(in oklab, var(--carbon) 18%, transparent);
   --data-base: var(--data-pine);
   --data-grid: color-mix(in oklab, var(--slate) 16%, transparent);
   --data-unknown: var(--sage-deep);

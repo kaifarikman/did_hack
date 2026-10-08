@@ -7,7 +7,7 @@ import {
 } from "@/application/viewState"
 import type { MapMode, NavigationTarget, Scenario, TaskType } from "@/domain/contract"
 import { useMessageText } from "@/ui/shared/i18n"
-import { Button, NumberField, ScrollArea } from "@/ui/shared/ui"
+import { Button, NumberField } from "@/ui/shared/ui"
 import { type MissionKey, START_BLOCKER_LABELS, STOP_BLOCKER_LABELS } from "../labels"
 import {
   type MissionAllowance,
@@ -122,8 +122,7 @@ export function MissionForm({
       }}
     >
       {scrolled && (
-        <ScrollArea className={styles.scroll} label={text({ key: "mission:panels.state" })}>
-          <div className={styles.body}>
+        <div className={styles.body}>
             {lead}
             {!compact && taskFields}
             {!compact && navigation && (
@@ -149,8 +148,7 @@ export function MissionForm({
                 onMissionText={setMissionText}
               />
             )}
-          </div>
-        </ScrollArea>
+        </div>
       )}
       <div className={styles.footer}>
         {notice}

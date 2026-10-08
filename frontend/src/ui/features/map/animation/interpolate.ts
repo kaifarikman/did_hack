@@ -8,6 +8,10 @@ export interface MutablePose {
 
 const FULL_TURN = Math.PI * 2
 
+export function blankPose(): MutablePose {
+  return { position_x_m: 0, position_y_m: 0, heading_rad: 0 }
+}
+
 function clamp01(value: number): number {
   return Math.min(Math.max(value, 0), 1)
 }
@@ -52,4 +56,12 @@ export function interpolatePose(
 export function trackDuration(intervalMs: number, minMs: number, maxMs: number): number {
   if (maxMs <= 0) return 0
   return Math.min(Math.max(intervalMs, minMs), maxMs)
+}
+
+const CADENCE_WEIGHT = 0.35
+export const CADENCE_LAG = 1.2
+
+export function nextCadence(previous: number, intervalMs: number, minMs: number): number {
+  if (intervalMs < minMs) return previous
+  return previous <= 0 ? intervalMs : lerp(previous, intervalMs, CADENCE_WEIGHT)
 }

@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "Researcher panel"
+    "name": "loam",
+    "documentTitle": "loam | Autonomous field researcher"
   },
   "action": {
     "close": "Close",
@@ -20,10 +21,7 @@
     "threshold": "Threshold"
   },
   "connection": {
-    "connecting": "Connecting",
-    "live": "Live",
     "stale": "Data is stale",
-    "offline": "No connection",
     "staleBanner": "No response from the server. Showing the last known values; updates resume automatically.",
     "staleBannerDetail": "No response from the server: {{detail}}. Showing the last known values; updates resume automatically."
   },

@@ -1,3 +1,4 @@
+export { BrandLockup, type BrandLockupProps, BrandMark, type BrandMarkProps } from "./brand"
 export { Banner, type BannerProps, type BannerTone } from "./banner"
 export {
   Button,

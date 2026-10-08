@@ -39,18 +39,9 @@ describe("downloadJson", () => {
   })
 })
 
-describe("AppHeader connection", () => {
-  it.each(["connecting", "live", "stale", "offline"] as const)(
-    "labels the %s connection",
-    (connection) => {
-      renderWithLocale(
-        <AppHeader
-          title="title"
-          connection={connection}
-          connectionLabel={`label ${connection}`}
-        />,
-      )
-      expect(screen.getByRole("status").textContent).toContain(`label ${connection}`)
-    },
-  )
+describe("AppHeader", () => {
+  it("shows the brand lockup as the page heading", () => {
+    renderWithLocale(<AppHeader brand="loam" />)
+    expect(screen.getByRole("heading", { level: 1 }).querySelector('[role="img"]')?.getAttribute("aria-label")).toBe("loam")
+  })
 })

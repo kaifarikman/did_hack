@@ -12,6 +12,8 @@ const TIMINGS: MapTimings = {
   fadeMs: 200,
   minTrackMs: 160,
   maxTrackMs: 900,
+  scanMs: 1540,
+  scanTravelMs: 900,
   easing: linear,
 }
 const REDUCED: MapTimings = {
@@ -21,6 +23,8 @@ const REDUCED: MapTimings = {
   fadeMs: 0,
   minTrackMs: 0,
   maxTrackMs: 0,
+  scanMs: 0,
+  scanTravelMs: 0,
 }
 
 function run(frames: readonly MissionSnapshot[]): MissionSnapshot[] {
@@ -42,22 +46,36 @@ describe("map motion", () => {
     const motion = new MapMotion(TIMINGS)
     motion.update(buildScene(at(success, 5)), 0)
     motion.update(buildScene(at(success, 6)), 500)
-    expect(motion.advance(750)).toBe(true)
+    expect(motion.advance(800)).toBe(true)
     const from = at(success, 5).robot_pose?.position_x_m ?? 0
     const to = at(success, 6).robot_pose?.position_x_m ?? 0
     expect(motion.pose("robot_1")?.position_x_m).toBeCloseTo((from + to) / 2)
-    expect(motion.advance(1500)).toBe(false)
+    motion.advance(1500)
     expect(motion.pose("robot_1")?.position_x_m).toBeCloseTo(to)
+    expect(motion.advance(4000)).toBe(false)
   })
 
   it("moves the robot at a constant speed even when events use an ease-out curve", () => {
     const motion = new MapMotion({ ...TIMINGS, easing: (ratio) => 1 - (1 - ratio) ** 4 })
     motion.update(buildScene(at(success, 5)), 0)
     motion.update(buildScene(at(success, 6)), 500)
-    motion.advance(750)
+    motion.advance(800)
     const from = at(success, 5).robot_pose?.position_x_m ?? 0
     const to = at(success, 6).robot_pose?.position_x_m ?? 0
     expect(motion.pose("robot_1")?.position_x_m).toBeCloseTo((from + to) / 2)
+  })
+
+  it("lags one snapshot interval behind so the robot never stops or jumps", () => {
+    const motion = new MapMotion(TIMINGS)
+    motion.update(buildScene(at(success, 5)), 0)
+    motion.update(buildScene(at(success, 6)), 500)
+    motion.advance(1000)
+    const before = motion.pose("robot_1")?.position_x_m ?? 0
+    const to = at(success, 6).robot_pose?.position_x_m ?? 0
+    expect(Math.abs(before - to)).toBeGreaterThan(0)
+    motion.update(buildScene(at(success, 7)), 1000)
+    expect(motion.advance(1000)).toBe(true)
+    expect(motion.pose("robot_1")?.position_x_m).toBeCloseTo(before)
   })
 
   it("jumps straight to the new pose under reduced motion", () => {

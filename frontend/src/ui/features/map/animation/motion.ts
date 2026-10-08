@@ -2,13 +2,17 @@ import type { HazardView, Point, RobotPose, TerrainEstimate } from "@/domain/con
 import type { MapTimings } from "../mapTheme"
 import { hazardKey, isNewRoute, type MapScene, pointKey } from "../scene"
 import {
+  blankPose,
+  CADENCE_LAG,
   copyPose,
   interpolatePose,
   lerp,
   type MutablePose,
+  nextCadence,
   progress,
   trackDuration,
 } from "./interpolate"
+import { ScanClock } from "./scan"
 
 interface PoseTrack {
   from: MutablePose
@@ -42,38 +46,41 @@ export function terrainCost(estimate: TerrainEstimate): number {
   )
 }
 
-function blankPose(): MutablePose {
-  return { position_x_m: 0, position_y_m: 0, heading_rad: 0 }
-}
-
 export class MapMotion {
   private timings: MapTimings
   private runId: string | null | undefined = undefined
   private lastUpdate: number | null = null
+  private cadence = 0
   private readonly poses = new Map<string, PoseTrack>()
   private readonly routes = new Map<string, { path: readonly Point[]; start: number }>()
   private readonly reservations = new Map<string, { key: string | null; start: number }>()
   private readonly marks = new Map<string, number>()
   private readonly terrain = new Map<string, TerrainTrack>()
   private readonly look: TerrainLook = { cost: 0, confidence: 0 }
+  readonly scan = new ScanClock()
 
   constructor(timings: MapTimings) {
     this.timings = timings
+    this.scan.setTimings(timings.scanMs, timings.scanTravelMs)
   }
 
   setTimings(timings: MapTimings): void {
     this.timings = timings
+    this.scan.setTimings(timings.scanMs, timings.scanTravelMs)
   }
 
   update(scene: MapScene, now: number): void {
     const fresh = scene.runId !== this.runId
     if (fresh) this.reset(scene.runId)
     const interval = this.lastUpdate === null ? 0 : now - this.lastUpdate
-    const duration = trackDuration(interval, this.timings.minTrackMs, this.timings.maxTrackMs)
+    const { minTrackMs, maxTrackMs } = this.timings
+    this.cadence = nextCadence(this.cadence, interval, minTrackMs)
+    const duration = trackDuration(this.cadence * CADENCE_LAG, minTrackMs, maxTrackMs)
     this.lastUpdate = now
     const settled = fresh ? Number.NEGATIVE_INFINITY : now
     for (const robot of scene.robots) {
       this.trackPose(robot.id, robot.pose, now, fresh ? 0 : duration)
+      this.scan.note(robot.id, robot.lost ? null : robot.pose, now)
       this.trackRoute(robot.id, robot.plannedPath, settled)
       this.trackReservation(robot.id, pointKey(robot.reservation), settled)
     }
@@ -83,6 +90,10 @@ export class MapMotion {
   }
 
   advance(now: number): boolean {
+    return this.advanceTracks(now) || this.scan.active(now)
+  }
+
+  private advanceTracks(now: number): boolean {
     let active = false
     for (const track of this.poses.values()) {
       const ratio = progress(now, track.start, track.duration)
@@ -104,6 +115,11 @@ export class MapMotion {
   pose(robotId: string): RobotPose | null {
     const track = this.poses.get(robotId)
     return track === undefined || !track.visible ? null : track.current
+  }
+
+  target(robotId: string): RobotPose | null {
+    const track = this.poses.get(robotId)
+    return track === undefined || !track.visible ? null : track.to
   }
 
   routeProgress(robotId: string, now: number): number {
@@ -141,11 +157,13 @@ export class MapMotion {
   private reset(runId: string | null): void {
     this.runId = runId
     this.lastUpdate = null
+    this.cadence = 0
     this.poses.clear()
     this.routes.clear()
     this.reservations.clear()
     this.marks.clear()
     this.terrain.clear()
+    this.scan.clear()
   }
 
   private trackPose(

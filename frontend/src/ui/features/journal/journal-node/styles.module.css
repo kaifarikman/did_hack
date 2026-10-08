@@ -1,0 +1,91 @@
+.rail {
+  --node-size: calc(var(--icon-sm) + var(--space-12));
+
+  position: relative;
+  display: flex;
+  align-self: stretch;
+  justify-content: center;
+  padding-block-start: calc(var(--space-12) + (1lh - var(--node-size)) / 2);
+}
+
+.rail::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--hairline);
+  background-color: var(--border-hairline);
+  content: "";
+  translate: -50% 0;
+}
+
+:first-child > .rail::before {
+  inset-block-start: var(--space-24);
+}
+
+:last-child > .rail::before {
+  inset-block-end: auto;
+  block-size: var(--space-24);
+}
+
+:only-child > .rail::before {
+  content: none;
+}
+
+.node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: var(--node-size);
+  block-size: var(--node-size);
+  border: var(--hairline) solid var(--border-hairline);
+  border-radius: var(--radius-round);
+  background-color: var(--surface-card);
+  color: var(--text-secondary);
+}
+
+.node[data-node-kind="experiment"] {
+  border-style: dashed;
+  border-color: var(--border-strong);
+}
+
+.node[data-node-kind="hypothesis"],
+.node[data-node-kind="outcome"] {
+  border-color: transparent;
+  background-color: var(--surface-tint);
+  color: var(--text-primary);
+}
+
+.node[data-node-kind="decision"] {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.node[data-node-kind="error"] {
+  border-color: transparent;
+  background-color: var(--surface-inverse-strong);
+  color: var(--text-on-inverse);
+}
+
+.node[data-verdict] {
+  --node-size: calc(var(--icon-sm) + var(--space-16));
+}
+
+.node[data-verdict="confirmed"] {
+  background-color: var(--action-primary);
+  color: var(--text-on-action);
+}
+
+.node[data-verdict="refuted"] {
+  background-color: var(--surface-inverse);
+  color: var(--text-on-inverse);
+}
+
+.node[data-verdict="inconclusive"] {
+  border: var(--hairline) dashed var(--border-strong);
+  background-color: var(--surface-card);
+}
+
+.node[data-stacked="true"] {
+  outline: var(--hairline) solid var(--border-hairline);
+  outline-offset: calc(var(--hairline) * 2);
+}

@@ -5,7 +5,7 @@ import { filterJournal, type JournalExport } from "@/domain/journal"
 import { messageDetail } from "@/domain/message"
 import { BackendText, useMessageText } from "@/ui/shared/i18n"
 import { useLoadingIndicator } from "@/ui/shared/motion"
-import { Button, Card, ErrorState, Select, Skeleton } from "@/ui/shared/ui"
+import { Button, Card, ErrorState, Select, Skeleton, Tooltip, type Verdict } from "@/ui/shared/ui"
 import { JournalExportNotices } from "../journal-export"
 import { JournalList } from "../journal-list"
 import {
@@ -17,6 +17,12 @@ import {
 } from "../labels"
 import { JOURNAL_PAGE_SIZE } from "../paging"
 import styles from "./styles.module.css"
+
+const STATUS_VERDICTS: Readonly<Record<string, Verdict>> = {
+  confirmed: "confirmed",
+  refuted: "refuted",
+  unverified: "inconclusive",
+}
 
 export interface JournalCardProps {
   readonly view: MissionViewState
@@ -40,6 +46,15 @@ export function JournalCard({ view, controller, onExported, motionIndex }: Journ
       ),
     [journal.entries, filter, selectedHypothesisId],
   )
+  const hypotheses = view.snapshot?.research?.hypotheses
+  const verdicts = useMemo(() => {
+    const known = new Map<string, Verdict>()
+    for (const hypothesis of hypotheses ?? []) {
+      const verdict = STATUS_VERDICTS[hypothesis.status]
+      if (verdict !== undefined) known.set(hypothesis.hypothesis_id, verdict)
+    }
+    return known
+  }, [hypotheses])
   const showChain = useCallback((id: string) => controller.selectHypothesis(id), [controller])
   const showMore = useCallback(() => setLimit((current) => current + JOURNAL_PAGE_SIZE), [])
   const errorDetail = messageDetail(journal.error)
@@ -56,6 +71,9 @@ export function JournalCard({ view, controller, onExported, motionIndex }: Journ
     setExported(result.entry_count)
   }
 
+  const exportLabel = text({
+    key: EXPORT_PHASE_LABELS[exportState.phase === "exporting" ? "exporting" : "idle"],
+  })
   return (
     <Card
       as="section"
@@ -79,17 +97,18 @@ export function JournalCard({ view, controller, onExported, motionIndex }: Journ
             setLimit(JOURNAL_PAGE_SIZE)
           }}
         />
-        <Button
-          variant="ghost"
-          icon="download"
-          pending={exportState.phase === "exporting"}
-          disabled={view.snapshot?.run_id == null}
-          onClick={() => void handleExport()}
-        >
-          {text({
-            key: EXPORT_PHASE_LABELS[exportState.phase === "exporting" ? "exporting" : "idle"],
-          })}
-        </Button>
+        <Tooltip content={exportLabel}>
+          <Button
+            variant="ghost"
+            size="icon"
+            icon="download"
+            pending={exportState.phase === "exporting"}
+            disabled={view.snapshot?.run_id == null}
+            onClick={() => void handleExport()}
+          >
+            {exportLabel}
+          </Button>
+        </Tooltip>
       </div>
       <JournalExportNotices
         exportState={exportState}
@@ -116,6 +135,7 @@ export function JournalCard({ view, controller, onExported, motionIndex }: Journ
           runId={journal.runId}
           entries={journal.entries}
           matching={matching}
+          verdicts={verdicts}
           limit={limit}
           onMore={showMore}
           onShowChain={showChain}

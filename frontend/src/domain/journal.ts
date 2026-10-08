@@ -48,3 +48,25 @@ export function buildJournalExport(
     entries: ordered,
   }
 }
+
+export interface JournalRun {
+  readonly key: number
+  readonly entries: readonly JournalEntry[]
+}
+
+function repeats(previous: JournalEntry | undefined, entry: JournalEntry): boolean {
+  return (
+    previous !== undefined && previous.kind === entry.kind && previous.title === entry.title
+  )
+}
+
+export function groupRepeatedEntries(entries: readonly JournalEntry[]): JournalRun[] {
+  const runs: { key: number; entries: JournalEntry[] }[] = []
+  for (const entry of entries) {
+    const last = runs[runs.length - 1]
+    if (last !== undefined && repeats(last.entries[last.entries.length - 1], entry))
+      last.entries.push(entry)
+    else runs.push({ key: entry.sequence, entries: [entry] })
+  }
+  return runs
+}

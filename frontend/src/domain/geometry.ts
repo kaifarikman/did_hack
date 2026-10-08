@@ -50,14 +50,63 @@ export function cellCenterWorld(map: MapData, column: number, row: number): Poin
   )
 }
 
+const KNOWN_MARGIN_CELLS = 2
+
+interface CellRange {
+  readonly minColumn: number
+  readonly maxColumn: number
+  readonly minRow: number
+  readonly maxRow: number
+}
+
+const FREE_CELL = 0
+
+function cellRangeWhere(map: MapData, accept: (value: number) => boolean): CellRange | null {
+  let minColumn = map.width
+  let maxColumn = -1
+  let minRow = map.height
+  let maxRow = -1
+  for (let index = 0; index < map.cells.length; index += 1) {
+    if (!accept(map.cells[index] ?? -1)) continue
+    const column = index % map.width
+    const row = Math.floor(index / map.width)
+    minColumn = Math.min(minColumn, column)
+    maxColumn = Math.max(maxColumn, column)
+    minRow = Math.min(minRow, row)
+    maxRow = Math.max(maxRow, row)
+  }
+  if (maxColumn < 0) return null
+  return {
+    minColumn: Math.max(minColumn - KNOWN_MARGIN_CELLS, 0),
+    maxColumn: Math.min(maxColumn + 1 + KNOWN_MARGIN_CELLS, map.width),
+    minRow: Math.max(minRow - KNOWN_MARGIN_CELLS, 0),
+    maxRow: Math.min(maxRow + 1 + KNOWN_MARGIN_CELLS, map.height),
+  }
+}
+
+export function knownCellRange(map: MapData): CellRange {
+  return (
+    cellRangeWhere(map, (value) => value === FREE_CELL) ??
+    cellRangeWhere(map, (value) => value >= 0) ?? {
+      minColumn: 0,
+      maxColumn: map.width,
+      minRow: 0,
+      maxRow: map.height,
+    }
+  )
+}
+
 function mapWorldBounds(map: MapData): WorldBounds {
-  const widthM = map.width * map.resolution_m
-  const heightM = map.height * map.resolution_m
+  const range = knownCellRange(map)
+  const left = range.minColumn * map.resolution_m
+  const right = range.maxColumn * map.resolution_m
+  const bottom = range.minRow * map.resolution_m
+  const top = range.maxRow * map.resolution_m
   const corners = [
-    localToWorld(map.origin, 0, 0),
-    localToWorld(map.origin, widthM, 0),
-    localToWorld(map.origin, 0, heightM),
-    localToWorld(map.origin, widthM, heightM),
+    localToWorld(map.origin, left, bottom),
+    localToWorld(map.origin, right, bottom),
+    localToWorld(map.origin, left, top),
+    localToWorld(map.origin, right, top),
   ]
   const xs = corners.map((corner) => corner.position_x_m)
   const ys = corners.map((corner) => corner.position_y_m)

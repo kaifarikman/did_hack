@@ -1,0 +1,56 @@
+.group {
+  display: grid;
+  grid-template-columns: var(--journal-time-width) var(--journal-rail-width) minmax(0, 1fr);
+  column-gap: var(--space-8);
+  align-items: start;
+}
+
+.group[data-arrived="true"] {
+  animation: var(--motion-rise-in);
+}
+
+.time {
+  padding-block-start: var(--space-12);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-body);
+  font-variant-numeric: var(--font-numeric);
+  text-align: end;
+  white-space: nowrap;
+}
+
+.disclosure {
+  min-inline-size: 0;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4) var(--space-12);
+}
+
+.title {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  composes: captionText badgeShape from "../../../shared/styles/compose.module.css";
+  background-color: var(--surface-tint);
+  color: var(--text-primary);
+  font-variant-numeric: var(--font-numeric);
+  font-weight: var(--weight-semibold);
+}
+
+.range {
+  color: var(--text-tertiary);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.members {
+  --journal-time-width: var(--journal-time-width-nested);
+
+  display: grid;
+  padding-block-end: var(--space-8);
+}

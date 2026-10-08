@@ -12,7 +12,7 @@ interface LabelSlot extends LabelBox {
 
 const LABEL_LIMIT = 64
 const OBSTACLE_LIMIT = 64
-const PADDING_X = 4
+const PADDING_X = 6
 const PADDING_Y = 2
 
 function overlaps(first: LabelBox, second: LabelBox): boolean {
@@ -126,7 +126,9 @@ export class LabelSink {
       const slot = this.slots[index]
       if (slot === undefined) continue
       context.fillStyle = halo
-      context.fillRect(slot.x, slot.y, slot.width, slot.height)
+      context.beginPath()
+      context.roundRect(slot.x, slot.y, slot.width, slot.height, slot.height / 2)
+      context.fill()
       context.fillStyle = slot.color
       context.fillText(slot.text, slot.x + slot.width / 2, slot.y + slot.height / 2)
     }

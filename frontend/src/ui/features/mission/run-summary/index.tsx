@@ -59,7 +59,7 @@ export function RunSummary({ snapshot }: RunSummaryProps) {
   if (outcome === null) return null
   return (
     <Card
-      level="inner"
+      level="section"
       as="article"
       className={styles.summary}
       data-motion="fade"

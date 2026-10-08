@@ -5,11 +5,6 @@
   min-block-size: 0;
 }
 
-.scroll {
-  flex: 0 1 auto;
-  min-block-size: 0;
-}
-
 .body {
   display: grid;
   gap: var(--space-card);

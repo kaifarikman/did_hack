@@ -1,16 +1,15 @@
 import { circle, type LayerFrame, screenX, screenY } from "./frame"
+import { drawBaseGlyph, drawGoalGlyph, type MarkInk } from "./glyphs"
 
-const BASE_HALF_SIZE = 8
-const BASE_INNER_HALF_SIZE = 3
+const BASE_HALF_SIZE = 11
+const SAMPLE_HALF_SIZE = 11
 const STEP_RADIUS = 12
 const STEP_SPACING = 2 * STEP_RADIUS + 4
-const GOAL_RADIUS = 9
-const GOAL_DOT_RADIUS = 2.5
-const ROBOT_RADIUS = 18
+const GOAL_RADIUS = 16
+const ROBOT_RADIUS = 25
 const MARK_MARGIN = 3
 const OUTLINE_WIDTH = 2
 const LEADER_WIDTH = 1.5
-const GOAL_WIDTH = 3
 const STEP_OFFSETS: readonly (readonly [number, number])[] = [
   [0, 0],
   [1, -1],
@@ -43,6 +42,12 @@ function reserveFixedMarks(frame: LayerFrame): void {
       screenX(transform, scene.goal),
       screenY(transform, scene.goal),
       GOAL_RADIUS + MARK_MARGIN,
+    )
+  for (const sample of scene.samples)
+    labels.reserveAround(
+      screenX(transform, sample.position),
+      screenY(transform, sample.position),
+      SAMPLE_HALF_SIZE,
     )
   for (const robot of scene.robots) {
     const pose = motion.pose(robot.id)
@@ -77,24 +82,23 @@ export function placeMarks(frame: LayerFrame): StepMark[] {
   return marks
 }
 
+const markInk = { line: "", halo: "", shadow: "" }
+
+function inkOf(frame: LayerFrame, line: string): MarkInk {
+  markInk.line = line
+  markInk.halo = frame.palette.css.labelHalo
+  markInk.shadow = frame.palette.css.shadow
+  return markInk
+}
+
 export function drawBase(frame: LayerFrame): void {
   const { context, transform, palette, scene } = frame
   if (scene.base === null) return
-  const x = screenX(transform, scene.base)
-  const y = screenY(transform, scene.base)
-  context.fillStyle = palette.css.base
-  context.fillRect(
-    x - BASE_HALF_SIZE,
-    y - BASE_HALF_SIZE,
-    BASE_HALF_SIZE * 2,
-    BASE_HALF_SIZE * 2,
-  )
-  context.fillStyle = palette.css.labelHalo
-  context.fillRect(
-    x - BASE_INNER_HALF_SIZE,
-    y - BASE_INNER_HALF_SIZE,
-    BASE_INNER_HALF_SIZE * 2,
-    BASE_INNER_HALF_SIZE * 2,
+  drawBaseGlyph(
+    context,
+    screenX(transform, scene.base),
+    screenY(transform, scene.base),
+    inkOf(frame, palette.css.base),
   )
 }
 
@@ -133,13 +137,10 @@ export function drawPlanSteps(
 export function drawGoal(frame: LayerFrame): void {
   const { context, transform, palette, scene } = frame
   if (scene.goal === null) return
-  const x = screenX(transform, scene.goal)
-  const y = screenY(transform, scene.goal)
-  circle(context, x, y, GOAL_RADIUS)
-  context.strokeStyle = palette.css.goal
-  context.lineWidth = GOAL_WIDTH
-  context.stroke()
-  circle(context, x, y, GOAL_DOT_RADIUS)
-  context.fillStyle = palette.css.goal
-  context.fill()
+  drawGoalGlyph(
+    context,
+    screenX(transform, scene.goal),
+    screenY(transform, scene.goal),
+    inkOf(frame, palette.css.goal),
+  )
 }

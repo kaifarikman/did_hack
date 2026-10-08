@@ -26,6 +26,8 @@ const theme: MapTheme = {
     fadeMs: 200,
     minTrackMs: 160,
     maxTrackMs: 900,
+    scanMs: 1540,
+    scanTravelMs: 900,
     easing: linear,
   },
   font: "600 12px sans-serif",

@@ -40,9 +40,9 @@ export function AppLayout({
             <div className={styles.notice}>{notice}</div>
           </div>
           <div ref={sideRef} className={styles.side} data-columns={columns}>
-            <div className={styles.pinned}>{mission}</div>
             <ScrollArea className={styles.rest} surface="canvas" label={restLabel}>
               <div className={styles.stack}>
+                {mission}
                 {primary}
                 {!split && secondary}
               </div>

@@ -7,13 +7,16 @@
   min-block-size: var(--target-min);
 }
 
-.title {
-  font-family: var(--font-ui);
-  font-size: var(--font-size-heading-sm);
-  line-height: var(--line-height-heading-sm);
-  font-weight: var(--weight-regular);
-  letter-spacing: var(--tracking-heading-sm);
-  font-feature-settings: var(--font-features);
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.brand {
+  --brand-size: 2.25rem;
 }
 
 .controls {
@@ -24,8 +27,3 @@
   min-inline-size: 0;
 }
 
-.slot {
-  display: flex;
-  align-items: center;
-  min-block-size: var(--target-min);
-}

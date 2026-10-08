@@ -64,7 +64,7 @@
     "missionPlaceholder": "Собрать как можно больше образцов и вернуться на базу",
     "unsupported": "Среда этого не поддерживает",
     "seedInvalid": "Seed должен быть целым числом",
-    "runParameters": "{{scenario}} · {{mapMode}} · seed {{seed}}"
+    "runParameters": "{{scenario}}, {{mapMode}}, seed {{seed}}"
   },
   "action": {
     "start": "Старт",
@@ -142,7 +142,7 @@
     "unsupported": "Среда не объявляет поддержку навигации easy/static/1.",
     "locked": "Цель зафиксирована до завершения или остановки прогона.",
     "target": "Цель пользователя",
-    "coordinates": "X {{x}} м · Y {{y}} м",
+    "coordinates": "X {{x}} м, Y {{y}} м",
     "tolerance": "Допуск прибытия: {{value}} м",
     "reached": "Цель достигнута",
     "notReached": "Достижение цели не подтверждено",
@@ -185,5 +185,9 @@
       "returning": "Цель достигнута. Успех подтвердится после возврата на базу и finish."
     },
     "planner": "Алгоритмическая навигация"
+  },
+  "mapModeInline": {
+    "static": "готовая карта",
+    "slam": "SLAM"
   }
 }

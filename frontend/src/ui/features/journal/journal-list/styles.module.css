@@ -1,5 +1,5 @@
 .scroll {
-  max-block-size: min(32rem, 60dvh);
+  min-inline-size: 0;
 }
 
 .list {
@@ -12,6 +12,9 @@
 }
 
 .entries {
+  --journal-time-width: 6rem;
+  --journal-time-width-nested: 5rem;
+  --journal-rail-width: calc(var(--icon-sm) + var(--space-16));
+
   display: grid;
-  gap: var(--space-4);
 }

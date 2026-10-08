@@ -3,8 +3,8 @@
   "label": {
     "terrain": "{{energy}} units/m",
     "terrainSpread": "{{energy}} ± {{spread}} units/m",
-    "terrainRegime": "{{energy}} units/m · regime {{regime}}",
-    "terrainSpreadRegime": "{{energy}} ± {{spread}} units/m · regime {{regime}}",
+    "terrainRegime": "{{energy}} units/m, regime {{regime}}",
+    "terrainSpreadRegime": "{{energy}} ± {{spread}} units/m, regime {{regime}}",
     "hazard": "hazard ×{{hits}}"
   },
   "legend": {
@@ -24,7 +24,8 @@
     "unknown": "Unknown",
     "robotNote": "The tip shows the heading.",
     "terrainNote": "Agent belief, not ground truth; ± is uncertainty.",
-    "hazardNote": "Found from events, boundary unknown."
+    "hazardNote": "Found from events, boundary unknown.",
+    "open": "Legend"
   },
   "state": {
     "loading": "Loading the map…",

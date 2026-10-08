@@ -1,8 +1,11 @@
 .legend {
   composes: secondaryText from "../../../shared/styles/compose.module.css";
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4) var(--space-16);
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-8) var(--space-12);
+  list-style: none;
 }
 
 .item {
@@ -17,38 +20,14 @@
   text-underline-offset: var(--space-4);
 }
 
-.marker,
-.cell,
-.line,
-.dashed,
-.ring {
-  display: inline-block;
-  inline-size: var(--space-16);
-  block-size: var(--space-12);
+.swatch {
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--space-24);
+  block-size: var(--space-20);
 }
 
-.marker {
-  border-radius: var(--radius-round);
-  background: var(--swatch);
-}
-
-.cell {
-  border: var(--hairline) solid var(--border-hairline);
-  background: var(--swatch);
-}
-
-.line {
-  block-size: var(--space-4);
-  background: var(--swatch);
-}
-
-.dashed {
-  block-size: 0;
-  border-block-start: var(--space-4) dashed var(--swatch);
-}
-
-.ring {
-  inline-size: var(--space-12);
-  border: var(--space-4) solid var(--swatch);
-  border-radius: var(--radius-round);
+.glyph {
+  inline-size: 100%;
+  block-size: 100%;
 }

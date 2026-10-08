@@ -2,6 +2,8 @@ import { readToken } from "@/ui/shared/motion"
 
 const CANVAS_TOKENS = {
   sample: "--data-sample",
+  sampleCore: "--data-sample-core",
+  shadow: "--data-shadow",
   hazard: "--data-hazard",
   robot: "--data-robot",
   robotPartner: "--data-robot-partner",

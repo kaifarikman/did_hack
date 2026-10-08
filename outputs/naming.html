@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naming the Researcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sage: #d3e4df;
+  --white: #ffffff;
+  --mint: #edf4f2;
+  --carbon: #0d1212;
+  --graphite: #34484a;
+  --slate: #565959;
+  --mist: #5f6c6d;
+  --teal: #64d5b3;
+  --eucalyptus: #5b8279;
+  --hairline: rgba(13, 18, 18, 0.12);
+  --font: "GT Standard S", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "GT Standard L", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-fast: 160ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --radius-card: 36px;
+  --radius-inner: 16px;
+  --radius-button: 12px;
+  --radius-badge: 20px;
+  --stage-bg: var(--white);
+  --stage-fg: var(--carbon);
+  --stage-accent: var(--teal);
+}
+:root[data-stage="sage"] { --stage-bg: var(--sage); --stage-fg: var(--carbon); --stage-accent: var(--carbon); }
+:root[data-stage="carbon"] { --stage-bg: var(--carbon); --stage-fg: var(--white); --stage-accent: var(--teal); }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--sage);
+  color: var(--carbon);
+  font-family: var(--font);
+  font-feature-settings: "kern" 0;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 768px) { .wrap { padding: 0 40px; } }
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin: 0;
+}
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 0; }
+.nav-mark { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 14px; }
+.nav-mark svg { width: 22px; height: 22px; }
+.stage-switch { display: flex; gap: 4px; padding: 4px; background: var(--mint); border-radius: var(--radius-inner); }
+.stage-switch button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  border: 0;
+  background: transparent;
+  color: var(--carbon);
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+.stage-switch button[aria-pressed="true"] { background: var(--white); }
+.stage-switch button:active { transform: scale(0.97); }
+.stage-switch button:focus-visible, .fav:focus-visible, .replay:focus-visible { outline: 2px solid var(--carbon); outline-offset: 2px; }
+.hero { padding: 72px 0 56px; text-align: center; }
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(40px, 7vw, 96px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 16px auto 20px;
+  max-width: 14ch;
+}
+.hero p.lead { font-size: 20px; line-height: 1.4; color: var(--slate); max-width: 46ch; margin: 0 auto; }
+.badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 32px; }
+.badge {
+  background: var(--mint);
+  border-radius: var(--radius-badge);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.badge b { font-weight: 600; }
+.section-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin: 0 0 24px; }
+.section-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 8px 0 0; letter-spacing: -0.01em; }
+.shortlist-count { font-size: 14px; color: var(--slate); }
+.grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding-bottom: 96px; }
+@media (min-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } }
+.card {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+.card.is-in { opacity: 1; transform: none; }
+.card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.fav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--carbon);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+.fav svg { width: 16px; height: 16px; transition: transform var(--dur-base) var(--ease-out); }
+.fav[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); }
+.fav[aria-pressed="true"] svg { transform: scale(1.12); }
+.fav:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .fav:hover { background: var(--mint); } .fav[aria-pressed="true"]:hover { background: var(--teal); } }
+.stage {
+  background: var(--stage-bg);
+  color: var(--stage-fg);
+  border-radius: var(--radius-inner);
+  min-height: 200px;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  border: 1px solid var(--hairline);
+  transition: background-color var(--dur-slow) var(--ease-in-out), color var(--dur-slow) var(--ease-in-out);
+}
+.lockup { display: inline-flex; align-items: center; gap: 16px; --mark-accent: var(--stage-accent); }
+.lockup svg { width: 64px; height: 64px; flex: none; }
+.word { font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -0.02em; }
+.tests { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.test {
+  border-radius: 12px;
+  background: var(--mint);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 12px 4px;
+  min-height: 92px;
+}
+.test span { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mist); text-align: center; }
+.test .px16 { width: 16px; height: 16px; color: var(--carbon); }
+.test .px32 { width: 32px; height: 32px; color: var(--carbon); }
+.app {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: var(--carbon);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  --mark-accent: var(--teal);
+}
+.app svg { width: 28px; height: 28px; }
+.reverse { width: 44px; height: 44px; border-radius: 22px; background: var(--graphite); color: var(--white); display: grid; place-items: center; }
+.reverse svg { width: 26px; height: 26px; }
+.mono svg { width: 32px; height: 32px; color: var(--carbon); --mark-accent: var(--carbon); }
+.story { margin: 0; font-size: 16px; color: var(--carbon); }
+.tagline { font-family: var(--font-display); font-size: 23px; line-height: 1.28; margin: 0; letter-spacing: -0.01em; }
+.meta { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 0; }
+@media (min-width: 560px) { .meta { grid-template-columns: 1fr 1fr; } }
+.meta div { border-top: 1px solid var(--hairline); padding-top: 10px; }
+.meta dt { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mist); margin-bottom: 4px; }
+.meta dd { margin: 0; font-size: 14px; line-height: 1.45; color: var(--slate); }
+.forest { background: var(--graphite); color: var(--white); padding: 96px 0; }
+.forest .eyebrow { color: rgba(255, 255, 255, 0.72); }
+.forest h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(36px, 6vw, 56px); line-height: 1.1; text-align: center; margin: 12px auto 16px; max-width: 18ch; }
+.forest .lead { text-align: center; color: rgba(255, 255, 255, 0.8); max-width: 52ch; margin: 0 auto 48px; font-size: 18px; }
+.picks { display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media (min-width: 960px) { .picks { grid-template-columns: 1fr 1fr; } }
+.pick { background: var(--white); color: var(--carbon); border-radius: var(--radius-card); padding: 40px 24px; display: grid; justify-items: center; gap: 20px; text-align: center; }
+.pick .lockup svg { width: 88px; height: 88px; }
+.pick .word { font-size: clamp(48px, 6vw, 72px); }
+.pick p { margin: 0; max-width: 40ch; color: var(--slate); }
+.replay {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: var(--radius-button);
+  border: 0;
+  background: var(--teal);
+  color: var(--carbon);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.replay:active { transform: scale(0.97); }
+.center { display: flex; justify-content: center; margin-top: 40px; }
+.play .stone { opacity: 0; transform: translateY(-14px); animation: drop var(--dur-slow) var(--ease-out) forwards; }
+.play .stone:nth-child(2) { animation-delay: 140ms; }
+.play .stone:nth-child(3) { animation-delay: 280ms; }
+.play .wing { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw 700ms var(--ease-out) forwards; }
+.play .home { opacity: 0; transform: scale(0.6); transform-origin: 24px 37px; animation: pop var(--dur-slow) var(--ease-out) 600ms forwards; }
+.play .word { animation: rise var(--dur-slow) var(--ease-out) 380ms both; }
+@keyframes drop { to { opacity: 1; transform: none; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop { to { opacity: 1; transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.compare { padding: 96px 0; }
+.table-wrap { background: var(--white); border-radius: var(--radius-card); padding: 8px 24px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 14px; }
+th, td { text-align: left; padding: 14px 8px; border-bottom: 1px solid var(--hairline); vertical-align: middle; }
+th { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mist); }
+tr:last-child td { border-bottom: 0; }
+td.name { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+td.name svg { width: 22px; height: 22px; --mark-accent: var(--carbon); }
+.dots { display: inline-flex; gap: 4px; }
+.dots i { width: 8px; height: 8px; border-radius: 4px; background: var(--hairline); }
+.dots i.on { background: var(--carbon); }
+.next { padding: 0 0 96px; }
+.next ol { margin: 0; padding-left: 20px; color: var(--slate); }
+.next li { margin-bottom: 8px; }
+footer { padding: 32px 0 48px; font-size: 13px; color: var(--slate); border-top: 1px solid var(--hairline); }
+@media (max-width: 559px) {
+  .tests { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lockup { gap: 12px; }
+  .lockup svg { width: 48px; height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { transform: none; transition: opacity var(--dur-fast) linear; }
+  .play .stone, .play .wing, .play .home, .play .word { animation: fade 160ms linear forwards; transform: none; stroke-dashoffset: 0; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .stage, .fav, .fav svg, .stage-switch button, .replay { transition-duration: 1ms; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="m-cairn" viewBox="0 0 48 48">
+      <rect class="stone" x="7" y="33" width="34" height="9" rx="4.5" fill="currentColor"/>
+      <rect class="stone" x="11" y="21.5" width="24" height="9" rx="4.5" fill="currentColor"/>
+      <rect class="stone" x="17" y="10" width="14" height="9" rx="4.5" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="m-assay" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="18.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="86 30.2" transform="rotate(-28 24 24)"/>
+      <circle cx="24" cy="24" r="11.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="53 19.3" transform="rotate(-28 24 24)"/>
+      <circle cx="24" cy="24" r="4.6" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="m-loam" viewBox="0 0 48 48">
+      <path d="M8 26C8 14 18 7 28 9c10 2 14 11 12 20-2 9-12 13-21 11C11 38 8 33 8 26Z" fill="none" stroke="currentColor" stroke-width="2.6"/>
+      <path d="M15 25c0-7 6-11 12-9.5 6 1.5 8 6.5 6.5 12-1.5 5-7.5 7.5-12.5 6.3-4-1-6-4.3-6-8.8Z" fill="none" stroke="currentColor" stroke-width="2.6"/>
+      <circle cx="24.6" cy="24.6" r="3.6" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="m-tern" viewBox="0 0 48 48">
+      <path class="wing" d="M3 22c8-9 15-8 21 5 6-13 13-14 21-5" fill="none" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle class="home" cx="24" cy="38" r="4.4" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="m-inkling" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="14" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-dasharray="70 18" transform="rotate(-12 24 24)"/>
+      <circle cx="33.4" cy="13.6" r="4" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="m-plumb" viewBox="0 0 48 48">
+      <path d="M24 4.5v8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path fill-rule="evenodd" d="M24 13c7 0 11 6 11 12 0 7-6 12-11 18-5-6-11-11-11-18 0-6 4-12 11-12Zm4 12a4 4 0 1 0-8 0 4 4 0 1 0 8 0Z" fill="currentColor"/>
+      <circle cx="24" cy="25" r="2.2" fill="var(--mark-accent, transparent)"/>
+    </symbol>
+    <symbol id="m-hypha" viewBox="0 0 48 48">
+      <path d="M24 43V30m0 0c0-6-6-8-11-15m11 15c0-7 6-10 11-18M24 35c4-2 9-2 14-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="13" cy="15" r="3" fill="currentColor"/>
+      <circle cx="38" cy="30" r="2.6" fill="currentColor"/>
+      <circle cx="35" cy="12" r="3.6" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="m-fieldnote" viewBox="0 0 48 48">
+      <rect x="6" y="6" width="36" height="36" rx="9" fill="none" stroke="currentColor" stroke-width="3"/>
+      <path d="M13 33c4-8 8-2 12-9s6-7 8-8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="33" cy="16" r="3.4" fill="var(--mark-accent, currentColor)"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24">
+      <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <nav class="nav" aria-label="Page">
+    <div class="nav-mark"><svg aria-hidden="true"><use href="#m-cairn"/></svg>DID Hack naming</div>
+    <div class="stage-switch" role="group" aria-label="Logo backdrop">
+      <button type="button" data-stage="white" aria-pressed="true">White</button>
+      <button type="button" data-stage="sage" aria-pressed="false">Sage</button>
+      <button type="button" data-stage="carbon" aria-pressed="false">Carbon</button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <p class="eyebrow">Naming exploration · 8 directions</p>
+    <h1>What should we call the researcher?</h1>
+    <p class="lead">An autonomous robot that walks into unknown ground, forms a hunch, tests it with its own wheels, writes down what it learned, and always makes it home before the battery runs out.</p>
+    <div class="badges">
+      <span class="badge"><b>Explores</b> unknown terrain</span>
+      <span class="badge"><b>Hypothesizes</b> where samples are</span>
+      <span class="badge"><b>Measures</b> cost by battery</span>
+      <span class="badge"><b>Adapts</b> to hidden changes</span>
+      <span class="badge"><b>Returns</b> to base</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="shortlist-title">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">The candidates</p>
+        <h2 id="shortlist-title">Eight names, eight marks</h2>
+      </div>
+      <p class="shortlist-count" aria-live="polite"><span id="fav-count">0</span> starred</p>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</div>
+
+<section class="forest" aria-labelledby="picks-title">
+  <div class="wrap">
+    <p class="eyebrow" style="text-align:center">Recommendation</p>
+    <h2 id="picks-title">Two marks that say it in one glance</h2>
+    <p class="lead">Both carry the one idea that makes this robot different from a vacuum cleaner with a map: it goes out to learn and it comes back with the answer.</p>
+    <div class="picks" id="picks">
+      <article class="pick">
+        <p class="eyebrow">Pick 01</p>
+        <div class="lockup"><svg aria-hidden="true"><use href="#m-cairn"/></svg><span class="word" style="font-weight:500">cairn</span></div>
+        <p class="tagline">Marks the way. Finds its way back.</p>
+        <p>A cairn is the stack of stones explorers leave to mark a trail and a way home. Each stone is a confirmed finding; the pile only grows with evidence. Strongest silhouette of the set at 16px.</p>
+      </article>
+      <article class="pick">
+        <p class="eyebrow">Pick 02</p>
+        <div class="lockup"><svg aria-hidden="true"><use href="#m-tern"/></svg><span class="word" style="font-weight:500">Tern</span></div>
+        <p class="tagline">Goes far. Always comes home.</p>
+        <p>The arctic tern makes the longest round trip of any animal and never loses the way back. Light, friendly, and the mark animates beautifully: wings draw out, home dot lands.</p>
+      </article>
+    </div>
+    <div class="center"><button type="button" class="replay" id="replay">Replay the marks</button></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <section class="compare" aria-labelledby="compare-title">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Side by side</p>
+        <h2 id="compare-title">How they score</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Name</th><th scope="col">Story fit</th><th scope="col">16px mark</th><th scope="col">Say it once</th><th scope="col">Distinct</th><th scope="col">Known uses to check</th></tr>
+        </thead>
+        <tbody id="table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="next" aria-labelledby="next-title">
+    <p class="eyebrow">Next</p>
+    <h2 id="next-title" style="font-family:var(--font-display);font-weight:400;font-size:30px;margin:8px 0 16px">From shortlist to mark</h2>
+    <ol>
+      <li>Star two or three names, say each out loud in the pitch sentence: “Meet ___, an AI researcher that…”.</li>
+      <li>Run a trademark and domain check on the finalists; the “known uses” column is a starting point, not a search.</li>
+      <li>Refine the chosen mark on a grid, draw the wordmark in GT Standard L, and export favicon, app icon and single-color versions.</li>
+    </ol>
+  </section>
+
+  <footer>Built on the Zoox design system: sage canvas, carbon type, one teal accent, 36px cards. Marks are inline SVG and recolor with the backdrop switch above.</footer>
+</div>
+
+<script>
+const CANDIDATES = [
+  { id: "cairn", word: "cairn", style: "font-weight:500", arch: "Lockup, literal symbol", tagline: "Marks the way. Finds its way back.", story: "Three stacked stones: the trail marker explorers leave so others, and they, can find the way home. Every stone is a finding that survived a test.", signals: "Return to base, accumulated evidence, calm confidence.", rejects: "Gadgety robot clichés, eyes and antennas, speed.", score: [5, 5, 5, 3], uses: "Common word; several firms and a publisher use it" },
+  { id: "assay", word: "ASSAY", style: "font-weight:500;letter-spacing:0.16em", arch: "Lockup, abstract gesture", tagline: "Every sample, tested.", story: "To assay is to test a sample for what it really contains. The mark is the sample sensor itself: a point with signal rings fading with distance, open where the robot is still looking.", signals: "Scientific rigor, measurement, the sample hunt.", rejects: "Playfulness, consumer warmth.", score: [4, 4, 4, 4], uses: "Generic lab term; check software uses" },
+  { id: "loam", word: "loam", style: "font-weight:400", arch: "Lockup, geometric reduction", tagline: "Reads the ground it stands on.", story: "Loam is good, workable soil. The mark is a pair of contour lines around a found point: the terrain-cost map the robot builds from its own battery drain.", signals: "Terrain understanding, earthiness, maps.", rejects: "Space-age chrome, aggression.", score: [4, 4, 5, 4], uses: "A few small apps and studios" },
+  { id: "tern", word: "Tern", style: "font-weight:500", arch: "Lockup, abstract gesture", tagline: "Goes far. Always comes home.", story: "The arctic tern flies pole to pole and back every year. A single stroke for the wings, a dot for home: the whole mission profile in two shapes.", signals: "Range, endurance, guaranteed return, lightness.", rejects: "Heaviness, industrial machinery.", score: [5, 5, 5, 3], uses: "Folding bike brand Tern" },
+  { id: "inkling", word: "inkling", style: "font-weight:400", arch: "Lockup, abstract gesture", tagline: "From hunch to evidence.", story: "An inkling is the first faint idea, the hypothesis before the test. The loop is the research cycle; the dot is the moment a guess becomes a finding.", signals: "Curiosity, the scientific loop, education.", rejects: "Cold automation, defense tech.", score: [5, 4, 4, 3], uses: "Digital publishing company Inkling" },
+  { id: "plumb", word: "PLUMB", style: "font-weight:600;letter-spacing:0.08em", arch: "Lockup, literal symbol", tagline: "Measures before it moves.", story: "To plumb is to measure depth, and the plumb bob is the oldest precise instrument. It also reads as an upside-down map pin: a measured point on the map.", signals: "Precision, honesty of measurement.", rejects: "Whimsy, softness.", score: [3, 4, 4, 3], uses: "Plumbing and finance products" },
+  { id: "hypha", word: "hypha", style: "font-weight:400", arch: "Lockup, abstract gesture", tagline: "Explores like it's alive.", story: "Hyphae are the threads a fungus sends out to search for food, branching where it pays off. The mark is the search tree, with one branch lit where the sample was found.", signals: "Organic search, branching hypotheses, discovery.", rejects: "Rigid grids, brute force.", score: [4, 3, 3, 5], uses: "Few; harder to spell on first hearing" },
+  { id: "fieldnote", word: "Fieldnote", style: "font-weight:500", arch: "Lockup, literal symbol", tagline: "The robot that keeps a lab notebook.", story: "Every run leaves a journal of hypotheses, tests and conclusions. The mark is a notebook page with the route drawn on it, ending in the found sample.", signals: "The scientific journal, explainability, teaching.", rejects: "Black-box AI, mystery.", score: [4, 3, 5, 2], uses: "Field Notes notebook brand is very close" }
+]
+
+const SCORE_LABELS = ["Story fit", "16px mark", "Say it once", "Distinct"]
+
+function readFavorites() {
+  try { return new Set(JSON.parse(localStorage.getItem("did-naming-favs") || "[]")) } catch { return new Set() }
+}
+
+function writeFavorites(favorites) {
+  try { localStorage.setItem("did-naming-favs", JSON.stringify([...favorites])) } catch {}
+}
+
+function markSvg(id, className) {
+  return `<svg class="${className || ""}" aria-hidden="true"><use href="#m-${id}"/></svg>`
+}
+
+function dots(value) {
+  return `<span class="dots" aria-label="${value} of 5">${[1, 2, 3, 4, 5].map((step) => `<i class="${step <= value ? "on" : ""}"></i>`).join("")}</span>`
+}
+
+function cardHtml(candidate, index, favorites) {
+  const starred = favorites.has(candidate.id)
+  return `
+  <article class="card" aria-labelledby="name-${candidate.id}">
+    <div class="card-top">
+      <div>
+        <p class="eyebrow">${String(index + 1).padStart(2, "0")} · ${candidate.arch}</p>
+      </div>
+      <button type="button" class="fav" data-id="${candidate.id}" aria-pressed="${starred}" aria-label="Star ${candidate.word}"><svg aria-hidden="true"><use href="#i-star"/></svg>${starred ? "Starred" : "Star"}</button>
+    </div>
+    <div class="stage">
+      <div class="lockup">${markSvg(candidate.id)}<span class="word" id="name-${candidate.id}" style="${candidate.style}">${candidate.word}</span></div>
+    </div>
+    <div class="tests">
+      <div class="test">${markSvg(candidate.id, "px16")}<span>16 px</span></div>
+      <div class="test">${markSvg(candidate.id, "px32")}<span>32 px</span></div>
+      <div class="test"><div class="app">${markSvg(candidate.id)}</div><span>App icon</span></div>
+      <div class="test"><div class="reverse">${markSvg(candidate.id)}</div><span>Reverse</span></div>
+      <div class="test mono">${markSvg(candidate.id)}<span>One color</span></div>
+    </div>
+    <p class="tagline">${candidate.tagline}</p>
+    <p class="story">${candidate.story}</p>
+    <dl class="meta">
+      <div><dt>Signals</dt><dd>${candidate.signals}</dd></div>
+      <div><dt>Rejects</dt><dd>${candidate.rejects}</dd></div>
+    </dl>
+  </article>`
+}
+
+function rowHtml(candidate) {
+  return `<tr><td class="name">${markSvg(candidate.id)}${candidate.word}</td>${candidate.score.map(dots).map((cell) => `<td>${cell}</td>`).join("")}<td>${candidate.uses}</td></tr>`
+}
+
+function render() {
+  const favorites = readFavorites()
+  document.getElementById("grid").innerHTML = CANDIDATES.map((candidate, index) => cardHtml(candidate, index, favorites)).join("")
+  document.getElementById("table").innerHTML = CANDIDATES.map(rowHtml).join("")
+  document.getElementById("fav-count").textContent = String(favorites.size)
+}
+
+function bindFavorites() {
+  document.getElementById("grid").addEventListener("click", (event) => {
+    const button = event.target.closest(".fav")
+    if (!button) return
+    const favorites = readFavorites()
+    const id = button.dataset.id
+    if (favorites.has(id)) favorites.delete(id)
+    else favorites.add(id)
+    writeFavorites(favorites)
+    const starred = favorites.has(id)
+    button.setAttribute("aria-pressed", String(starred))
+    button.lastChild.textContent = starred ? "Starred" : "Star"
+    document.getElementById("fav-count").textContent = String(favorites.size)
+  })
+}
+
+function bindStage() {
+  const buttons = document.querySelectorAll(".stage-switch button")
+  buttons.forEach((button) => button.addEventListener("click", () => {
+    document.documentElement.dataset.stage = button.dataset.stage
+    buttons.forEach((other) => other.setAttribute("aria-pressed", String(other === button)))
+  }))
+}
+
+function revealCards() {
+  const cards = document.querySelectorAll(".card")
+  if (!("IntersectionObserver" in window)) { cards.forEach((card) => card.classList.add("is-in")); return }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return
+      entry.target.classList.add("is-in")
+      observer.unobserve(entry.target)
+    })
+  }, { rootMargin: "0px 0px -10% 0px" })
+  cards.forEach((card, index) => { card.style.transitionDelay = `${(index % 2) * 60}ms`; observer.observe(card) })
+}
+
+function playPicks() {
+  const picks = document.getElementById("picks")
+  picks.classList.remove("play")
+  void picks.offsetWidth
+  picks.classList.add("play")
+}
+
+function bindPicks() {
+  document.getElementById("replay").addEventListener("click", playPicks)
+  const picks = document.getElementById("picks")
+  if (!("IntersectionObserver" in window)) { playPicks(); return }
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return
+    playPicks()
+    observer.disconnect()
+  }, { threshold: 0.4 })
+  observer.observe(picks)
+}
+
+render()
+bindFavorites()
+bindStage()
+revealCards()
+bindPicks()
+</script>
+</body>
+</html>

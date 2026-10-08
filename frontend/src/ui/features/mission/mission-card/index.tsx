@@ -6,7 +6,7 @@ import { useMessageText } from "@/ui/shared/i18n"
 import { useLoadingIndicator } from "@/ui/shared/motion"
 import { Card, Skeleton, StatusBadge } from "@/ui/shared/ui"
 import { CommandBanner } from "../command-banner"
-import { JUDGE_LABELS, MAP_MODE_LABELS, PLANNER_LABELS, SCENARIO_LABELS } from "../labels"
+import { JUDGE_LABELS, MAP_MODE_INLINE_LABELS, PLANNER_LABELS, SCENARIO_LABELS } from "../labels"
 import { useMissionLayout } from "../layout"
 import { MissionForm } from "../mission-form"
 import { MissionStats } from "../mission-stats"
@@ -92,7 +92,7 @@ export function MissionCard({
                     key: "mission:form.runParameters",
                     params: {
                       scenario: text({ key: SCENARIO_LABELS[snapshot.scenario] }),
-                      mapMode: text({ key: MAP_MODE_LABELS[snapshot.map_mode] }),
+                      mapMode: text({ key: MAP_MODE_INLINE_LABELS[snapshot.map_mode] }),
                       seed: snapshot.seed,
                     },
                   })}
