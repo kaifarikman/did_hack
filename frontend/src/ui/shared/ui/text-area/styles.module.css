@@ -1,0 +1,5 @@
+.area {
+  composes: input from "../../styles/control.module.css";
+  overflow: hidden;
+  resize: none;
+}

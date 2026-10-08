@@ -1,0 +1,22 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-card);
+  max-block-size: 100%;
+  min-block-size: 0;
+  view-transition-name: mission;
+}
+
+.card > * {
+  flex: none;
+}
+
+.card > .form {
+  flex: 0 1 auto;
+  min-block-size: 0;
+}
+
+.parameters {
+  composes: secondaryText from "../../../shared/styles/compose.module.css";
+  font-variant-numeric: var(--font-numeric);
+}

@@ -1,0 +1,14 @@
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--text-secondary);
+}
+
+.glyph {
+  animation: var(--motion-spin);
+}
+
+.label {
+  font-size: var(--font-size-body-sm);
+}

@@ -1,0 +1,29 @@
+.tooltip {
+  composes: floatingLayer from "../../styles/compose.module.css";
+  position: fixed;
+  z-index: var(--layer-tooltip);
+  max-inline-size: var(--tooltip-max-width);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-tooltip);
+  box-shadow: var(--shadow-float);
+  color: var(--text-on-tooltip);
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+  transform-origin: bottom left;
+}
+
+.tooltip[data-side="bottom"] {
+  transform-origin: top left;
+}
+
+.tooltip[data-state="closed"] {
+  transform: scale(var(--enter-scale));
+}
+
+@starting-style {
+  .tooltip[data-state="open"] {
+    opacity: 0;
+    transform: scale(var(--enter-scale));
+  }
+}

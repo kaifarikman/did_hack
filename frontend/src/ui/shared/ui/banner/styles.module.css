@@ -1,0 +1,80 @@
+.banner {
+  --banner-surface: var(--surface-tint);
+  --banner-text: var(--text-primary);
+  --banner-muted: var(--text-secondary);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-12) var(--space-12) var(--space-16);
+  border-radius: var(--radius-inner);
+  background-color: var(--banner-surface);
+  color: var(--banner-text);
+  transition: var(--transition-reveal-in);
+}
+
+.banner[data-state="closed"] {
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transition: var(--transition-reveal-out);
+}
+
+@starting-style {
+  .banner[data-state="open"] {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+.critical {
+  --focus-ring-color: var(--focus-ring-color-inverse);
+  --banner-surface: var(--surface-inverse);
+  --banner-text: var(--text-on-inverse);
+  --banner-muted: var(--text-on-inverse-secondary);
+}
+
+.icon {
+  margin-block-start: var(--space-12);
+}
+
+.attention .icon {
+  inline-size: var(--space-32);
+  block-size: var(--space-32);
+  margin-block-start: var(--space-8);
+  padding: var(--space-8);
+  border-radius: var(--radius-round);
+  background-color: var(--action-dark);
+  color: var(--text-on-inverse);
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  min-inline-size: 0;
+}
+
+.body {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  padding-block: var(--space-12);
+}
+
+.title {
+  composes: strongBodyText from "../../styles/compose.module.css";
+}
+
+.description {
+  color: var(--banner-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+}
+
+.action {
+  padding-block-end: var(--space-12);
+}

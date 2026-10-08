@@ -1,0 +1,70 @@
+:root {
+  --surface-canvas: var(--sage-canvas);
+  --surface-card: var(--pure-white);
+  --surface-card-hover: color-mix(in oklab, var(--pure-white), var(--carbon) 3%);
+  --surface-tint: var(--mint-frost);
+  --surface-tint-hover: color-mix(in oklab, var(--mint-frost), var(--carbon) 5%);
+  --surface-selected: var(--pure-white);
+  --surface-inverse: var(--graphite);
+  --surface-inverse-strong: var(--carbon);
+  --surface-scrim: color-mix(in oklab, var(--carbon) 36%, transparent);
+  --surface-skeleton: color-mix(in oklab, var(--mint-frost), var(--carbon) 6%);
+
+  --text-primary: var(--carbon);
+  --text-secondary: var(--slate);
+  --text-tertiary: var(--mist-ink);
+  --text-disabled: var(--fog);
+  --text-on-inverse: var(--pure-white);
+  --text-on-inverse-secondary: var(--frost-on-forest);
+  --text-on-action: var(--carbon);
+
+  --action-primary: var(--vivid-teal);
+  --action-primary-hover: color-mix(in oklab, var(--vivid-teal), var(--carbon) 8%);
+  --action-primary-press: color-mix(in oklab, var(--vivid-teal), var(--carbon) 14%);
+  --action-dark: var(--carbon);
+  --action-dark-hover: var(--graphite);
+  --action-ghost-hover: color-mix(in oklab, currentColor 8%, transparent);
+  --action-ghost-press: color-mix(in oklab, currentColor 14%, transparent);
+  --action-disabled: color-mix(in oklab, var(--mint-frost), var(--carbon) 4%);
+  --action-inverse-hover: color-mix(in oklab, var(--pure-white) 12%, transparent);
+
+  --signal-neutral: var(--carbon);
+  --signal-attention: var(--data-ochre);
+  --signal-critical: var(--data-brick);
+
+  --border-hairline: color-mix(in oklab, var(--slate) 24%, transparent);
+  --border-strong: var(--slate);
+  --border-input: var(--steel);
+  --border-invalid: var(--carbon);
+  --scrollbar-thumb: color-mix(in oklab, var(--slate) 45%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklab, var(--slate) 70%, transparent);
+  --surface-track-off: var(--pure-white);
+  --surface-option-active: var(--surface-tint);
+  --surface-tooltip: var(--carbon);
+  --text-on-tooltip: var(--pure-white);
+  --border-inverse: color-mix(in oklab, var(--pure-white) 24%, transparent);
+
+  --focus-ring-color: var(--carbon);
+  --focus-ring-color-inverse: var(--pure-white);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  --data-sample: var(--data-ochre);
+  --data-hazard: var(--data-clay);
+  --data-robot: var(--carbon);
+  --data-robot-partner: var(--data-dusk);
+  --data-path: var(--graphite);
+  --data-plan-step: color-mix(in oklab, var(--graphite) 55%, transparent);
+  --data-goal: var(--carbon);
+  --data-trail: color-mix(in oklab, var(--slate) 50%, transparent);
+  --data-base: var(--data-pine);
+  --data-grid: color-mix(in oklab, var(--slate) 16%, transparent);
+  --data-unknown: var(--sage-deep);
+  --data-free: var(--pure-white);
+  --data-obstacle: var(--wall-stone);
+  --data-soil-low: var(--data-moss);
+  --data-soil-high: var(--data-sand);
+  --data-critical: var(--data-brick);
+  --data-label: var(--carbon);
+  --data-label-halo: var(--pure-white);
+}

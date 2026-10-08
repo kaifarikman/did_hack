@@ -1,0 +1,71 @@
+.card {
+  --card-surface: var(--surface-card);
+  --card-text: var(--text-primary);
+  --card-radius: var(--radius-card);
+  --card-padding: var(--space-card);
+  --card-gap: var(--space-card);
+  --card-title-size: var(--font-size-subheading);
+  --card-title-leading: var(--line-height-subheading);
+  --card-title-tracking: var(--tracking-subheading);
+
+  min-inline-size: 0;
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
+  background-color: var(--card-surface);
+  color: var(--card-text);
+}
+
+.titled {
+  display: grid;
+  align-content: start;
+  gap: var(--card-gap);
+}
+
+.inner {
+  --card-gap: var(--space-element);
+  --card-surface: var(--surface-tint);
+  --card-radius: var(--radius-inner);
+  --card-padding: var(--space-inner);
+  --card-title-size: var(--font-size-body);
+  --card-title-leading: var(--line-height-body);
+  --card-title-tracking: var(--tracking-body);
+}
+
+.inverse {
+  --card-surface: var(--surface-inverse);
+  --card-text: var(--text-on-inverse);
+}
+
+.entering {
+  animation: var(--motion-slide-in);
+  animation-delay: calc(var(--i) * var(--stagger));
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: last baseline;
+  justify-content: space-between;
+  gap: var(--space-element);
+}
+
+.heading {
+  display: grid;
+  gap: var(--space-4);
+  min-inline-size: 0;
+}
+
+.title {
+  font-size: var(--card-title-size);
+  font-weight: var(--weight-medium);
+  line-height: var(--card-title-leading);
+  letter-spacing: var(--card-title-tracking);
+  text-wrap: balance;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}

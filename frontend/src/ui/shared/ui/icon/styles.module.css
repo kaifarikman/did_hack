@@ -1,0 +1,19 @@
+.icon {
+  flex: none;
+  stroke-width: var(--icon-stroke);
+}
+
+.sm {
+  inline-size: var(--icon-sm);
+  block-size: var(--icon-sm);
+}
+
+.md {
+  inline-size: var(--icon-md);
+  block-size: var(--icon-md);
+}
+
+.lg {
+  inline-size: var(--icon-lg);
+  block-size: var(--icon-lg);
+}

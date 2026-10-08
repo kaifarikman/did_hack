@@ -12,3 +12,11 @@ __pycache__/
 
 # Linked working copies
 .claude/worktrees/
+
+# Local design and build caches
+.impeccable/
+presentation/.vite/
+
+# Generated screenshots and browser tooling
+artifacts/frontend/
+.playwright-mcp/

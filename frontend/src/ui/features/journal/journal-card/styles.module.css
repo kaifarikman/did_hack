@@ -1,0 +1,35 @@
+.card {
+  display: grid;
+  gap: var(--space-element);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-element);
+}
+
+.count {
+  color: var(--text-tertiary);
+  font-variant-numeric: var(--font-numeric);
+}
+
+.scroll {
+  max-block-size: min(32rem, 60dvh);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.more {
+  justify-self: start;
+}
+
+.entries {
+  display: grid;
+  gap: var(--space-4);
+}

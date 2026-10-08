@@ -1,57 +1,67 @@
-import type { JournalEntry } from "../domain/contract";
-import { buildJournalExport, type JournalExport } from "../domain/journal";
-import type { MissionGateway } from "./ports";
+import type { JournalEntry } from "../domain/contract"
+import { buildJournalExport, type JournalExport } from "../domain/journal"
+import { LocalizedError, type Message, msg } from "../domain/message"
+import type { MissionGateway } from "./ports"
 
-export const EXPORT_PAGE_SIZE = 200;
+export const EXPORT_PAGE_SIZE = 200
 
-export class ExportCancelledError extends Error {
-  constructor(message = "Выгрузка отменена") {
-    super(message);
-    this.name = "ExportCancelledError";
+export class ExportCancelledError extends LocalizedError {
+  constructor(descriptor: Message = msg("errors:export.cancelled")) {
+    super(descriptor)
+    this.name = "ExportCancelledError"
   }
 }
 
-export class ExportFailedError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ExportFailedError";
+export class ExportFailedError extends LocalizedError {
+  constructor(descriptor: Message) {
+    super(descriptor)
+    this.name = "ExportFailedError"
   }
 }
 
 export interface ExportOptions {
-  signal?: AbortSignal;
-  isCancelled: () => boolean;
+  signal?: AbortSignal | undefined
+  isCancelled: () => boolean
 }
 
-/**
- * Читает журнал прогона с начала до первой страницы с has_more: false.
- * Не атомарный снимок: next_sequence последней страницы становится верхней границей выгрузки.
- */
 export async function exportFullJournal(
   gateway: MissionGateway,
   runId: string,
   options: ExportOptions,
 ): Promise<JournalExport> {
-  const entries: JournalEntry[] = [];
-  const seenSequences = new Set<number>();
-  let cursor = 0;
+  const entries: JournalEntry[] = []
+  const seenSequences = new Set<number>()
+  let cursor = 0
   for (;;) {
-    if (options.isCancelled()) throw new ExportCancelledError("Выгрузка отменена: сменился прогон");
-    const page = await gateway.getJournalPage(runId, cursor, EXPORT_PAGE_SIZE, { signal: options.signal });
-    if (options.isCancelled()) throw new ExportCancelledError("Выгрузка отменена: сменился прогон");
+    ensureNotCancelled(options)
+    const page = await gateway.getJournalPage(runId, cursor, EXPORT_PAGE_SIZE, {
+      signal: options.signal,
+    })
+    ensureNotCancelled(options)
     if (page.run_id !== runId) {
-      throw new ExportFailedError("Backend вернул журнал другого прогона; файл не создан");
+      throw new ExportFailedError(msg("errors:export.otherRun"))
     }
-    for (const entry of page.entries) {
-      if (!seenSequences.has(entry.sequence)) {
-        seenSequences.add(entry.sequence);
-        entries.push(entry);
-      }
-    }
-    if (!page.has_more) return buildJournalExport(runId, entries, page.next_sequence);
+    appendUnseen(entries, seenSequences, page.entries)
+    if (!page.has_more) return buildJournalExport(runId, entries, page.next_sequence)
     if (page.next_sequence <= cursor) {
-      throw new ExportFailedError("Backend не продвинул курсор журнала; файл не создан");
+      throw new ExportFailedError(msg("errors:export.cursorStuck"))
     }
-    cursor = page.next_sequence;
+    cursor = page.next_sequence
+  }
+}
+
+function ensureNotCancelled(options: ExportOptions): void {
+  if (options.isCancelled()) throw new ExportCancelledError()
+}
+
+function appendUnseen(
+  entries: JournalEntry[],
+  seenSequences: Set<number>,
+  pageEntries: readonly JournalEntry[],
+): void {
+  for (const entry of pageEntries) {
+    if (seenSequences.has(entry.sequence)) continue
+    seenSequences.add(entry.sequence)
+    entries.push(entry)
   }
 }

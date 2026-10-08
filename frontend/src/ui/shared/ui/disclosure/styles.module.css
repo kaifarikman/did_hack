@@ -1,0 +1,44 @@
+.disclosure {
+  min-inline-size: 0;
+}
+
+.summary {
+  composes: pressable listItem from "../../styles/compose.module.css";
+  display: flex;
+  align-items: flex-start;
+  padding-block: var(--space-12);
+  gap: var(--space-8);
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  flex: none;
+  margin-block-start: calc((1lh - var(--icon-sm)) / 2);
+  transition: var(--transition-turn);
+}
+
+.disclosure[data-state="open"] .chevron {
+  transform: rotate(90deg);
+}
+
+.label {
+  min-inline-size: 0;
+}
+
+.content {
+  --reveal-bleed: calc((var(--focus-ring-width) + var(--focus-ring-offset)) * -1);
+
+  opacity: 0;
+  clip-path: inset(var(--reveal-bleed) var(--reveal-bleed) 100% var(--reveal-bleed));
+  transition: var(--transition-details-out);
+}
+
+.disclosure[data-state="open"] .content {
+  opacity: 1;
+  clip-path: inset(var(--reveal-bleed));
+  transition: var(--transition-details-in);
+}

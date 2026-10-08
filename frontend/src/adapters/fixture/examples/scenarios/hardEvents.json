@@ -1,0 +1,68 @@
+{
+  "replanReason": "наблюдаемая опасность",
+  "hypotheses": {
+    "hazardTesting": {
+      "hypothesis_id": "fixture-hypothesis-5",
+      "kind": "costly_terrain",
+      "status": "testing",
+      "center": { "position_x_m": -1.2, "position_y_m": -0.5 },
+      "prediction": "у опасной зоны расход выше 2.5 ед./м",
+      "measurement": "2.6 ± 0.9 ед./м на 0.1 м",
+      "detection_id": "hazard-1",
+      "experiment_id": "experiment-5"
+    },
+    "hazardUnverified": {
+      "hypothesis_id": "fixture-hypothesis-5",
+      "kind": "costly_terrain",
+      "status": "unverified",
+      "center": { "position_x_m": -1.2, "position_y_m": -0.5 },
+      "prediction": "у опасной зоны расход выше 2.5 ед./м",
+      "measurement": "2.6 ± 0.9 ед./м на 0.1 м",
+      "detection_id": "hazard-1",
+      "experiment_id": "experiment-5"
+    }
+  },
+  "journal": {
+    "noise": {
+      "kind": "error",
+      "title": "Датчик сигнала шумит",
+      "detail": "Разброс показаний вырос в 4 раза; сигнал временно не используется в плане."
+    },
+    "hazard": {
+      "kind": "observation",
+      "title": "Найдена опасность",
+      "detail": "Робот зафиксировал удар о неизвестное препятствие.",
+      "detection_id": "hazard-1",
+      "observed": "удар на скорости 0.12 м/с"
+    },
+    "hazardReplan": {
+      "kind": "decision",
+      "title": "Перепланирование из-за опасности",
+      "detail": "Маршрут обходит наблюдаемую опасную зону.",
+      "detection_id": "hazard-1",
+      "evidence": ["hazard-1 ×1"]
+    },
+    "hazardVerdict": {
+      "kind": "outcome",
+      "title": "Недостаточно данных",
+      "detail": "Измерений у опасной зоны слишком мало для вывода.",
+      "hypothesis_id": "fixture-hypothesis-5",
+      "conclusion": "Не проверена: 1 измерение из 3 нужных."
+    },
+    "stuck": {
+      "kind": "error",
+      "title": "Датчик сигнала залип",
+      "detail": "Одно и то же значение 2.5 с подряд."
+    },
+    "dropout": {
+      "kind": "error",
+      "title": "Нет сообщений датчика",
+      "detail": "Сигнал образца не приходит; показываем отсутствие значения."
+    },
+    "lowBattery": {
+      "kind": "decision",
+      "title": "Батарея на уровне резерва",
+      "detail": "Остаток ниже оценки возврата: новых целей не берём."
+    }
+  }
+}

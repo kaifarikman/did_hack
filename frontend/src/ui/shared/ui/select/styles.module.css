@@ -1,0 +1,66 @@
+.trigger {
+  composes: input from "../../styles/control.module.css";
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  text-align: start;
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value[data-placeholder="true"] {
+  color: var(--text-tertiary);
+}
+
+.chevron {
+  flex: none;
+  transition: var(--transition-turn);
+}
+
+.trigger[data-open="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.popover {
+  display: grid;
+  padding: 0;
+  overflow: hidden;
+}
+
+.scroller {
+  max-block-size: var(--popover-max-height);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+}
+
+.option {
+  composes: controlText listItem from "../../styles/compose.module.css";
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.option[data-active="true"] {
+  background-color: var(--surface-option-active);
+}
+
+.option[aria-selected="true"] {
+  font-weight: var(--weight-semibold);
+}
+
+.option[aria-disabled="true"] {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}

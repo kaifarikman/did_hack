@@ -1,0 +1,542 @@
+:root {
+  --sage-canvas: #d3e4df;
+  --sage-deep: #bfd3cd;
+  --pure-white: #ffffff;
+  --mint-frost: #edf4f2;
+  --carbon: #0d1212;
+  --graphite: #34484a;
+  --slate: #565959;
+  --fog: #9aa3a5;
+  --mist-ink: #566263;
+  --steel: #717f80;
+  --frost-on-forest: #bfcecc;
+  --wall-stone: #637676;
+  --vivid-teal: #64d5b3;
+  --data-ochre: #847243;
+  --data-clay: #9d6352;
+  --data-dusk: #627492;
+  --data-moss: #7f9a6b;
+  --data-sand: #cdbf94;
+  --data-brick: #9e4f45;
+  --data-pine: #567a72;
+}
+
+:root {
+  --surface-canvas: var(--sage-canvas);
+  --surface-card: var(--pure-white);
+  --surface-card-hover: color-mix(in oklab, var(--pure-white), var(--carbon) 3%);
+  --surface-tint: var(--mint-frost);
+  --surface-tint-hover: color-mix(in oklab, var(--mint-frost), var(--carbon) 5%);
+  --surface-selected: var(--pure-white);
+  --surface-inverse: var(--graphite);
+  --surface-inverse-strong: var(--carbon);
+  --surface-scrim: color-mix(in oklab, var(--carbon) 36%, transparent);
+  --surface-skeleton: color-mix(in oklab, var(--mint-frost), var(--carbon) 6%);
+
+  --text-primary: var(--carbon);
+  --text-secondary: var(--slate);
+  --text-tertiary: var(--mist-ink);
+  --text-disabled: var(--fog);
+  --text-on-inverse: var(--pure-white);
+  --text-on-inverse-secondary: var(--frost-on-forest);
+  --text-on-action: var(--carbon);
+
+  --action-primary: var(--vivid-teal);
+  --action-primary-hover: color-mix(in oklab, var(--vivid-teal), var(--carbon) 8%);
+  --action-primary-press: color-mix(in oklab, var(--vivid-teal), var(--carbon) 14%);
+  --action-dark: var(--carbon);
+  --action-dark-hover: var(--graphite);
+  --action-ghost-hover: color-mix(in oklab, currentColor 8%, transparent);
+  --action-ghost-press: color-mix(in oklab, currentColor 14%, transparent);
+  --action-disabled: color-mix(in oklab, var(--mint-frost), var(--carbon) 4%);
+  --action-inverse-hover: color-mix(in oklab, var(--pure-white) 12%, transparent);
+
+  --signal-neutral: var(--carbon);
+  --signal-attention: var(--data-ochre);
+  --signal-critical: var(--data-brick);
+
+  --border-hairline: color-mix(in oklab, var(--slate) 24%, transparent);
+  --border-strong: var(--slate);
+  --border-input: var(--steel);
+  --border-invalid: var(--carbon);
+  --scrollbar-thumb: color-mix(in oklab, var(--slate) 45%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklab, var(--slate) 70%, transparent);
+  --surface-track-off: var(--pure-white);
+  --surface-option-active: var(--surface-tint);
+  --surface-tooltip: var(--carbon);
+  --text-on-tooltip: var(--pure-white);
+  --border-inverse: color-mix(in oklab, var(--pure-white) 24%, transparent);
+
+  --focus-ring-color: var(--carbon);
+  --focus-ring-color-inverse: var(--pure-white);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  --data-sample: var(--data-ochre);
+  --data-hazard: var(--data-clay);
+  --data-robot: var(--carbon);
+  --data-robot-partner: var(--data-dusk);
+  --data-path: var(--graphite);
+  --data-plan-step: color-mix(in oklab, var(--graphite) 55%, transparent);
+  --data-goal: var(--carbon);
+  --data-trail: color-mix(in oklab, var(--slate) 50%, transparent);
+  --data-base: var(--data-pine);
+  --data-grid: color-mix(in oklab, var(--slate) 16%, transparent);
+  --data-unknown: var(--sage-deep);
+  --data-free: var(--pure-white);
+  --data-obstacle: var(--wall-stone);
+  --data-soil-low: var(--data-moss);
+  --data-soil-high: var(--data-sand);
+  --data-critical: var(--data-brick);
+  --data-label: var(--carbon);
+  --data-label-halo: var(--pure-white);
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter Regular"),
+    local("Inter-Regular"),
+    url("fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter Medium"),
+    local("Inter-Medium"),
+    url("fonts/Inter-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter SemiBold"),
+    local("Inter-SemiBold"),
+    url("fonts/Inter-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter Display";
+  src:
+    local("Inter Display Regular"),
+    local("InterDisplay-Regular"),
+    url("fonts/InterDisplay-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-ui:
+    "GT Standard S", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-display:
+    "GT Standard L", "Inter Display", "Inter", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-features: "kern" 0;
+  --font-numeric: tabular-nums;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --font-size-caption: 12px;
+  --line-height-caption: 1.5;
+  --tracking-caption: 0.6px;
+  --font-size-body-sm: 14px;
+  --line-height-body-sm: 1.4;
+  --tracking-body-sm: 0.14px;
+  --font-size-body: 16px;
+  --line-height-body: 1.5;
+  --tracking-body: 0.16px;
+  --font-size-subheading: 20px;
+  --line-height-subheading: 1.3;
+  --tracking-subheading: -0.02px;
+  --font-size-heading-sm: 23px;
+  --line-height-heading-sm: 1.28;
+  --tracking-heading-sm: -0.023px;
+  --font-size-heading: 30px;
+  --line-height-heading: 1.25;
+  --tracking-heading: -0.03px;
+  --font-size-heading-lg: 40px;
+  --line-height-heading-lg: 1.2;
+  --tracking-heading-lg: -0.04px;
+  --font-size-display-sm: 56px;
+  --line-height-display-sm: 1.1;
+  --tracking-display-sm: 0px;
+  --font-size-display: 120px;
+  --line-height-display: 1.1;
+  --tracking-display: 0px;
+}
+
+:root {
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-60: 60px;
+  --space-80: 80px;
+  --space-100: 100px;
+  --space-160: 160px;
+
+  --space-card: var(--space-24);
+  --space-inner: var(--space-16);
+  --space-element: var(--space-12);
+
+  --hairline: 1px;
+  --target-min: 44px;
+  --control-height: 44px;
+  --control-height-compact: 36px;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --icon-stroke: 1.5;
+  --dot-size: 8px;
+  --meter-height: 8px;
+  --scrollbar-size: 10px;
+  --scroll-fade-size: var(--space-24);
+  --check-size: 20px;
+  --switch-width: 40px;
+  --switch-height: 24px;
+  --switch-thumb: 16px;
+  --switch-edge: 2px;
+  --popover-gap: var(--space-8);
+  --popover-min-width: 200px;
+  --popover-max-height: 320px;
+  --dialog-width: 480px;
+  --dialog-width-wide: 720px;
+  --tooltip-max-width: 280px;
+  --field-max-width: 480px;
+  --flag-width: 20px;
+}
+
+:root {
+  --radius-flag: 3px;
+  --radius-check: 6px;
+  --radius-button: 12px;
+  --radius-inner: 16px;
+  --radius-badge: 20px;
+  --radius-card: 36px;
+  --radius-round: 9999px;
+}
+
+:root {
+  --layer-raised: 1;
+  --layer-sticky: 10;
+  --layer-popover: 40;
+  --layer-dialog: 50;
+  --layer-tooltip: 60;
+  --shadow-float: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+}
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-linear: linear;
+
+  --dur-instant: 80ms;
+  --dur-press: 140ms;
+  --dur-fast: 160ms;
+  --dur-fast-exit: 110ms;
+  --dur-base: 200ms;
+  --dur-exit: 140ms;
+  --dur-panel: 260ms;
+  --dur-panel-exit: 180ms;
+  --dur-slow: 320ms;
+  --dur-draw: 900ms;
+  --dur-breathe: 2600ms;
+  --dur-spin: 800ms;
+
+  --delay-skeleton: 200ms;
+  --delay-spinner: 400ms;
+  --hold-skeleton: 300ms;
+  --stagger: 40ms;
+  --reduced-fade: 160ms;
+  --reduced-fade-exit: 110ms;
+  --view-transition-limit: 900ms;
+  --delay-tooltip: 400ms;
+  --delay-hover-grace: 100ms;
+  --delay-settle: 220ms;
+  --delay-scrollbar-hide: 800ms;
+  --typeahead-reset: 500ms;
+
+  --press-scale: 0.97;
+  --press-scale-surface: 0.99;
+  --enter-scale: 0.95;
+  --mark-scale: 1.6;
+  --shift-rise: 6px;
+  --shift-slide: 8px;
+  --blur-soft: 2px;
+  --shift-popover: 4px;
+  --origin-shift: 0px;
+
+  --transition-control:
+    background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+  --transition-control-press:
+    background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), scale var(--dur-press) var(--ease-out);
+  --transition-fade: opacity var(--dur-base) var(--ease-out);
+  --transition-meter: scale var(--dur-base) var(--ease-linear);
+  --transition-indicator: transform var(--dur-base) var(--ease-out);
+  --transition-thumb:
+    transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
+    scale var(--dur-instant) var(--ease-out);
+  --transition-thumb-press:
+    transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
+    scale var(--dur-press) var(--ease-out);
+  --transition-draw: stroke-dashoffset var(--dur-fast) var(--ease-out);
+  --transition-turn: transform var(--dur-base) var(--ease-out);
+  --transition-mark-in:
+    opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  --transition-mark-out:
+    opacity var(--dur-fast-exit) var(--ease-out), transform var(--dur-fast-exit) var(--ease-out);
+  --transition-layer-in:
+    opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  --transition-layer-out:
+    opacity var(--dur-fast-exit) var(--ease-out), transform var(--dur-fast-exit) var(--ease-out);
+  --transition-reveal-in:
+    opacity var(--dur-base) var(--ease-out), clip-path var(--dur-base) var(--ease-out);
+  --transition-reveal-out:
+    opacity var(--dur-exit) var(--ease-out), clip-path var(--dur-exit) var(--ease-out);
+  --transition-details-in:
+    opacity var(--dur-panel) var(--ease-out), clip-path var(--dur-panel) var(--ease-out);
+  --transition-details-out:
+    opacity var(--dur-panel-exit) var(--ease-out),
+    clip-path var(--dur-panel-exit) var(--ease-out);
+  
+  --transition-scrollbar: --scrollbar-thumb-color var(--dur-base) var(--ease-out);
+
+  --motion-fade-in: kf-fade-in var(--dur-base) var(--ease-out) both;
+  --motion-fade-out: kf-fade-out var(--dur-exit) var(--ease-out) both;
+  --motion-scale-in: kf-scale-in var(--dur-base) var(--ease-out) both;
+  --motion-scale-out: kf-scale-out var(--dur-exit) var(--ease-out) both;
+  --motion-slide-in: kf-slide-in var(--dur-slow) var(--ease-out) both;
+  --motion-rise-in: kf-rise-in var(--dur-slow) var(--ease-out) both;
+  --motion-pop-in: kf-pop-in var(--dur-fast) var(--ease-out) both;
+  --motion-swap-in: kf-swap-in var(--dur-fast) var(--ease-out) both;
+  --motion-swap-out: kf-swap-out var(--dur-fast-exit) var(--ease-out) both;
+  --motion-pulse: kf-pulse var(--dur-breathe) var(--ease-in-out) infinite;
+  --motion-spin: kf-spin var(--dur-spin) var(--ease-linear) infinite;
+  --motion-shimmer: kf-shimmer var(--dur-breathe) var(--ease-in-out) infinite;
+  --motion-commit: kf-commit var(--dur-slow) var(--ease-out) both;
+  --motion-verdict: kf-verdict var(--dur-base) var(--ease-out) both;
+  --motion-verdict-emphatic: kf-verdict-emphatic var(--dur-slow) var(--ease-out) both;
+  --motion-edge-fade-in: kf-fade-in auto linear both;
+  --motion-edge-fade-out: kf-fade-out auto linear both;
+}
+
+@property --scrollbar-thumb-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 1ms;
+    --dur-press: 1ms;
+    --dur-fast: 1ms;
+    --dur-fast-exit: 1ms;
+    --dur-base: 1ms;
+    --dur-exit: 1ms;
+    --dur-panel: 1ms;
+    --dur-panel-exit: 1ms;
+    --dur-slow: 1ms;
+    --dur-draw: 1ms;
+    --dur-breathe: 1ms;
+    --dur-spin: 1ms;
+    --stagger: 0ms;
+    --press-scale: 1;
+    --press-scale-surface: 1;
+    --enter-scale: 1;
+    --mark-scale: 1;
+    --shift-rise: 0px;
+    --shift-slide: 0px;
+    --blur-soft: 0px;
+    --shift-popover: 0px;
+    --motion-pulse: none;
+    --motion-spin: none;
+    --motion-shimmer: none;
+  }
+
+  [data-motion="fade"] {
+    --motion-scale-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-slide-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-rise-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-pop-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-swap-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-swap-out: kf-fade-out var(--reduced-fade-exit) var(--ease-out) both;
+    --motion-fade-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-fade-out: kf-fade-out var(--reduced-fade-exit) var(--ease-out) both;
+    --motion-scale-out: kf-fade-out var(--reduced-fade-exit) var(--ease-out) both;
+    --transition-mark-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-layer-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-reveal-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-details-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-mark-in: opacity var(--reduced-fade) var(--ease-out);
+    --transition-layer-in: opacity var(--reduced-fade) var(--ease-out);
+    --transition-reveal-in: opacity var(--reduced-fade) var(--ease-out);
+    --transition-details-in: opacity var(--reduced-fade) var(--ease-out);
+    --motion-verdict: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-verdict-emphatic: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+  }
+}
+
+[data-instant="true"] {
+  --motion-pop-in: none;
+  --transition-turn: none;
+  --transition-draw: none;
+  --transition-thumb: none;
+  --transition-thumb-press: none;
+  --transition-mark-in: none;
+  --transition-mark-out: none;
+  --transition-layer-in: none;
+  --transition-layer-out: none;
+  --transition-details-in: none;
+  --transition-details-out: none;
+}
+
+@keyframes kf-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes kf-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes kf-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--enter-scale));
+  }
+}
+
+@keyframes kf-scale-out {
+  to {
+    opacity: 0;
+    transform: scale(var(--enter-scale));
+  }
+}
+
+@keyframes kf-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--shift-slide));
+  }
+}
+
+@keyframes kf-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--shift-rise));
+  }
+}
+
+@keyframes kf-swap-out {
+  to {
+    opacity: 0;
+    filter: blur(var(--blur-soft));
+    transform: translateY(calc(var(--shift-rise) * -1));
+  }
+}
+
+@keyframes kf-swap-in {
+  from {
+    opacity: 0;
+    filter: blur(var(--blur-soft));
+    transform: translateY(var(--shift-rise));
+  }
+}
+
+@keyframes kf-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--enter-scale));
+  }
+}
+
+@keyframes kf-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes kf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes kf-shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes kf-commit {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes kf-verdict {
+  from {
+    opacity: 0;
+    filter: blur(var(--blur-soft));
+    transform: scale(var(--enter-scale));
+  }
+}
+
+@keyframes kf-verdict-emphatic {
+  0% {
+    opacity: 0;
+    filter: blur(var(--blur-soft));
+    transform: scale(var(--enter-scale));
+  }
+  45% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  70% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}

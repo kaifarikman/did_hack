@@ -1,0 +1,63 @@
+{
+  "title": "Plan and research",
+  "source": {
+    "llm": "LLM plan",
+    "fallback": "Fallback plan"
+  },
+  "goal": {
+    "explore": "Explore",
+    "approach": "Approach sample",
+    "collect": "Collect sample",
+    "return": "Return to base"
+  },
+  "sensor": {
+    "ok": "healthy",
+    "suspected": "suspected fault",
+    "degraded": "degraded",
+    "recovering": "recovering"
+  },
+  "fault": {
+    "noise": "noise",
+    "stuck": "stuck value",
+    "dropout": "no messages"
+  },
+  "hypothesis": {
+    "proposed": "proposed",
+    "testing": "testing",
+    "confirmed": "confirmed by measurements",
+    "refuted": "refuted",
+    "deferred": "deferred",
+    "unverified": "not enough data",
+    "unknown": "status “{{status}}”"
+  },
+  "hypothesisKind": {
+    "costlyTerrain": "Costly terrain",
+    "terrainChange": "Terrain change",
+    "unknown": "Hypothesis “{{kind}}”"
+  },
+  "label": {
+    "premises": "Premises",
+    "reviseIf": "Revise if:",
+    "revision": "Revision reason",
+    "fallbackReason": "Fallback reason",
+    "replan": "Last replan:",
+    "plannerRequests": "Planner requests",
+    "sensor": "Signal sensor",
+    "quality": "Quality",
+    "hazards": "Hazards",
+    "hypotheses": "Hypotheses",
+    "terrain": "Terrain model",
+    "plan": "Plan",
+    "noPlan": "No plan yet",
+    "noHazards": "No hazards observed",
+    "noHypotheses": "No hypotheses yet",
+    "hazardItem_one": "Hazard {{index}}: {{count}} hit",
+    "hazardItem_other": "Hazard {{index}}: {{count}} hits",
+    "region": "Area {{index}}"
+  },
+  "terrain": {
+    "value": "{{energy}} units/m",
+    "valueSpread": "{{energy}} ± {{spread}} units/m",
+    "regime": "regime {{regime}}"
+  }
+}

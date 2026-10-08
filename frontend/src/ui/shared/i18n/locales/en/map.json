@@ -1,0 +1,39 @@
+{
+  "title": "Map",
+  "label": {
+    "terrain": "{{energy}} units/m",
+    "terrainSpread": "{{energy}} ± {{spread}} units/m",
+    "terrainRegime": "{{energy}} units/m · regime {{regime}}",
+    "terrainSpreadRegime": "{{energy}} ± {{spread}} units/m · regime {{regime}}",
+    "hazard": "hazard ×{{hits}}"
+  },
+  "legend": {
+    "title": "Map legend",
+    "robot": "Robot",
+    "base": "Base",
+    "goal": "Current goal",
+    "trail": "Travelled path",
+    "plannedPath": "Planned path",
+    "sample": "Confirmed collection",
+    "terrain": "Terrain estimate",
+    "hazard": "Hazard",
+    "planStep": "Plan steps",
+    "partner": "Second robot and its reservation",
+    "obstacle": "Obstacle",
+    "free": "Free",
+    "unknown": "Unknown",
+    "robotNote": "The tip shows the heading.",
+    "terrainNote": "Agent belief, not ground truth; ± is uncertainty.",
+    "hazardNote": "Found from events, boundary unknown."
+  },
+  "state": {
+    "loading": "Loading the map…",
+    "missing": "The map is not built yet",
+    "mismatch": "Map version mismatch: the state uses “{{expected}}”, loaded “{{loaded}}”. Loading the matching one…"
+  },
+  "describe": {
+    "unavailable": "Map unavailable",
+    "robot": "Map: robot at ({{x}}; {{y}}) m, confirmed collections: {{samples}}",
+    "noRobot": "Map: robot position unknown, confirmed collections: {{samples}}"
+  }
+}

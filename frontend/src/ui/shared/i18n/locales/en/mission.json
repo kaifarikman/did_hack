@@ -1,0 +1,132 @@
+{
+  "title": "Mission",
+  "status": {
+    "idle": "Waiting to start",
+    "starting": "Starting",
+    "running": "Running",
+    "returning": "Returning to base",
+    "stopping": "Stopping",
+    "completed": "Completed",
+    "stopped": "Stopped by user",
+    "failed": "Failed"
+  },
+  "goal": {
+    "explore": "Exploring",
+    "approach": "Approaching sample",
+    "collect": "Collecting sample",
+    "return": "Returning to base",
+    "none": "No goal"
+  },
+  "judge": {
+    "local": "Judge: local (project assumptions)",
+    "official": "Judge: official"
+  },
+  "planner": {
+    "llm": "Planner: LLM",
+    "fallback": "Planner: fallback algorithm"
+  },
+  "outcome": {
+    "success": "Mission completed: the judge confirmed it.",
+    "interrupted": "Mission stopped by the user. This is not a success.",
+    "failure": "Mission failed. No success is counted."
+  },
+  "scenario": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "mapMode": {
+    "static": "Static map",
+    "slam": "SLAM"
+  },
+  "metric": {
+    "battery": "Battery",
+    "signal": "Sample signal",
+    "time": "Simulation time",
+    "samples": "Samples",
+    "returnEstimate": "Return estimate",
+    "goal": "Current goal"
+  },
+  "value": {
+    "battery": "{{remaining}} of {{initial}} units",
+    "batteryUnknown": "no data (of {{initial}} units)",
+    "energy": "{{value}} units",
+    "samples": "{{collected}} of {{target}}",
+    "samplesOpen": "{{collected}}",
+    "reserve": "Return reserve"
+  },
+  "form": {
+    "scenario": "Profile",
+    "mapMode": "Map",
+    "robots": "Robots",
+    "seed": "Seed",
+    "missionText": "Mission text",
+    "missionPlaceholder": "Collect as many samples as possible and return to base",
+    "unsupported": "The environment does not support this",
+    "seedInvalid": "Seed must be a whole number",
+    "runParameters": "{{scenario}} · {{mapMode}} · seed {{seed}}"
+  },
+  "action": {
+    "start": "Start",
+    "stop": "Stop",
+    "retry": "Retry command"
+  },
+  "command": {
+    "sending": "Sending the command",
+    "awaiting": "Waiting for confirmation",
+    "unknown": "Command outcome unknown",
+    "reconciled": "Outcome unknown, retry is safe",
+    "failed": "Command failed"
+  },
+  "blocker": {
+    "start": {
+      "noSnapshot": "No mission state yet",
+      "offline": "No live connection to the server",
+      "healthUnknown": "Environment readiness unknown",
+      "environmentStarting": "The environment is still starting",
+      "commandBusy": "A command is already in flight",
+      "runActive": "A run is already active"
+    },
+    "stop": {
+      "noRun": "No active run",
+      "offline": "No live connection to the server",
+      "commandBusy": "A command is already in flight",
+      "runInactive": "The run is not active",
+      "alreadyStopping": "Already stopping"
+    }
+  },
+  "splash": {
+    "title": "The explorer is ready",
+    "description": "Pick a profile and press Start. The map, plan and journal will appear here.",
+    "offlineTitle": "No connection to the server",
+    "offlineDescription": "The panel keeps trying to connect.",
+    "startingTitle": "The environment is starting",
+    "startingRos": "Waiting for ROS. Start becomes available once the environment is ready.",
+    "startingEnv": "ROS is connected, the environment is finishing its start-up.",
+    "readyFallback": "The LLM is unavailable, so the fallback algorithm will plan. Pick a profile and press Start.",
+    "connectingTitle": "Connecting to the server",
+    "connectingDescription": "Loading the mission state.",
+    "rejectedTitle": "Start rejected",
+    "rejectedDescription": "The server did not accept the command. The reason is in the mission card."
+  },
+  "summary": {
+    "title": "Run summary",
+    "confirmed": "Hypotheses confirmed",
+    "refuted": "Hypotheses refuted",
+    "reason": "Stop reason",
+    "retryable": "The error is retryable: start a new run.",
+    "final": "Retrying will not help: the environment needs a fix."
+  },
+  "teamOutcome": {
+    "success": "The team completed the mission: the judge confirmed it.",
+    "partial": "Partial team success: not every robot finished the mission.",
+    "failed": "The team failed. No success is counted.",
+    "stopped": "The team was stopped by the user. This is not a successful finish.",
+    "running": "The team is still running."
+  },
+  "panels": {
+    "details": "Mission details",
+    "research": "Research and journal",
+    "state": "Mission state and settings"
+  }
+}

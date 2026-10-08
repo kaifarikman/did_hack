@@ -1,0 +1,37 @@
+.frame {
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  border: var(--hairline) solid var(--border-input);
+  border-radius: var(--radius-inner);
+  background-color: transparent;
+  color: var(--text-primary);
+  transition: var(--transition-control);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .frame:hover:not(:disabled, [data-disabled="true"]) {
+    border-color: var(--border-strong);
+  }
+}
+
+.input {
+  composes: frame;
+  padding: var(--space-12) var(--space-16);
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input[aria-invalid="true"]:not(:focus-visible) {
+  border-color: var(--border-invalid);
+  outline: var(--hairline) solid var(--border-invalid);
+  outline-offset: calc(var(--hairline) * -2);
+}
+
+.input:disabled {
+  border-color: var(--border-hairline);
+  color: var(--text-disabled);
+}

@@ -1,0 +1,45 @@
+:root {
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-60: 60px;
+  --space-80: 80px;
+  --space-100: 100px;
+  --space-160: 160px;
+
+  --space-card: var(--space-24);
+  --space-inner: var(--space-16);
+  --space-element: var(--space-12);
+
+  --hairline: 1px;
+  --target-min: 44px;
+  --control-height: 44px;
+  --control-height-compact: 36px;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --icon-stroke: 1.5;
+  --dot-size: 8px;
+  --meter-height: 8px;
+  --scrollbar-size: 10px;
+  --scroll-fade-size: var(--space-24);
+  --check-size: 20px;
+  --switch-width: 40px;
+  --switch-height: 24px;
+  --switch-thumb: 16px;
+  --switch-edge: 2px;
+  --popover-gap: var(--space-8);
+  --popover-min-width: 200px;
+  --popover-max-height: 320px;
+  --dialog-width: 480px;
+  --dialog-width-wide: 720px;
+  --tooltip-max-width: 280px;
+  --field-max-width: 480px;
+  --flag-width: 20px;
+}

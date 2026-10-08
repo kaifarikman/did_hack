@@ -1,0 +1,32 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-element);
+  min-block-size: 0;
+}
+
+.scroll {
+  flex: 0 1 auto;
+  min-block-size: 0;
+}
+
+.body {
+  display: grid;
+  gap: var(--space-card);
+}
+
+.footer {
+  display: grid;
+  flex: none;
+  gap: var(--space-element);
+}
+
+.hint {
+  composes: secondaryText from "../../../shared/styles/compose.module.css";
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-element);
+}

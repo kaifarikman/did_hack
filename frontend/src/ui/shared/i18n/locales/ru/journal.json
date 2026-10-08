@@ -1,0 +1,37 @@
+{
+  "title": "Журнал исследования",
+  "listLabel": "Записи журнала",
+  "kind": {
+    "observation": "Наблюдение",
+    "hypothesis": "Гипотеза",
+    "experiment": "Эксперимент",
+    "decision": "Решение",
+    "outcome": "Вывод",
+    "error": "Ошибка"
+  },
+  "filter": {
+    "label": "Тип записи",
+    "all": "Все"
+  },
+  "chain": {
+    "expected": "Прогноз",
+    "observed": "Проверка",
+    "conclusion": "Вывод"
+  },
+  "empty": "Записей пока нет",
+  "showChain": "Показать цепочку гипотезы {{number}}",
+  "hideChain": "Показать все записи",
+  "loadMore": "Показать ранние записи ({{count}})",
+  "entries_one": "{{count}} запись",
+  "entries_few": "{{count}} записи",
+  "entries_many": "{{count}} записей",
+  "entries_other": "{{count}} записи",
+  "export": {
+    "action": "Экспорт журнала",
+    "exporting": "Выгружаем журнал…",
+    "failed": "Выгрузка не завершена. Файл не создан.",
+    "cancelled": "Выгрузка отменена: сменился прогон.",
+    "done": "Журнал выгружен"
+  },
+  "sequence": "№ {{number}}"
+}

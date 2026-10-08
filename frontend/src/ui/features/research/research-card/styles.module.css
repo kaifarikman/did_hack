@@ -1,0 +1,56 @@
+.card {
+  display: grid;
+  gap: var(--space-card);
+}
+
+.block {
+  --card-surface: var(--surface-card);
+  --card-padding: 0;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.hypothesis {
+  display: grid;
+  gap: var(--space-4);
+  animation: var(--motion-rise-in);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.title {
+  font-weight: var(--weight-regular);
+}
+
+.secondary {
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-sm);
+}
+
+.hazard {
+  animation: var(--motion-rise-in);
+}
+
+.hazard,
+.terrain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.terrain[data-regime]:not([data-regime="0"]) {
+  font-weight: var(--weight-medium);
+}
+
+.number {
+  font-variant-numeric: var(--font-numeric);
+}

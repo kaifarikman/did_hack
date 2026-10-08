@@ -1,0 +1,100 @@
+.button {
+  composes: controlText pressable from "../../styles/compose.module.css";
+  --button-surface: var(--action-primary);
+  --button-surface-hover: var(--action-primary-hover);
+  --button-surface-press: var(--action-primary-press);
+  --button-text: var(--text-on-action);
+  --button-radius: var(--radius-button);
+  --button-height: var(--control-height);
+  --button-padding: var(--space-24);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-block-size: var(--button-height);
+  padding-inline: var(--button-padding);
+  border-radius: var(--button-radius);
+  background-color: var(--button-surface);
+  color: var(--button-text);
+  font-weight: var(--weight-semibold);
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--button-height) - var(--target-min)) / 2);
+  inset-inline: 0;
+}
+
+.primary {
+  --button-surface: var(--action-primary);
+}
+
+.dark {
+  --button-surface: var(--action-dark);
+  --button-surface-hover: var(--action-dark-hover);
+  --button-surface-press: var(--action-dark-hover);
+  --button-text: var(--text-on-inverse);
+}
+
+.pill {
+  --button-radius: var(--radius-inner);
+}
+
+.ghost {
+  --button-surface: transparent;
+  --button-surface-hover: var(--action-ghost-hover);
+  --button-surface-press: var(--action-ghost-press);
+  --button-text: inherit;
+  --button-padding: var(--space-12);
+}
+
+.compact {
+  --button-height: var(--control-height-compact);
+  --button-padding: var(--space-16);
+}
+
+.iconOnly {
+  --button-padding: 0;
+
+  inline-size: var(--button-height);
+}
+
+.ghost[aria-expanded="true"] {
+  background-color: var(--button-surface-hover);
+}
+
+.full {
+  inline-size: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: var(--button-surface-hover);
+  }
+}
+
+.button:active:not(:disabled, [aria-disabled="true"]) {
+  background-color: var(--button-surface-press);
+  scale: var(--press-scale);
+}
+
+.button:disabled,
+.button[data-disabled="true"] {
+  --button-surface: var(--action-disabled);
+  --button-text: var(--text-disabled);
+}
+
+.button[aria-busy="true"] {
+  cursor: progress;
+}
+
+.label {
+  display: inline-block;
+}
+
+.spinner {
+  animation: var(--motion-spin);
+}

@@ -1,0 +1,31 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12) var(--space-24);
+  min-block-size: var(--target-min);
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-heading-sm);
+  line-height: var(--line-height-heading-sm);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-heading-sm);
+  font-feature-settings: var(--font-features);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+  min-inline-size: 0;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+}

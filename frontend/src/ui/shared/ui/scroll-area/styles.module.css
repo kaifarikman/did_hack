@@ -1,0 +1,91 @@
+.root {
+  --scroll-fade-surface: var(--surface-card);
+
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  min-block-size: 0;
+  max-block-size: 100%;
+  timeline-scope: --scroll-area;
+}
+
+.tint {
+  --scroll-fade-surface: var(--surface-tint);
+}
+
+.canvas {
+  --scroll-fade-surface: var(--surface-canvas);
+}
+
+.viewport {
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: var(--scroll-fade-size);
+  scroll-timeline: --scroll-area block;
+  transition: var(--transition-scrollbar);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .viewport {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-color) transparent;
+  }
+}
+
+.viewport::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+}
+
+.root[data-scrolling="true"] .viewport {
+  --scrollbar-thumb-color: var(--scrollbar-thumb);
+}
+
+.viewport:focus-visible {
+  --scrollbar-thumb-color: var(--scrollbar-thumb);
+  transition: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .viewport:hover {
+    --scrollbar-thumb-color: var(--scrollbar-thumb);
+  }
+}
+
+.fadeStart,
+.fadeEnd {
+  position: absolute;
+  inset-inline: 0;
+  block-size: var(--scroll-fade-size);
+  pointer-events: none;
+  transition: var(--transition-fade);
+}
+
+.fadeStart {
+  inset-block-start: 0;
+  background-image: linear-gradient(var(--scroll-fade-surface), transparent);
+}
+
+.fadeEnd {
+  inset-block-end: 0;
+  background-image: linear-gradient(transparent, var(--scroll-fade-surface));
+}
+
+.root[data-at-start="true"] .fadeStart,
+.root[data-at-end="true"] .fadeEnd {
+  opacity: 0;
+}
+
+@supports (animation-timeline: scroll()) {
+  .fadeStart {
+    animation: var(--motion-edge-fade-in);
+    animation-timeline: --scroll-area;
+    animation-range: 0 var(--scroll-fade-size);
+  }
+
+  .fadeEnd {
+    animation: var(--motion-edge-fade-out);
+    animation-timeline: --scroll-area;
+    animation-range: calc(100% - var(--scroll-fade-size)) 100%;
+  }
+}

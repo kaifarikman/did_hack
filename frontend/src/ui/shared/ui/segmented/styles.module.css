@@ -1,0 +1,82 @@
+.segmented {
+  --segment-gap: var(--space-4);
+  --segment-padding: var(--space-16);
+
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  justify-self: start;
+  gap: var(--segment-gap);
+  min-inline-size: 0;
+  padding: var(--segment-gap);
+  border: 0;
+  border-radius: var(--radius-inner);
+  background-color: var(--surface-tint);
+}
+
+.labelled {
+  display: inline-flex;
+  flex-direction: column;
+  justify-self: start;
+  gap: var(--space-8);
+  min-inline-size: 0;
+}
+
+.caption {
+  composes: fieldLabel from "../../styles/compose.module.css";
+}
+
+.compact {
+  --segment-padding: var(--space-12);
+}
+
+.indicator {
+  position: absolute;
+  inset-block: var(--segment-gap);
+  inset-inline: 0;
+  background-color: var(--surface-selected);
+  clip-path: inset(0 100% 0 0);
+  pointer-events: none;
+}
+
+.option {
+  composes: controlText pressable listItem from "../../styles/compose.module.css";
+  position: relative;
+  z-index: var(--layer-raised);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-inline-size: var(--target-min);
+  padding-inline: var(--segment-padding);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.option[data-checked="true"] {
+  color: var(--text-primary);
+}
+
+.option[data-disabled="true"] {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover:not([data-disabled="true"]) {
+    color: var(--text-primary);
+  }
+}
+
+.option:active:not([data-disabled="true"]) {
+  scale: var(--press-scale);
+}
+
+.option:has(:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.input {
+  composes: hiddenInput from "../../styles/choice.module.css";
+}

@@ -1,0 +1,167 @@
+{
+  "llmPlan": {
+    "plan_id": "plan-1",
+    "source": "llm",
+    "rationale": "Сначала сравниваем расход у базы с соседним участком, затем идём на сигнал образца и возвращаемся с запасом.",
+    "premises": [
+      "Сигнал образца растёт к северо-востоку от базы.",
+      "Запас батареи позволяет короткую сравнительную пробу."
+    ],
+    "fallback_reason": null,
+    "revision_reason": null,
+    "steps": [
+      {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.3,
+          "position_y_m": -0.5
+        },
+        "reason": "Измерить расход на соседнем участке.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "approach",
+        "target": {
+          "position_x_m": -0.25,
+          "position_y_m": 0.0
+        },
+        "reason": "Подойти к максимуму сигнала.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": "сигнал перестанет расти"
+      },
+      {
+        "kind": "collect",
+        "target": {
+          "position_x_m": -0.25,
+          "position_y_m": 0.25
+        },
+        "reason": "Подтвердить сбор образца.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "return",
+        "target": {
+          "position_x_m": -2.0,
+          "position_y_m": -0.5
+        },
+        "reason": "Вернуться по проверенному маршруту.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": "запас батареи ниже оценки возврата"
+      }
+    ]
+  },
+  "fallbackPlan": {
+    "plan_id": "plan-2",
+    "source": "fallback",
+    "rationale": "Алгоритмический резерв: идём на максимум сигнала, затем возвращаемся по кратчайшему пути.",
+    "premises": [],
+    "fallback_reason": "LLM не ответил за 8 с; план построен резервным алгоритмом.",
+    "revision_reason": null,
+    "steps": [
+      {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.3,
+          "position_y_m": -0.5
+        },
+        "reason": "Прогноз сигнала 0,31; исследуем ближайшую область.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "approach",
+        "target": {
+          "position_x_m": -0.25,
+          "position_y_m": 0.0
+        },
+        "reason": "Сигнал выше 0,8: приближаемся.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "collect",
+        "target": {
+          "position_x_m": -0.25,
+          "position_y_m": 0.25
+        },
+        "reason": "Максимум сигнала достигнут.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "return",
+        "target": {
+          "position_x_m": -2.0,
+          "position_y_m": -0.5
+        },
+        "reason": "Кратчайший путь до базы.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      }
+    ]
+  },
+  "hypotheses": {
+    "costlyProposed": {
+      "hypothesis_id": "fixture-hypothesis-1",
+      "kind": "costly_terrain",
+      "status": "proposed",
+      "center": {
+        "position_x_m": -1.7,
+        "position_y_m": -0.5
+      },
+      "prediction": "расход ≈ 2,1 усл. ед./м, подтверждение при ≥ 1,6",
+      "measurement": null,
+      "detection_id": null,
+      "experiment_id": null
+    },
+    "costlyTesting": {
+      "hypothesis_id": "fixture-hypothesis-1",
+      "kind": "costly_terrain",
+      "status": "testing",
+      "center": {
+        "position_x_m": -1.7,
+        "position_y_m": -0.5
+      },
+      "prediction": "расход ≈ 2,1 усл. ед./м, подтверждение при ≥ 1,6",
+      "measurement": "2,1 ± 0,5 усл. ед./м на 0,3 м",
+      "detection_id": null,
+      "experiment_id": "experiment-1"
+    },
+    "costlyConfirmed": {
+      "hypothesis_id": "fixture-hypothesis-1",
+      "kind": "costly_terrain",
+      "status": "confirmed",
+      "center": {
+        "position_x_m": -1.7,
+        "position_y_m": -0.5
+      },
+      "prediction": "расход ≈ 2,1 усл. ед./м, подтверждение при ≥ 1,6",
+      "measurement": "2,0 ± 0,2 усл. ед./м на 0,6 м",
+      "detection_id": null,
+      "experiment_id": "experiment-1"
+    },
+    "returnProposed": {
+      "hypothesis_id": "fixture-hypothesis-2",
+      "kind": "costly_terrain",
+      "status": "proposed",
+      "center": {
+        "position_x_m": -1.0,
+        "position_y_m": -0.5
+      },
+      "prediction": "на возврате расход ниже 2,0 усл. ед./м",
+      "measurement": null,
+      "detection_id": null,
+      "experiment_id": null
+    }
+  }
+}

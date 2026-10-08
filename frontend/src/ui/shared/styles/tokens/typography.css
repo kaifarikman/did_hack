@@ -1,0 +1,86 @@
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter Regular"),
+    local("Inter-Regular"),
+    url("/fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter Medium"),
+    local("Inter-Medium"),
+    url("/fonts/Inter-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter SemiBold"),
+    local("Inter-SemiBold"),
+    url("/fonts/Inter-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter Display";
+  src:
+    local("Inter Display Regular"),
+    local("InterDisplay-Regular"),
+    url("/fonts/InterDisplay-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-ui:
+    "GT Standard S", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-display:
+    "GT Standard L", "Inter Display", "Inter", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-features: "kern" 0;
+  --font-numeric: tabular-nums;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --font-size-caption: 12px;
+  --line-height-caption: 1.5;
+  --tracking-caption: 0.6px;
+  --font-size-body-sm: 14px;
+  --line-height-body-sm: 1.4;
+  --tracking-body-sm: 0.14px;
+  --font-size-body: 16px;
+  --line-height-body: 1.5;
+  --tracking-body: 0.16px;
+  --font-size-subheading: 20px;
+  --line-height-subheading: 1.3;
+  --tracking-subheading: -0.02px;
+  --font-size-heading-sm: 23px;
+  --line-height-heading-sm: 1.28;
+  --tracking-heading-sm: -0.023px;
+  --font-size-heading: 30px;
+  --line-height-heading: 1.25;
+  --tracking-heading: -0.03px;
+  --font-size-heading-lg: 40px;
+  --line-height-heading-lg: 1.2;
+  --tracking-heading-lg: -0.04px;
+  --font-size-display-sm: 56px;
+  --line-height-display-sm: 1.1;
+  --tracking-display-sm: 0px;
+  --font-size-display: 120px;
+  --line-height-display: 1.1;
+  --tracking-display: 0px;
+}

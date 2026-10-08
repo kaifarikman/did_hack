@@ -1,0 +1,168 @@
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-linear: linear;
+
+  --dur-instant: 80ms;
+  --dur-press: 140ms;
+  --dur-fast: 160ms;
+  --dur-fast-exit: 110ms;
+  --dur-base: 200ms;
+  --dur-exit: 140ms;
+  --dur-panel: 260ms;
+  --dur-panel-exit: 180ms;
+  --dur-slow: 320ms;
+  --dur-draw: 900ms;
+  --dur-breathe: 2600ms;
+  --dur-spin: 800ms;
+
+  --delay-skeleton: 200ms;
+  --delay-spinner: 400ms;
+  --hold-skeleton: 300ms;
+  --stagger: 40ms;
+  --reduced-fade: 160ms;
+  --reduced-fade-exit: 110ms;
+  --view-transition-limit: 900ms;
+  --delay-tooltip: 400ms;
+  --delay-hover-grace: 100ms;
+  --delay-settle: 220ms;
+  --delay-scrollbar-hide: 800ms;
+  --typeahead-reset: 500ms;
+
+  --press-scale: 0.97;
+  --press-scale-surface: 0.99;
+  --enter-scale: 0.95;
+  --mark-scale: 1.6;
+  --shift-rise: 6px;
+  --shift-slide: 8px;
+  --blur-soft: 2px;
+  --shift-popover: 4px;
+  --origin-shift: 0px;
+
+  --transition-control:
+    background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+  --transition-control-press:
+    background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), scale var(--dur-press) var(--ease-out);
+  --transition-fade: opacity var(--dur-base) var(--ease-out);
+  --transition-meter: scale var(--dur-base) var(--ease-linear);
+  --transition-indicator: transform var(--dur-base) var(--ease-out);
+  --transition-thumb:
+    transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
+    scale var(--dur-instant) var(--ease-out);
+  --transition-thumb-press:
+    transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
+    scale var(--dur-press) var(--ease-out);
+  --transition-draw: stroke-dashoffset var(--dur-fast) var(--ease-out);
+  --transition-turn: transform var(--dur-base) var(--ease-out);
+  --transition-mark-in:
+    opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  --transition-mark-out:
+    opacity var(--dur-fast-exit) var(--ease-out), transform var(--dur-fast-exit) var(--ease-out);
+  --transition-layer-in:
+    opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  --transition-layer-out:
+    opacity var(--dur-fast-exit) var(--ease-out), transform var(--dur-fast-exit) var(--ease-out);
+  --transition-reveal-in:
+    opacity var(--dur-base) var(--ease-out), clip-path var(--dur-base) var(--ease-out);
+  --transition-reveal-out:
+    opacity var(--dur-exit) var(--ease-out), clip-path var(--dur-exit) var(--ease-out);
+  --transition-details-in:
+    opacity var(--dur-panel) var(--ease-out), clip-path var(--dur-panel) var(--ease-out);
+  --transition-details-out:
+    opacity var(--dur-panel-exit) var(--ease-out),
+    clip-path var(--dur-panel-exit) var(--ease-out);
+  /* biome-ignore lint/correctness/noMissingVarFunction: transition of a registered custom property */
+  --transition-scrollbar: --scrollbar-thumb-color var(--dur-base) var(--ease-out);
+
+  --motion-fade-in: kf-fade-in var(--dur-base) var(--ease-out) both;
+  --motion-fade-out: kf-fade-out var(--dur-exit) var(--ease-out) both;
+  --motion-scale-in: kf-scale-in var(--dur-base) var(--ease-out) both;
+  --motion-scale-out: kf-scale-out var(--dur-exit) var(--ease-out) both;
+  --motion-slide-in: kf-slide-in var(--dur-slow) var(--ease-out) both;
+  --motion-rise-in: kf-rise-in var(--dur-slow) var(--ease-out) both;
+  --motion-pop-in: kf-pop-in var(--dur-fast) var(--ease-out) both;
+  --motion-swap-in: kf-swap-in var(--dur-fast) var(--ease-out) both;
+  --motion-swap-out: kf-swap-out var(--dur-fast-exit) var(--ease-out) both;
+  --motion-pulse: kf-pulse var(--dur-breathe) var(--ease-in-out) infinite;
+  --motion-spin: kf-spin var(--dur-spin) var(--ease-linear) infinite;
+  --motion-shimmer: kf-shimmer var(--dur-breathe) var(--ease-in-out) infinite;
+  --motion-commit: kf-commit var(--dur-slow) var(--ease-out) both;
+  --motion-verdict: kf-verdict var(--dur-base) var(--ease-out) both;
+  --motion-verdict-emphatic: kf-verdict-emphatic var(--dur-slow) var(--ease-out) both;
+  --motion-edge-fade-in: kf-fade-in auto linear both;
+  --motion-edge-fade-out: kf-fade-out auto linear both;
+}
+
+@property --scrollbar-thumb-color {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 1ms;
+    --dur-press: 1ms;
+    --dur-fast: 1ms;
+    --dur-fast-exit: 1ms;
+    --dur-base: 1ms;
+    --dur-exit: 1ms;
+    --dur-panel: 1ms;
+    --dur-panel-exit: 1ms;
+    --dur-slow: 1ms;
+    --dur-draw: 1ms;
+    --dur-breathe: 1ms;
+    --dur-spin: 1ms;
+    --stagger: 0ms;
+    --press-scale: 1;
+    --press-scale-surface: 1;
+    --enter-scale: 1;
+    --mark-scale: 1;
+    --shift-rise: 0px;
+    --shift-slide: 0px;
+    --blur-soft: 0px;
+    --shift-popover: 0px;
+    --motion-pulse: none;
+    --motion-spin: none;
+    --motion-shimmer: none;
+  }
+
+  [data-motion="fade"] {
+    --motion-scale-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-slide-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-rise-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-pop-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-swap-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-swap-out: kf-fade-out var(--reduced-fade-exit) var(--ease-out) both;
+    --motion-fade-in: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-fade-out: kf-fade-out var(--reduced-fade-exit) var(--ease-out) both;
+    --motion-scale-out: kf-fade-out var(--reduced-fade-exit) var(--ease-out) both;
+    --transition-mark-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-layer-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-reveal-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-details-out: opacity var(--reduced-fade-exit) var(--ease-out);
+    --transition-mark-in: opacity var(--reduced-fade) var(--ease-out);
+    --transition-layer-in: opacity var(--reduced-fade) var(--ease-out);
+    --transition-reveal-in: opacity var(--reduced-fade) var(--ease-out);
+    --transition-details-in: opacity var(--reduced-fade) var(--ease-out);
+    --motion-verdict: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+    --motion-verdict-emphatic: kf-fade-in var(--reduced-fade) var(--ease-out) both;
+  }
+}
+
+[data-instant="true"] {
+  --motion-pop-in: none;
+  --transition-turn: none;
+  --transition-draw: none;
+  --transition-thumb: none;
+  --transition-thumb-press: none;
+  --transition-mark-in: none;
+  --transition-mark-out: none;
+  --transition-layer-in: none;
+  --transition-layer-out: none;
+  --transition-details-in: none;
+  --transition-details-out: none;
+}

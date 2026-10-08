@@ -1,0 +1,25 @@
+{
+  "title": "Team",
+  "outcome": {
+    "running": "Team is running",
+    "success": "Team succeeded",
+    "partial": "Partial success",
+    "failed": "Team failed",
+    "stopped": "Team stopped",
+    "runningAlone": "Running without the partner"
+  },
+  "robot": {
+    "lost": "Lost",
+    "reservation": "Reserved ({{x}}; {{y}}) m",
+    "noReservation": "No reservation",
+    "name": "Robot {{number}}"
+  },
+  "coordination": {
+    "on": "Coordination on",
+    "off": "Coordination off"
+  },
+  "samples": "Team samples: {{count}}",
+  "column": {
+    "battery": "Battery"
+  }
+}

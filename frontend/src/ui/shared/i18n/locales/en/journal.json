@@ -1,0 +1,35 @@
+{
+  "title": "Research journal",
+  "listLabel": "Journal entries",
+  "kind": {
+    "observation": "Observation",
+    "hypothesis": "Hypothesis",
+    "experiment": "Experiment",
+    "decision": "Decision",
+    "outcome": "Outcome",
+    "error": "Error"
+  },
+  "filter": {
+    "label": "Entry type",
+    "all": "All"
+  },
+  "chain": {
+    "expected": "Prediction",
+    "observed": "Observation",
+    "conclusion": "Conclusion"
+  },
+  "empty": "No entries yet",
+  "showChain": "Show the chain of hypothesis {{number}}",
+  "hideChain": "Show all entries",
+  "loadMore": "Show earlier entries ({{count}})",
+  "entries_one": "{{count}} entry",
+  "entries_other": "{{count}} entries",
+  "export": {
+    "action": "Export journal",
+    "exporting": "Exporting the journal…",
+    "failed": "Export did not finish. No file was created.",
+    "cancelled": "Export cancelled: the run changed.",
+    "done": "Journal exported"
+  },
+  "sequence": "#{{number}}"
+}

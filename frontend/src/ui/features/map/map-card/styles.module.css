@@ -1,0 +1,43 @@
+.card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-element);
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+.surface {
+  position: relative;
+  min-block-size: 18rem;
+  border-radius: var(--radius-inner);
+  background: var(--surface-tint);
+  overflow: hidden;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.surface[data-stale="true"] {
+  opacity: 0.55;
+}
+
+.skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: var(--layer-raised);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-24);
+  background: var(--surface-tint);
+}
+
+.overlay[data-state="open"] {
+  animation: var(--motion-fade-in);
+}
+
+.overlay[data-state="closed"] {
+  animation: var(--motion-fade-out);
+}

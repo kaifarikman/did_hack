@@ -1,5 +1,6 @@
-import { ApiError, NetworkError } from "../../application/errors";
-import type { MissionGateway } from "../../application/ports";
+import { ApiError, NetworkError, RequestTimeoutError } from "../../application/errors"
+import { EXPORT_PAGE_SIZE } from "../../application/exportJournal"
+import type { MissionGateway } from "../../application/ports"
 import type {
   HealthStatus,
   JournalEntry,
@@ -8,200 +9,197 @@ import type {
   MissionSnapshot,
   StartRunRequest,
   StopRunRequest,
-} from "../../domain/contract";
-import { isActiveStatus } from "../../domain/presentation";
-import {
-  buildScript,
-  fixtureMap,
-  idleSnapshot,
-  OUTAGE_FRAME_INDEX,
-  OUTAGE_REQUEST_COUNT,
-  type FixtureScenarioName,
-  type FixtureScript,
-} from "./scenarios";
+} from "../../domain/contract"
+import { ACTIVE_STATUSES } from "../../domain/contract"
+import { buildScript, DEFAULT_FIXTURE_SCENARIO, type FixtureScenarioName } from "./catalog"
+import { journalEntryFrom } from "./content"
+import gatewayContent from "./examples/content/gateway.json"
+import { FixtureRun } from "./fixtureRun"
+import { type FixtureScript, healthAt, IDLE_FRAME_INDEX, mapAt } from "./script"
 
 export interface FixtureControls {
-  getScenario(): FixtureScenarioName;
-  setScenario(name: FixtureScenarioName): void;
+  getScenario(): FixtureScenarioName
+  setScenario(name: FixtureScenarioName): void
 }
 
-interface FixtureRun {
-  runId: string;
-  seed: number;
-  scenario: FixtureScenarioName;
-  script: FixtureScript;
-  /** Индекс кадра, который будет выдан следующим запросом состояния. */
-  nextFrame: number;
-  revision: number;
-  stopPhase: "none" | "requested" | "stopping" | "stopped";
-  lastSnapshot: MissionSnapshot;
-  extraEntries: Array<Omit<JournalEntry, "sequence">>;
-  outageTriggered: boolean;
+export interface FixtureGatewayOptions {
+  wait?: (delayMs: number) => Promise<void>
 }
 
-const FIXTURE_HEALTH: HealthStatus = {
-  status: "ready",
-  ros_connected: true,
-  judge_mode: "local",
-  llm_available: true,
-  supported_scenarios: ["easy"],
-  supported_map_modes: ["static"],
-  supported_robot_counts: [1],
-};
+const EXPORT_PAGE_DELAY_MS = 900
+const MAX_JOURNAL_LIMIT = 200
+const MESSAGES = gatewayContent.errors
+const STOP_DECISION = journalEntryFrom(gatewayContent.stopDecision)
 
 function clone<T>(value: T): T {
-  return structuredClone(value);
+  return structuredClone(value)
 }
 
-/** Демо-источник: воспроизводит сценарий по кадрам, один кадр на каждый запрос состояния. */
+function waitFor(delayMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, delayMs))
+}
+
 export class FixtureMissionGateway implements MissionGateway, FixtureControls {
-  private scenario: FixtureScenarioName = "success";
-  private runCounter = 0;
-  private run: FixtureRun | null = null;
-  private outageRemaining = 0;
-  private startRejectionsLeft = 0;
-  private readonly startedRequests = new Map<string, MissionSnapshot>();
+  private scenario: FixtureScenarioName = DEFAULT_FIXTURE_SCENARIO
+  private script: FixtureScript = buildScript(DEFAULT_FIXTURE_SCENARIO)
+  private runCounter = 0
+  private run: FixtureRun | null = null
+  private healthCalls = 0
+  private outageRemaining = 0
+  private startRejectionsLeft = 0
+  private stopTimeoutsLeft = 0
+  private exportFailuresLeft = 0
+  private readonly startedRequests = new Map<string, MissionSnapshot>()
+  private readonly wait: (delayMs: number) => Promise<void>
+
+  constructor(options: FixtureGatewayOptions = {}) {
+    this.wait = options.wait ?? waitFor
+    this.setScenario(DEFAULT_FIXTURE_SCENARIO)
+  }
 
   getScenario(): FixtureScenarioName {
-    return this.scenario;
+    return this.scenario
   }
 
   setScenario(name: FixtureScenarioName): void {
-    this.scenario = name;
-    this.startRejectionsLeft = name === "start_rejected" ? 1 : 0;
+    this.scenario = name
+    this.script = buildScript(name)
+    this.healthCalls = 0
+    const { behavior } = this.script
+    this.startRejectionsLeft = behavior.startRejections
+    this.stopTimeoutsLeft = behavior.stopTimeouts
+    this.exportFailuresLeft = behavior.exportFailures
+  }
+
+  private currentHealth(): HealthStatus | null {
+    return healthAt(this.script, this.healthCalls - 1)
   }
 
   async getHealth(): Promise<HealthStatus> {
-    return clone(FIXTURE_HEALTH);
+    if (this.outageRemaining > 0) throw new NetworkError(gatewayContent.outage)
+    this.healthCalls += 1
+    const health = this.currentHealth()
+    if (health === null) throw new NetworkError(gatewayContent.outage)
+    return clone(health)
   }
 
   async getMap(): Promise<MapData> {
-    return clone(fixtureMap);
+    const script = this.run?.script ?? this.script
+    const map = mapAt(script, this.run?.deliveredFrame ?? IDLE_FRAME_INDEX)
+    if (map === null) throw new ApiError(404, "map_not_ready", MESSAGES.mapNotReady, true)
+    return clone(map)
   }
 
   async getState(): Promise<MissionSnapshot> {
-    const run = this.run;
-    if (run === null) return clone(idleSnapshot);
+    const run = this.run
+    if (run === null) return clone(this.script.idle)
     if (this.outageRemaining > 0) {
-      this.outageRemaining -= 1;
-      throw new NetworkError("Демо: имитация разрыва связи с backend");
+      this.outageRemaining -= 1
+      throw new NetworkError(gatewayContent.outage)
     }
-    if (run.scenario === "disconnect" && !run.outageTriggered && run.nextFrame === OUTAGE_FRAME_INDEX) {
-      run.outageTriggered = true;
-      this.outageRemaining = OUTAGE_REQUEST_COUNT - 1;
-      throw new NetworkError("Демо: имитация разрыва связи с backend");
+    const outage = run.script.behavior.outage
+    if (outage !== null && !run.outageTriggered && run.pendingFrame === outage.atFrame) {
+      run.outageTriggered = true
+      this.outageRemaining = outage.requests - 1
+      throw new NetworkError(gatewayContent.outage)
     }
-    return clone(this.nextSnapshot(run));
-  }
-
-  private nextSnapshot(run: FixtureRun): MissionSnapshot {
-    if (run.stopPhase === "requested") {
-      run.stopPhase = "stopping";
-      return this.emit(run, { ...run.lastSnapshot, status: "stopping" });
-    }
-    if (run.stopPhase === "stopping" || run.stopPhase === "stopped") {
-      run.stopPhase = "stopped";
-      return this.emit(run, { ...run.lastSnapshot, status: "stopped", current_goal: null, planned_path: [] }, true);
-    }
-    const frame = run.script.frames[Math.min(run.nextFrame, run.script.frames.length - 1)];
-    if (frame === undefined) return run.lastSnapshot;
-    const atEnd = run.nextFrame >= run.script.frames.length - 1;
-    if (!atEnd) run.nextFrame += 1;
-    return this.emit(run, frame, atEnd);
-  }
-
-  private emit(run: FixtureRun, frame: MissionSnapshot, repeat = false): MissionSnapshot {
-    if (!repeat || run.lastSnapshot.status !== frame.status) run.revision += 1;
-    const snapshot: MissionSnapshot = {
-      ...frame,
-      run_id: run.runId,
-      revision: run.revision,
-      scenario: "easy",
-      seed: run.seed,
-    };
-    run.lastSnapshot = snapshot;
-    return snapshot;
+    return clone(run.next())
   }
 
   async startRun(request: StartRunRequest): Promise<MissionSnapshot> {
-    const known = this.startedRequests.get(request.request_id);
-    if (known !== undefined) return clone(known);
+    const known = this.startedRequests.get(request.request_id)
+    if (known !== undefined) return clone(known)
     if (!Number.isInteger(request.seed)) {
-      throw new ApiError(422, "invalid_request", "seed должен быть целым числом", false);
+      throw new ApiError(422, "invalid_request", MESSAGES.invalidSeed, false)
     }
-    if (this.startRejectionsLeft > 0) {
-      this.startRejectionsLeft -= 1;
-      throw new ApiError(503, "environment_not_ready", "Ожидаются наблюдения ROS.", true);
+    const health = this.currentHealth() ?? healthAt(this.script, 0)
+    const environmentReady =
+      health !== null && health.status === "ready" && health.ros_connected
+    if (this.startRejectionsLeft > 0 || !environmentReady) {
+      this.startRejectionsLeft = Math.max(this.startRejectionsLeft - 1, 0)
+      throw new ApiError(503, "environment_not_ready", MESSAGES.environmentNotReady, true)
     }
-    if (this.run !== null && isActiveStatus(this.run.lastSnapshot.status)) {
-      throw new ApiError(409, "run_active", "Другой прогон уже выполняется.", false);
+    if (this.run !== null && ACTIVE_STATUSES.includes(this.run.lastSnapshot.status)) {
+      throw new ApiError(409, "run_active", MESSAGES.runActive, false)
     }
-    this.runCounter += 1;
-    const script = buildScript(this.scenario);
-    this.run = {
+    this.runCounter += 1
+    this.run = new FixtureRun({
       runId: `fixture-run-${String(this.runCounter).padStart(3, "0")}`,
       seed: request.seed,
-      scenario: this.scenario,
-      script,
-      nextFrame: 0,
-      revision: 0,
-      stopPhase: "none",
-      lastSnapshot: clone(idleSnapshot),
-      extraEntries: [],
-      outageTriggered: false,
-    };
-    const snapshot = this.nextSnapshot(this.run);
-    this.startedRequests.set(request.request_id, snapshot);
-    return clone(snapshot);
+      script: this.script,
+    })
+    const snapshot = this.run.next()
+    this.startedRequests.set(request.request_id, snapshot)
+    return clone(snapshot)
   }
 
   async stopRun(runId: string, _request: StopRunRequest): Promise<MissionSnapshot> {
-    const run = this.run;
+    const run = this.run
     if (run === null || run.runId !== runId) {
-      throw new ApiError(run === null ? 404 : 409, "run_not_current", "Это не текущий прогон.", false);
+      throw new ApiError(
+        run === null ? 404 : 409,
+        "run_not_current",
+        MESSAGES.runNotCurrent,
+        false,
+      )
     }
-    if (isActiveStatus(run.lastSnapshot.status) && run.stopPhase === "none") {
-      run.stopPhase = "requested";
-      run.extraEntries.push({
-        simulation_time_s: run.lastSnapshot.simulation_time_s,
-        kind: "decision",
-        title: "Остановка по запросу пользователя",
-        detail: "Исполнитель прерывает миссию; успех возврата не засчитывается.",
-        hypothesis_id: null,
-        expected: null,
-        observed: null,
-        conclusion: null,
-        experiment_id: null,
-        detection_id: null,
-        plan_id: null,
-        evidence: [],
-      });
+    if (this.stopTimeoutsLeft > 0) {
+      this.stopTimeoutsLeft -= 1
+      throw new RequestTimeoutError(gatewayContent.stopTimeout)
     }
-    return clone(run.lastSnapshot);
+    if (run.requestStop()) {
+      run.addEntry({ ...STOP_DECISION, simulation_time_s: run.lastSnapshot.simulation_time_s })
+    }
+    return clone(run.lastSnapshot)
   }
 
-  async getJournalPage(runId: string, afterSequence: number, limit: number): Promise<JournalPage> {
-    const run = this.run;
+  async getJournalPage(
+    runId: string,
+    afterSequence: number,
+    limit: number,
+  ): Promise<JournalPage> {
+    const run = this.run
     if (run === null || run.runId !== runId) {
-      throw new ApiError(404, "run_not_found", "Неизвестный прогон.", false);
+      throw new ApiError(404, "run_not_found", MESSAGES.runNotFound, false)
     }
-    if (!Number.isInteger(afterSequence) || afterSequence < 0 || limit < 1 || limit > 200) {
-      throw new ApiError(422, "invalid_params", "Неверные параметры журнала.", false);
+    if (
+      !Number.isInteger(afterSequence) ||
+      afterSequence < 0 ||
+      limit < 1 ||
+      limit > MAX_JOURNAL_LIMIT
+    ) {
+      throw new ApiError(422, "invalid_params", MESSAGES.invalidParams, false)
     }
-    const deliveredFrame = run.nextFrame - 1;
-    const scripted = run.script.journal
-      .filter((item) => item.atFrame <= deliveredFrame)
-      .map((item) => item.entry);
-    const extras = run.extraEntries;
-    const all: JournalEntry[] = [...scripted, ...extras].map((entry, index) => ({ ...entry, sequence: index + 1 }));
-    const matching = all.filter((entry) => entry.sequence > afterSequence);
-    const entries = matching.slice(0, limit);
-    const last = entries[entries.length - 1];
+    await this.throttleExport(run, afterSequence, limit)
+    if (run.consumeJournalFailure()) {
+      throw new NetworkError(MESSAGES.journalUnavailable)
+    }
+    return this.page(run, afterSequence, limit)
+  }
+
+  private async throttleExport(
+    run: FixtureRun,
+    afterSequence: number,
+    limit: number,
+  ): Promise<void> {
+    if (limit !== EXPORT_PAGE_SIZE) return
+    if (run.script.behavior.slowExport) await this.wait(EXPORT_PAGE_DELAY_MS)
+    if (afterSequence > 0 && this.exportFailuresLeft > 0) {
+      this.exportFailuresLeft -= 1
+      throw new ApiError(503, "journal_unavailable", MESSAGES.journalUnavailable, true)
+    }
+  }
+
+  private page(run: FixtureRun, afterSequence: number, limit: number): JournalPage {
+    const all: JournalEntry[] = run.visibleEntries()
+    const matching = all.filter((entry) => entry.sequence > afterSequence)
+    const entries = matching.slice(0, limit)
+    const last = entries[entries.length - 1]
     return {
-      run_id: runId,
+      run_id: run.runId,
       entries: clone(entries),
       next_sequence: last === undefined ? afterSequence : last.sequence,
       has_more: matching.length > entries.length,
-    };
+    }
   }
 }
