@@ -41,3 +41,44 @@ def is_penalty_event(payload: str) -> bool:
     except (TypeError, ValueError):
         return False
     return isinstance(event, dict) and event.get("type") in PENALTY_EVENT_TYPES
+
+
+class PoseHistory:
+    """Короткая история поз odom по времени симуляции: scan проецируется позой своего момента.
+
+    Проекция последней позой во время поворота сдвигает дальние попадания стены в свободное
+    пространство, и они выглядят как новое препятствие.
+    """
+
+    def __init__(self, horizon_s: float = 1.0, tolerance_s: float = 0.05) -> None:
+        self._horizon_s = horizon_s
+        self._tolerance_s = tolerance_s
+        self._samples: list[tuple[float, Pose]] = []
+
+    def add(self, time_s: float, pose: Pose) -> None:
+        if self._samples and time_s < self._samples[-1][0]:
+            self._samples.clear()  # время пошло назад: новый прогон или перезапуск симуляции
+        self._samples.append((time_s, pose))
+        while self._samples and self._samples[0][0] < time_s - self._horizon_s:
+            self._samples.pop(0)
+
+    def clear(self) -> None:
+        self._samples.clear()
+
+    def at(self, time_s: float) -> Pose | None:
+        """Интерполированная поза; None, если момент вне истории дальше допуска."""
+        samples = self._samples
+        if not samples or time_s < samples[0][0] - self._tolerance_s or time_s > samples[-1][0] + self._tolerance_s:
+            return None
+        if time_s <= samples[0][0]:
+            return samples[0][1]
+        for (earlier_s, earlier), (later_s, later) in zip(samples, samples[1:]):
+            if earlier_s <= time_s <= later_s:
+                fraction = 0.0 if later_s == earlier_s else (time_s - earlier_s) / (later_s - earlier_s)
+                turn = math.atan2(math.sin(later.heading_rad - earlier.heading_rad),
+                                  math.cos(later.heading_rad - earlier.heading_rad))
+                heading = earlier.heading_rad + fraction * turn
+                return Pose(earlier.x_m + fraction * (later.x_m - earlier.x_m),
+                            earlier.y_m + fraction * (later.y_m - earlier.y_m),
+                            math.atan2(math.sin(heading), math.cos(heading)))
+        return samples[-1][1]

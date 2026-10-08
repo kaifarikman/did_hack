@@ -12,3 +12,6 @@ __pycache__/
 
 # Linked working copies
 .claude/worktrees/
+
+# Поминутные кадры демо-прогонов: сырьё для backup-demo.mp4, ~100 МБ
+artifacts/defense/**/frames/

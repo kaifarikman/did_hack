@@ -1,0 +1,37 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "probe": "RosBridge.begin_finish over live ROS service, delayed reply proxy, real supervisor reset",
+  "old_generation": 0,
+  "judge_result_before_delay": {
+    "success": true,
+    "message": "finished"
+  },
+  "reply_held": true,
+  "pending_before_reset": true,
+  "supervisor_reset": {
+    "seed": 7,
+    "scenario": "easy",
+    "map_mode": "static",
+    "robots": 1,
+    "generation": 1,
+    "state": "ready"
+  },
+  "bridge_generation_after_reset": 1,
+  "operation_poll_after_generation_switch": {
+    "success": false,
+    "outcome": "unknown",
+    "message": "ответ судьи пришёл из другого поколения"
+  },
+  "proxy_released_late_response": true,
+  "operation_poll_after_release": {
+    "success": false,
+    "outcome": "unknown",
+    "message": "ответ судьи пришёл из другого поколения"
+  },
+  "limits": [
+    "The probe exercised RosBridge directly with a real ROS judge finish service behind a temporary delaying proxy; it did not run the mission controller through its natural return path.",
+    "Controller Stop and stale-observation handling while an operation is pending are covered by backend tests."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "window_s": 5.0,
+  "odom_messages": 236,
+  "odom_start": [
+    1.0596213074765315,
+    0.0003387996177804683
+  ],
+  "odom_end": [
+    1.0596213074768335,
+    0.0003387996177805101
+  ],
+  "displacement_m": 3.0198066559045473e-13,
+  "command_messages": {
+    "/cmd_vel": 99,
+    "/agent/cmd_vel": 99
+  },
+  "last_commands": {
+    "/cmd_vel": {
+      "linear_mps": 0.0,
+      "angular_radps": 0.0
+    },
+    "/agent/cmd_vel": {
+      "linear_mps": 0.0,
+      "angular_radps": 0.0
+    }
+  },
+  "still": true
+}

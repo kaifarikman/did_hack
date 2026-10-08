@@ -37,7 +37,12 @@ def make_controller(world: SimWorld, clock: FakeClock, journal=None, planner=Non
     hazards = HazardMap()
     ports = ControllerPorts(
         observations=world,
-        motion=MotionExecutor(world, StuckDetector(), settings.arrival_tolerance_m),
+        motion=MotionExecutor(
+            world, StuckDetector(settings.stuck_window_s, settings.stuck_min_progress_m),
+            settings.arrival_tolerance_m,
+            settings.path_deviation_tolerance_m, settings.path_deviation_hysteresis_m,
+            settings.path_deviation_confirmation_s, settings.path_replan_cooldown_s,
+        ),
         judge=judge or world,
         simulation=simulation or world,
         planner=planner or ResilientPlanner(None, FallbackPlanner(settings)),

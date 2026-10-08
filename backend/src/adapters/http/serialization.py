@@ -9,7 +9,7 @@ from domain.grid import OccupancyGrid
 from domain.journal import JournalEntry
 from domain.mission import MissionSnapshot
 
-SCHEMA_VERSION = "1.1"  # 1.1: совместимые поля плана, исследования и текста миссии
+SCHEMA_VERSION = "1.4"  # 1.4: task_type и navigation; 1.3: robot_id, typed revisions и per-source freshness
 
 
 def _number(value: float | None) -> float | None:
@@ -23,12 +23,29 @@ def point_json(point: Point) -> dict:
     return {"position_x_m": point.x_m, "position_y_m": point.y_m}
 
 
+def freshness_json(freshness) -> dict:
+    return {
+        source: {"age_s": _number(getattr(freshness, source).age_s),
+                 "fresh": getattr(freshness, source).fresh}
+        for source in ("odom", "scan", "battery", "clock")
+    }
+
+
 def snapshot_json(snapshot: MissionSnapshot) -> dict:
     pose, goal, error = snapshot.robot_pose, snapshot.current_goal, snapshot.last_error
     return {
         "schema_version": SCHEMA_VERSION,
         "run_id": snapshot.run_id,
+        "robot_id": snapshot.robot_id,
+        "generation": snapshot.generation,
+        "observation_sequence": snapshot.observation_sequence,
+        "sample_signal_age_s": _number(snapshot.sample_signal_age_s),
         "revision": snapshot.revision,
+        "route_revision": snapshot.route_revision,
+        "plan_revision": snapshot.plan_revision,
+        "map_revision": snapshot.map_revision,
+        "model_revision": snapshot.model_revision,
+        "freshness": freshness_json(snapshot.freshness),
         "status": snapshot.status.value,
         "scenario": snapshot.scenario,
         "seed": snapshot.seed,
@@ -71,6 +88,21 @@ def snapshot_json(snapshot: MissionSnapshot) -> dict:
         "plan": plan_json(snapshot),
         "research": research_json(snapshot),
         "team": team_json(snapshot),
+        "task_type": snapshot.task_type.value,
+        "navigation": navigation_json(snapshot),
+    }
+
+
+def navigation_json(snapshot: MissionSnapshot) -> dict | None:
+    view = snapshot.navigation
+    if view is None:
+        return None
+    return {
+        "target": {**point_json(view.target.point), "map_id": view.target.map_id},
+        "phase": view.phase.value,
+        "target_reached": view.target_reached,
+        "target_reached_at_s": _number(view.target_reached_at_s),
+        "arrival_tolerance_m": view.arrival_tolerance_m,
     }
 
 
@@ -98,6 +130,7 @@ def team_json(snapshot: MissionSnapshot) -> dict | None:
                 "trajectory": [point_json(p) for p in robot.trajectory],
                 "planned_path": [point_json(p) for p in robot.planned_path],
                 "reservation": None if robot.reservation is None else point_json(robot.reservation),
+                "freshness": freshness_json(robot.freshness),
                 "last_error": None if robot.last_error is None else {
                     "code": robot.last_error.code, "message": robot.last_error.message,
                     "retryable": robot.last_error.retryable,

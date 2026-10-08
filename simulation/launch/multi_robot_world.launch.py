@@ -22,7 +22,9 @@ def _robot_actions(context, *_args, **_kwargs):
     from launch.substitutions import LaunchConfiguration
     count = int(LaunchConfiguration("robot_count").perform(context))
     gazebo_share = get_package_share_directory("turtlebot3_gazebo")
-    with open(os.path.join(gazebo_share, "models", "turtlebot3_burger", "model.sdf"), encoding="utf-8") as stream:
+    simulation_dir = os.environ.get("SIMULATION_DIR", "/workspace/simulation")
+    with open(os.path.join(simulation_dir, "models", "turtlebot3_burger_contact", "model.sdf"),
+              encoding="utf-8") as stream:
         source_sdf = stream.read()
     with open(os.path.join(gazebo_share, "urdf", "turtlebot3_burger.urdf"), encoding="utf-8") as stream:
         urdf = stream.read()
@@ -49,7 +51,8 @@ def generate_launch_description():
     from launch.actions import DeclareLaunchArgument
     gazebo_share = get_package_share_directory("turtlebot3_gazebo")
     ros_gz_sim = get_package_share_directory("ros_gz_sim")
-    world = os.path.join(gazebo_share, "worlds", "turtlebot3_world.world")
+    simulation_dir = os.environ.get("SIMULATION_DIR", "/workspace/simulation")
+    world = os.path.join(simulation_dir, "worlds", "turtlebot3_world_contact.world")
     gzserver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(ros_gz_sim, "launch", "gz_sim.launch.py")),
         launch_arguments={"gz_args": ["-r -s -v2 ", world], "on_exit_shutdown": "true"}.items())

@@ -1,0 +1,173 @@
+{
+  "generated_at": "2026-10-08T12:31:58+00:00",
+  "source": "offline A* on public map; hidden samples not read",
+  "map_id": "map-33a36ebf",
+  "map_yaml": "simulation/judge/data/map.yaml",
+  "map_pgm_sha256": "57eaad9291fcf02e068cbcd1874990694838a74a3304755bae1bd7b726c4522f",
+  "base": [
+    -2.0,
+    -0.5
+  ],
+  "clearance_m": 0.21000000000000002,
+  "max_linear_mps": 0.15,
+  "arrival_tolerance_m": 0.12,
+  "target_margin_m": 0.1,
+  "min_obstacle_distance_m": 0.5,
+  "candidate_count": 23,
+  "targets": [
+    {
+      "target": [
+        0.25,
+        1.75
+      ],
+      "to_target": {
+        "waypoints": [
+          [
+            -1.025,
+            0.625
+          ],
+          [
+            0.175,
+            1.725
+          ],
+          [
+            0.25,
+            1.75
+          ]
+        ],
+        "length_m": 3.196
+      },
+      "to_base": {
+        "waypoints": [
+          [
+            -0.625,
+            1.025
+          ],
+          [
+            -1.925,
+            -0.375
+          ],
+          [
+            -2.0,
+            -0.5
+          ]
+        ],
+        "length_m": 3.193
+      },
+      "estimated_round_trip_s": 60.6,
+      "id": "T1"
+    },
+    {
+      "target": [
+        -0.75,
+        -2.0
+      ],
+      "to_target": {
+        "waypoints": [
+          [
+            -1.225,
+            -1.475
+          ],
+          [
+            -0.75,
+            -2.0
+          ]
+        ],
+        "length_m": 1.953
+      },
+      "to_base": {
+        "waypoints": [
+          [
+            -1.675,
+            -0.975
+          ],
+          [
+            -2.0,
+            -0.5
+          ]
+        ],
+        "length_m": 1.956
+      },
+      "estimated_round_trip_s": 38.1,
+      "id": "T2"
+    },
+    {
+      "target": [
+        -1.75,
+        0.75
+      ],
+      "to_target": {
+        "waypoints": [
+          [
+            -1.75,
+            0.75
+          ]
+        ],
+        "length_m": 1.275
+      },
+      "to_base": {
+        "waypoints": [
+          [
+            -2.0,
+            -0.5
+          ]
+        ],
+        "length_m": 1.275
+      },
+      "estimated_round_trip_s": 23.0,
+      "id": "T3"
+    },
+    {
+      "target": [
+        0.5,
+        -0.5
+      ],
+      "to_target": {
+        "waypoints": [
+          [
+            0.5,
+            -0.5
+          ]
+        ],
+        "length_m": 2.5
+      },
+      "to_base": {
+        "waypoints": [
+          [
+            -2.0,
+            -0.5
+          ]
+        ],
+        "length_m": 2.5
+      },
+      "estimated_round_trip_s": 39.3,
+      "id": "T4"
+    }
+  ],
+  "negative_examples": [
+    {
+      "label": "outside_map",
+      "target": [
+        12.0,
+        0.0
+      ],
+      "classification": "outside_map"
+    },
+    {
+      "label": "obstacle",
+      "target": [
+        -0.05,
+        0.0
+      ],
+      "classification": "obstacle"
+    },
+    {
+      "label": "inside_clearance",
+      "target": [
+        -0.15,
+        0.0
+      ],
+      "classification": "inside_clearance"
+    }
+  ]
+}

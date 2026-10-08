@@ -1,0 +1,22 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "run_id": "6c05b2d283bd40d9b8abed25c4ea3333",
+  "run_terminal_status": "stopped",
+  "judge_event": {
+    "type": "collision",
+    "sequence": 1,
+    "generation": 5,
+    "robot_id": "robot_1",
+    "position": [-2.005470677360217, -0.49999999999376854],
+    "simulation_time_s": 8.374,
+    "battery": 58.992508989014084
+  },
+  "event_test": "A synthetic LaserScan contact was published in the isolated ROS domain. The real judge emitted the public event, preserving the JudgeEngine pose/time snapshot; the backend ROS parser converted the payload to PublicEvent.",
+  "limits": [
+    "The collision was intentionally synthetic and is not evidence of physical collision detection accuracy.",
+    "The API journal does not expose generation-tagged events as a separate public feed.",
+    "A genuinely delayed Gazebo collect/finish service response was not induced; bridge future behavior is covered by ROS callback test."
+  ]
+}

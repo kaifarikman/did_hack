@@ -36,6 +36,10 @@ def test_two_robots_do_not_share_topics():
 def test_bridge_remaps_robot_tf_to_common_tf():
     arguments = bridge_arguments("robot_1")
     assert "/robot_1/cmd_vel@geometry_msgs/msg/TwistStamped]gz.msgs.Twist" in arguments
+    assert ("/world/default/model/robot_1/link/base_link/sensor/base_contact/contact"
+            "@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts") in arguments
+    assert ("/world/default/model/robot_1/link/wheel_left_link/sensor/wheel_left_contact/contact"
+            "@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts") in arguments
     assert arguments[-2:] == ["-r", "/robot_1/tf:=/tf"]
 
 

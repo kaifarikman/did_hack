@@ -1,0 +1,22 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "backend_restart": {
+    "generation_before_restart": 1,
+    "first_run_id": "e169265a441c45a18b5160d715e5256d",
+    "first_run_sim_time_s": 3.878,
+    "first_run_status_after_stop": "stopped",
+    "generation_after_restart": 2,
+    "second_run_id": "e52e83ed021a40989bb830d3a8c90865",
+    "second_run_sim_time_s": 5.641,
+    "second_run_pose_world_m": [-1.999999990399165, -0.5],
+    "second_run_status_after_stop": "stopped"
+  },
+  "claim": "Backend restart resumes from supervisor generation and does not reuse generation 1.",
+  "limits": [
+    "ROS observation sequence and freshness are internal to the bridge and not exposed by HTTP state.",
+    "Paused simulation clock and injected old pose/scan/battery messages were not tested.",
+    "Late collect/finish response after reset was not induced."
+  ]
+}

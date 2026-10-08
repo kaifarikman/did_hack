@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-08",
+  "schema_version": "1.3",
+  "changes": [
+    "Top-level robot_id on single and team state.",
+    "Independent route_revision, plan_revision, map_revision, and model_revision counters.",
+    "Per-source freshness {age_s, fresh} for odom, scan, battery, and clock; null/null represents unknown or not yet received.",
+    "The ROS bridge reports partial freshness even when a critical source is absent; the controller holds zero during startup grace and fails closed after missing/stale critical input.",
+    "Team state includes per-robot freshness and aggregated revision counters.",
+    "Frontend migration for schema 1.0 through 1.2 defaults robot_id to robot_1, revisions to zero, and freshness to unknown; unsupported major schema is rejected."
+  ],
+  "live_check": {
+    "compose_project": "didhack-t02",
+    "ros_domain_id": 82,
+    "gazebo_partition": "did-t02",
+    "run_id": "6f1cf1e51aca4b00954a06a58779492e",
+    "generation": 7,
+    "active_state": {
+      "status": "running",
+      "robot_id": "robot_1",
+      "route_revision": 1,
+      "plan_revision": 3,
+      "map_revision": 0,
+      "model_revision": 6,
+      "freshness": {
+        "odom": {
+          "age_s": 0.0228,
+          "fresh": true
+        },
+        "scan": {
+          "age_s": 0.0438,
+          "fresh": true
+        },
+        "battery": {
+          "age_s": 0.104,
+          "fresh": true
+        },
+        "clock": {
+          "age_s": 0.016,
+          "fresh": true
+        }
+      }
+    },
+    "stop_state": "stopped",
+    "old_command_resumed": false,
+    "rebuilt_compose_image": {
+      "backend_image_rebuilt_from_worktree": true,
+      "compose_recreated_backend": true,
+      "health": "ready",
+      "ros_connected": true,
+      "run_id": "17b80d61ffb74a679dc7b7ba9a177a01",
+      "generation": 8,
+      "active_state": {
+        "status": "running",
+        "robot_id": "robot_1",
+        "schema_version": "1.3",
+        "freshness": {
+          "odom": {
+            "age_s": 0.0388,
+            "fresh": true
+          },
+          "scan": {
+            "age_s": 0.0612,
+            "fresh": true
+          },
+          "battery": {
+            "age_s": 0.1087,
+            "fresh": true
+          },
+          "clock": {
+            "age_s": 0.0382,
+            "fresh": true
+          }
+        }
+      },
+      "stop_state": "stopped",
+      "terminal_snapshot_kept_freshness": true
+    }
+  },
+  "verification": {
+    "backend": "190 passed, 2 skipped",
+    "ros_bridge_and_lifecycle_jazzy": "18 passed",
+    "frontend": "90 passed",
+    "frontend_build": "passed",
+    "git_diff_check": "clean",
+    "docker_compose_backend_build": "passed on retry; backend service recreated from current worktree",
+    "ros_enabled_full_backend_container_suite": "202 passed, 6 failed because the backend image does not mount context/mvp fixtures and simulation map paths used by six tests; host full suite is 190 passed, 2 skipped"
+  },
+  "build_note": "The first Docker Hub TLS request timed out. Retry succeeded; isolated Compose backend was recreated from the current worktree and verified live with ROS connected, schema 1.3, active per-source freshness, Stop, and terminal freshness."
+}

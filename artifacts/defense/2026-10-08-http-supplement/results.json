@@ -1,0 +1,79 @@
+{
+ "outside_map": {
+  "http": 422,
+  "error": {
+   "code": "navigation_target_unreachable",
+   "message": "Цель вне границ карты.",
+   "retryable": false
+  },
+  "state_before": {
+   "run_id": "68e85180264f47b1a1401d656cf5801f",
+   "status": "stopped",
+   "generation": 4
+  },
+  "state_after": {
+   "run_id": "68e85180264f47b1a1401d656cf5801f",
+   "status": "stopped",
+   "generation": 4
+  }
+ },
+ "stale_map_id": {
+  "http": 409,
+  "error": {
+   "code": "map_changed",
+   "message": "Карта изменилась после выбора цели: загрузите карту и подтвердите точку заново.",
+   "retryable": false
+  },
+  "state_before": {
+   "run_id": "68e85180264f47b1a1401d656cf5801f",
+   "status": "stopped",
+   "generation": 4
+  },
+  "state_after": {
+   "run_id": "68e85180264f47b1a1401d656cf5801f",
+   "status": "stopped",
+   "generation": 4
+  }
+ },
+ "research_with_target": {
+  "http": 422,
+  "error": {
+   "code": "invalid_request",
+   "message": "Для research navigation_target должна быть null.",
+   "retryable": false
+  },
+  "state_before": {
+   "run_id": "68e85180264f47b1a1401d656cf5801f",
+   "status": "stopped",
+   "generation": 4
+  },
+  "state_after": {
+   "run_id": "68e85180264f47b1a1401d656cf5801f",
+   "status": "stopped",
+   "generation": 4
+  }
+ },
+ "idempotency": {
+  "first": [
+   202,
+   "1e7f318ab2c045d5b0681ff333750461"
+  ],
+  "repeat_same_body": [
+   202,
+   "1e7f318ab2c045d5b0681ff333750461"
+  ],
+  "same_id_other_target": [
+   409,
+   {
+    "code": "run_conflict",
+    "message": "request_id уже использован с другим телом запроса.",
+    "retryable": false
+   }
+  ],
+  "state": {
+   "run_id": "1e7f318ab2c045d5b0681ff333750461",
+   "status": "starting",
+   "generation": 5
+  }
+ }
+}

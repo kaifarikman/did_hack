@@ -1,0 +1,122 @@
+{
+  "stack": "isolated didhack-t02",
+  "injected_battery": 1.0,
+  "injection_is_conservative_only": true,
+  "run_id": "b63f709149ba4e20ae3673f2c53a7f3a",
+  "generation": 1,
+  "position_at_injection": {
+    "position_x_m": -1.9759661145213865,
+    "position_y_m": -0.19819476891950788,
+    "heading_rad": 1.5575667744721715
+  },
+  "status_before_injection": "running",
+  "injection_duration_s": 0.716,
+  "status_after_injection": "returning",
+  "battery_after_injection": 1.0,
+  "goal_after_injection": {
+    "kind": "return",
+    "target": {
+      "position_x_m": -2.0,
+      "position_y_m": -0.5
+    },
+    "reason": "Запас энергии на возврат на пределе."
+  },
+  "journal_titles": [
+    "Начало миссии",
+    "План получен",
+    "Подцель: explore",
+    "Возврат по запасу энергии",
+    "Подцель: return"
+  ],
+  "return_trigger_logged": true,
+  "status_after_native_telemetry_resumed": "returning",
+  "goal_after_native_telemetry_resumed": {
+    "kind": "return",
+    "target": {
+      "position_x_m": -2.0,
+      "position_y_m": -0.5
+    },
+    "reason": "Запас энергии на возврат на пределе."
+  },
+  "observations_during_injection": [
+    {
+      "elapsed_s": 0.003,
+      "status": "running",
+      "battery_remaining": 59.54617473264943,
+      "current_goal": {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.975,
+          "position_y_m": 0.025
+        },
+        "reason": "Ближайшая точка с лучшей оценкой для осмотра окрестности при малых энергозатратах."
+      }
+    },
+    {
+      "elapsed_s": 0.064,
+      "status": "running",
+      "battery_remaining": 59.54617473264943,
+      "current_goal": {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.975,
+          "position_y_m": 0.025
+        },
+        "reason": "Ближайшая точка с лучшей оценкой для осмотра окрестности при малых энергозатратах."
+      }
+    },
+    {
+      "elapsed_s": 0.16,
+      "status": "running",
+      "battery_remaining": 59.51606779288987,
+      "current_goal": {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.975,
+          "position_y_m": 0.025
+        },
+        "reason": "Ближайшая точка с лучшей оценкой для осмотра окрестности при малых энергозатратах."
+      }
+    },
+    {
+      "elapsed_s": 0.21,
+      "status": "running",
+      "battery_remaining": 59.51606779288987,
+      "current_goal": {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.975,
+          "position_y_m": 0.025
+        },
+        "reason": "Ближайшая точка с лучшей оценкой для осмотра окрестности при малых энергозатратах."
+      }
+    },
+    {
+      "elapsed_s": 0.37,
+      "status": "running",
+      "battery_remaining": 1.0,
+      "current_goal": {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.975,
+          "position_y_m": 0.025
+        },
+        "reason": "Ближайшая точка с лучшей оценкой для осмотра окрестности при малых энергозатратах."
+      }
+    },
+    {
+      "elapsed_s": 0.481,
+      "status": "returning",
+      "battery_remaining": 1.0,
+      "current_goal": {
+        "kind": "return",
+        "target": {
+          "position_x_m": -2.0,
+          "position_y_m": -0.5
+        },
+        "reason": "Запас энергии на возврат на пределе."
+      }
+    }
+  ],
+  "stop_requested": true
+}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-08",
+  "task": "T11 energy budget for goal, action, return, uncertainty, and reserve",
+  "implementation": {
+    "action_energy": "MissionSettings.false_collect_energy_penalty=2.0, aligned with the local judge false_collect_penalty_energy. Candidate feasibility and goal validation reserve this worst-case action cost before committing to the trip.",
+    "route_energy": "Navigation routes use terrain mean plus uncertainty allowance and return_safety_factor; localization error/degraded status multiplies outbound and return estimates by a bounded margin.",
+    "collect_validation": "A collect attempt requires a reachable return route, action penalty, and return_reserve before the judge operation is called.",
+    "return_commitment": "MissionStatus.RETURNING always continues toward base; reserve recovery or a better estimate does not resume exploration."
+  },
+  "verification": {
+    "targeted_tests": [
+      "test_candidate_feasibility_reserves_energy_for_an_uncertain_collect_action",
+      "test_collect_goal_reserves_worst_case_action_energy_and_return_route",
+      "test_goal_budget_grows_with_localization_uncertainty",
+      "test_low_reserve_returns_before_asking_llm_at_rest",
+      "test_reserve_overrides_goal_and_robot_returns_with_positive_battery"
+    ],
+    "targeted_suite": "Energy, reserve-persistence, and multi-seed mission tests passed; see named test cases and full suite result.",
+    "full_backend_suite": "backend/.venv/bin/python -m pytest backend/tests -q: 204 passed, 2 skipped in 42.88 s. Container rerun: 197 passed, 2 skipped, 6 failed solely because context/map fixture mounts are absent (same known image limitation). Backend API remains healthy and ROS connected; controlled probe run was stopped.",
+    "live_low_battery_probe": "In isolated didhack-t02, injected generation-matched fresh public battery telemetry of 1.0 at ~0.303 m from base during active explore. Within 0.481 s status changed to returning and journal recorded 'Возврат по запасу энергии'; after native telemetry resumed, returning and return goal remained sticky. This is a conservative telemetry-policy probe, not actual judge battery depletion; native simulation battery was 59.47/60 after stop.",
+    "syntax_and_diff": "py_compile passed for modified energy/policy modules; git diff --check clean."
+  },
+  "limitations": [
+    "The low-battery probe injects public telemetry and does not deplete the judge's actual energy store; it verifies controller response and sticky return only."
+  ]
+}

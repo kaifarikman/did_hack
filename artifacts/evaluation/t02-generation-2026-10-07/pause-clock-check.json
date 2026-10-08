@@ -1,0 +1,25 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "run_id": "b0342ef679fd467b94f4b87bac42d02d",
+  "generation": 8,
+  "clock_before_pause_s": 10.509,
+  "pause_service": "/world/default/control",
+  "pause_request": "gz.msgs.WorldControl { pause: true }",
+  "result": {
+    "mission_status": "failed",
+    "error_code": "observations_stale",
+    "last_observation_s": 21.929,
+    "cmd_vel_linear_mps": 0.0,
+    "cmd_vel_angular_radps": 0.0
+  },
+  "unpause_request": "gz.msgs.WorldControl { pause: false }",
+  "clock_after_unpause_s": 39.225,
+  "mission_after_unpause": "failed",
+  "cmd_vel_after_unpause": {"linear_mps": 0.0, "angular_radps": 0.0},
+  "limits": [
+    "The robot was stationary at base before the pause, so this proves stale-clock failure and no automatic command resume, but not braking from motion.",
+    "A delayed collect/finish Gazebo service response was not induced."
+  ]
+}

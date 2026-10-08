@@ -1,0 +1,171 @@
+{
+  "date": "2026-10-08",
+  "compose_project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "primary_compose_project_touched": false,
+  "live_checks": {
+    "backend_process_loss_during_motion": {
+      "run_id": "211626eb307e413390123cef2ea19874",
+      "generation": 11,
+      "before_stop": {
+        "status": "running",
+        "simulation_time_s": 29.726,
+        "pose": [
+          -1.6034749904002261,
+          -0.49999999999986394
+        ],
+        "battery": 59.58685708112885,
+        "goal": "approach"
+      },
+      "backend_container_stopped": true,
+      "pose_after_stop": [
+        -1.6034749904002261,
+        -0.49999999999986394
+      ],
+      "cmd_vel_after_backend_restore": [
+        0.0,
+        0.0
+      ],
+      "backend_recovery": {
+        "health": "ready",
+        "state": "idle",
+        "run_id": null,
+        "restart_count": 0,
+        "old_command_resumed": false
+      },
+      "limitation": "The command stream was not captured continuously during the first 0.5 s watchdog interval; zero command and stationary pose were observed after the container stop."
+    },
+    "simulation_process_loss_during_motion": {
+      "run_id": "939af51801fe40c48084cc90f40c8d6d",
+      "generation": 12,
+      "before_stop": {
+        "status": "running",
+        "pose": [
+          -1.9752597909831846,
+          -0.07155268112614205
+        ],
+        "battery": 59.39494591421166
+      },
+      "simulation_container_stopped": true,
+      "terminal_status": "failed",
+      "error_code": "observations_stale",
+      "pose_after_failure": [
+        -1.9752597909831846,
+        -0.07155268112616398
+      ]
+    },
+    "simulation_restore": {
+      "supervisor_status": "ready",
+      "backend_ros_reconnected_without_backend_restart": false,
+      "backend_health_after_sim_restart": "starting",
+      "backend_restart_restored_ros": true,
+      "finding": "A live backend failed to reconnect its ROS runtime after the simulation container restarted; restarting only backend restored health. Automatic recovery of this topology remains unresolved."
+    },
+    "paused_clock_during_motion": {
+      "result": "already verified in T02",
+      "evidence": "../t02-generation-2026-10-07/pause-moving-clock-check.json"
+    },
+    "judge_process_loss_during_motion": {
+      "run_id": "871ca93927804df7a219753b115cbeda",
+      "generation": 5,
+      "before_kill": {
+        "status": "running",
+        "simulation_time_s": 50.901,
+        "pose": [
+          -1.6063952446343872,
+          -0.49999962164734013
+        ],
+        "battery": 59.50350347885671,
+        "goal": "approach"
+      },
+      "judge_node_killed": true,
+      "odom_alive_after_kill": true,
+      "scan_sample_after_kill": "no sample within 2 seconds; concurrent Gazebo load may be a factor",
+      "controller_result": {
+        "status": "failed",
+        "error_code": "observations_stale",
+        "pose_after": [
+          -1.728314460766116,
+          -0.38602209351009426
+        ],
+        "battery_snapshot": 59.154138808546854
+      },
+      "interpretation": "The judge was the sole publisher of generation-bound battery telemetry; controller failed safely after critical observations became stale while the robot had been moving."
+    },
+    "recovery_after_judge_loss": {
+      "supervisor_reset_generation": 6,
+      "backend_restarted_for_generation_handshake": true,
+      "health": "ready",
+      "ros_connected": true,
+      "supervisor_state": "ready",
+      "old_run_resumed": false
+    }
+  },
+  "tests": {
+    "command": "source /opt/ros/jazzy/setup.bash && cd simulation/judge && python3 -m pytest tests -q",
+    "result": "97 passed",
+    "watchdog_tests": "3 passed; includes explicit 0.5-second lease boundary using monotonic clock",
+    "backend_command": "backend/.venv/bin/python -m pytest backend/tests -q",
+    "backend_result": "188 passed, 2 skipped",
+    "backend_duration_seconds": 42.99,
+    "ros_command": "docker exec didhack-t02-simulation-1 bash -lc \"source /opt/ros/jazzy/setup.bash; cd /workspace/simulation/judge && python3 -m pytest tests -q\"",
+    "ros_result": "97 passed",
+    "git_diff_check": "clean",
+    "ros_bridge_generation_suite": "14 passed in backend container with ROS Jazzy (test_ros_generation + test_ros_lifecycle)",
+    "ros_judge_suite": "98 passed in simulation container with ROS Jazzy",
+    "source_loss_callback_cases": {
+      "odom": "passed",
+      "scan": "passed",
+      "battery": "passed",
+      "scope": "ROS callback-level lease-expiry test, not Gazebo topic injection"
+    },
+    "planner_timeout_targeted": "2 passed: hanging planner fallback/late reply and prompt stop during blocked planner",
+    "watchdog_timing_scope": "Deterministic ROS node test; live end-to-end zero-command timing after backend death remains unmeasured."
+  },
+  "not_yet_proven": [
+    "Live Gazebo-only odom/scan drop with other sources demonstrably fresh.",
+    "Remote network blackhole for LLM and wall-clock live observation.",
+    "Continuous timestamped cmd_vel capture at the backend-crash watchdog boundary.",
+    "Automatic reconnect after unmanaged simulation container restart without explicit generation handshake."
+  ],
+  "planner_timeout_change": {
+    "setting": "MissionSettings.planner_timeout_s",
+    "default_seconds": 10.0,
+    "behavior": "A pending plan request that exceeds the deadline is detached from the run and an algorithmic fallback is selected; subsequent late result is not adopted.",
+    "test": "test_hanging_planner_times_out_to_fallback_and_late_answer_is_ignored",
+    "test_result": "passed"
+  },
+  "additional_backend_loss_live_check": {
+    "run_id": "b45eeb8e2d054f3cacc7c8334e2e1621",
+    "generation": 1,
+    "before_stop": {
+      "status": "returning",
+      "simulation_time_s": 15.109,
+      "pose": [
+        -1.5867290448539855,
+        -0.48147921984724884
+      ],
+      "battery": 59.5222130245344
+    },
+    "after_backend_stop": "/cmd_vel sample after watchdog period was exactly zero",
+    "backend_recovery": "health ready, ros_connected true; run state idle and old command absent",
+    "limitation": "The topic was sampled after several seconds, so this is qualitative end-to-end confirmation; the 0.5-second bound comes from the deterministic ROS watchdog test."
+  },
+  "status": "ready",
+  "acceptance_summary": {
+    "odom_loss": "ROS callback-level independent source lease test passed; live Gazebo-only injection not done.",
+    "scan_loss": "ROS callback-level independent source lease test passed; live Gazebo-only injection not done.",
+    "battery_loss": "ROS callback-level test passed; additionally judge process killed during live moving run, after which controller failed observations_stale while odom remained live.",
+    "paused_simulation_time": "Live moving pause-clock failure and no-resume evidence from T02.",
+    "backend_loss": "Live backend stop during active movement; stationary pose and zero cmd_vel after timeout; backend restart returned idle without old run.",
+    "planner_hang": "Hanging planner deadline -> algorithmic fallback, late reply ignored; blocked planner Stop remains prompt (tests passed).",
+    "recovery": "Supervisor reset with next generation plus backend restart restored health; old run did not resume."
+  },
+  "remaining_limits": [
+    "Independent odom/scan loss lacks live topic injection and is supported by deterministic ROS callback lease tests.",
+    "The exact first zero cmd_vel after backend death was not timestamped live; deterministic watchdog lease bound is tested at 0.5 seconds.",
+    "The LLM hang was exercised at the planner boundary, not by blackholing a live remote network request.",
+    "A stopped simulation container restarted out-of-band at generation 0 while backend expected a higher generation; this correctly remained disconnected until explicit supervisor generation reset/backend handshake. Automatic recovery is not supported."
+  ]
+}

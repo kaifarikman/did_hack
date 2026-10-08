@@ -1,0 +1,43 @@
+{
+  "samples": 135,
+  "broken_lines": 1,
+  "closest_to_target": {
+    "world": [
+      -1.9420238688110616,
+      -0.5946341116213103
+    ],
+    "distance_m": 1.682,
+    "host_time": 1791462562.6457345
+  },
+  "last": {
+    "world": [
+      -1.9420238688110616,
+      -0.5946341116213103
+    ],
+    "distance_to_base_m": 0.111,
+    "commands": {
+      "/agent/cmd_vel": [
+        0.0,
+        0.0
+      ],
+      "/cmd_vel": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "samples_with_nonzero_agent_command": 0,
+  "last_score": {
+    "judge_mode": "local",
+    "generation": 1,
+    "state": "finished",
+    "score": 0.0,
+    "collected": 0,
+    "collisions": 0,
+    "false_collects": 0,
+    "finished": true,
+    "finish_success": true,
+    "battery": 58.98412542809189,
+    "simulation_time_s": 76.015
+  }
+}

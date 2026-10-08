@@ -60,6 +60,12 @@ class JudgeReply:
             raise ValueError("success и outcome противоречат друг другу")
 
 
+class JudgeOperation(Protocol):
+    """Неблокирующий исход команды судье: None, пока ответ ожидается."""
+
+    def poll(self) -> JudgeReply | None: ...
+
+
 @dataclass(frozen=True)
 class PublicScore:
     """Публичный счёт /did/score: единственный способ сверить неизвестный исход collect/finish."""
@@ -69,9 +75,15 @@ class PublicScore:
     finish_success: bool | None = None
     simulation_time_s: float | None = None
     robot_id: str = DEFAULT_ROBOT_ID
+    generation: int | None = None
 
 
 class JudgeClient(Protocol):
+    def begin_collect(self) -> JudgeOperation: ...
+
+    def begin_finish(self) -> JudgeOperation: ...
+
+    # Оставлены для адаптеров совместимости; контроллер предпочитает begin_*.
     def collect(self) -> JudgeReply: ...
 
     def finish(self) -> JudgeReply: ...

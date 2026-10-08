@@ -1,0 +1,191 @@
+{
+  "backend_terminal_state_before_probe": "failed",
+  "scenario": "hard",
+  "seed": 27,
+  "generation": 23,
+  "observed_until_simulation_s": 250.216,
+  "telemetry_count": 1251,
+  "fault_observations": {
+    "dropout": {
+      "scheduled_window_s": [
+        94.50991342801649,
+        114.50991342801649
+      ],
+      "telemetry_samples": 134,
+      "null_samples": 103,
+      "unique_rounded_values": 31,
+      "core_samples": 103,
+      "core_null_samples": 103,
+      "core_unique_values": 0,
+      "core_median_abs_difference": null,
+      "normal_median_abs_difference": 0.028568342140454978,
+      "recovery_samples": 31,
+      "recovery_non_null_samples": 31,
+      "recovery_unique_values": 31
+    },
+    "stuck": {
+      "scheduled_window_s": [
+        136.3854258766372,
+        156.3854258766372
+      ],
+      "telemetry_samples": 133,
+      "null_samples": 0,
+      "unique_rounded_values": 31,
+      "core_samples": 102,
+      "core_null_samples": 0,
+      "core_unique_values": 1,
+      "core_median_abs_difference": 0.0,
+      "normal_median_abs_difference": 0.02957997974626081,
+      "recovery_samples": 31,
+      "recovery_non_null_samples": 31,
+      "recovery_unique_values": 31
+    },
+    "noisy": {
+      "scheduled_window_s": [
+        153.62808379292318,
+        173.62808379292318
+      ],
+      "telemetry_samples": 133,
+      "null_samples": 0,
+      "unique_rounded_values": 109,
+      "core_samples": 103,
+      "core_null_samples": 0,
+      "core_unique_values": 90,
+      "core_median_abs_difference": 0.15416469172305364,
+      "normal_median_abs_difference": 0.0,
+      "recovery_samples": 30,
+      "recovery_non_null_samples": 30,
+      "recovery_unique_values": 30
+    }
+  },
+  "hazard_route_length_m": 2.122792206135786,
+  "hazard_route_started": true,
+  "hazard_route_reached": true,
+  "final_world_pose": [
+    -0.34722969694351735,
+    -1.589567888741623,
+    -0.28277900329285205
+  ],
+  "final_odom_world_estimate": [
+    -0.3395164235387136,
+    -1.5866226017575502,
+    -0.28172605754987484
+  ],
+  "judge_events": [
+    {
+      "type": "hazard_hit",
+      "sequence": 1,
+      "generation": 23,
+      "robot_id": "robot_1",
+      "position": [
+        -0.601500755142411,
+        -1.5101802236592925
+      ],
+      "simulation_time_s": 244.763,
+      "battery": 54.779406006233955
+    }
+  ],
+  "latest_score": {
+    "judge_mode": "local",
+    "generation": 23,
+    "state": "running",
+    "score": 0.0,
+    "collected": 0,
+    "collisions": 0,
+    "false_collects": 0,
+    "finished": false,
+    "finish_success": false,
+    "battery": 54.53212326175488,
+    "simulation_time_s": 249.212
+  },
+  "post_run_soil_state": {
+    "base": [
+      -2.0,
+      -0.5
+    ],
+    "speed_factor": 0.5,
+    "zones": [
+      [
+        -0.875,
+        0.5750000000000011,
+        0.5
+      ],
+      [
+        1.5250000000000004,
+        -0.42499999999999893,
+        0.5
+      ],
+      [
+        0.5250000000000004,
+        2.125,
+        0.5
+      ],
+      [
+        1.4750000000000014,
+        1.5250000000000004,
+        0.5
+      ]
+    ]
+  },
+  "post_run_schedule_audit": {
+    "initial_soil_zones": [
+      {
+        "center": [
+          -0.875,
+          0.5750000000000011
+        ],
+        "radius_m": 0.5
+      },
+      {
+        "center": [
+          1.5250000000000004,
+          -0.42499999999999893
+        ],
+        "radius_m": 0.5
+      },
+      {
+        "center": [
+          0.5250000000000004,
+          2.125
+        ],
+        "radius_m": 0.5
+      },
+      {
+        "center": [
+          1.7250000000000014,
+          0.875
+        ],
+        "radius_m": 0.5
+      }
+    ],
+    "soil_shift_time_s": 84.93642173875654,
+    "shifted_zone_center": [
+      1.4750000000000014,
+      1.5250000000000004
+    ],
+    "hazard_time_s": 208.18996328121594,
+    "hazard_center": [
+      -0.22499999999999964,
+      -1.625
+    ],
+    "sensor_faults": [
+      {
+        "kind": "dropout",
+        "start_s": 94.50991342801649,
+        "end_s": 114.50991342801649
+      },
+      {
+        "kind": "stuck",
+        "start_s": 136.3854258766372,
+        "end_s": 156.3854258766372
+      },
+      {
+        "kind": "noisy",
+        "start_s": 153.62808379292318,
+        "end_s": 173.62808379292318
+      }
+    ],
+    "visibility": "test-only audit; not published to the agent/backend"
+  },
+  "limitations": "Direct controlled probe, not an autonomous mission or adaptation success."
+}

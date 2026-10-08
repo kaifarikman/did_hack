@@ -6,7 +6,12 @@
 молча даёт робота без изоляции.
 """
 import re
+import os
+import sys
 from typing import Dict, List
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "judge"))
+from did_judge.contacts import CONTACT_SENSOR_LINKS, gazebo_contact_topic  # noqa: E402
 
 SDF_REPLACEMENTS = (
     (r'<model name="turtlebot3_burger">', '<model name="{robot}">'),
@@ -37,12 +42,21 @@ def bridge_arguments(robot: str) -> List[str]:
     specs = [
         f"/{robot}/cmd_vel@geometry_msgs/msg/TwistStamped]gz.msgs.Twist",
         f"/{robot}/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
+        *[f"{gazebo_contact_topic(robot, link, sensor)}"
+          "@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts"
+          for link, sensor in CONTACT_SENSOR_LINKS],
         f"/{robot}/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry",
         f"/{robot}/imu@sensor_msgs/msg/Imu[gz.msgs.IMU",
         f"/{robot}/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model",
         f"/{robot}/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V",
     ]
     return [*specs, "--ros-args", "-r", f"/{robot}/tf:=/tf"]
+
+
+def contact_bridge_arguments(robot: str = "burger") -> List[str]:
+    return [f"{gazebo_contact_topic(robot, link, sensor)}"
+            "@ros_gz_interfaces/msg/Contacts[gz.msgs.Contacts"
+            for link, sensor in CONTACT_SENSOR_LINKS]
 
 
 def default_bases(count: int, first_base=(-2.0, -0.5), spacing_m: float = 1.0) -> Dict[str, tuple]:

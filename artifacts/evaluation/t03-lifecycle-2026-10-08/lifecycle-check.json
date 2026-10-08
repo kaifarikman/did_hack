@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-08",
+  "compose_project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "backend_container_id": "63fc5fba8b7103d41cd36fa3cb6979cf49598b1388e5a8324915649fe8fe6b4e",
+  "backend_restart_count": 0,
+  "completed_easy_pair": [
+    {
+      "run_id": "13a85583d3394965a9ea8ed73cae2634",
+      "generation": 6,
+      "seed": 2,
+      "status": "completed",
+      "samples": 1,
+      "battery_remaining": 53.3,
+      "journal_confirms_judge_return": true
+    },
+    {
+      "run_id": "a600cbe8242d45d590690343aa6d5103",
+      "generation": 7,
+      "seed": 1,
+      "status": "completed",
+      "samples": 1,
+      "battery_remaining": 51.3,
+      "journal_confirms_judge_return": true
+    }
+  ],
+  "request_id_and_stop_checks": {
+    "start_replay_same_request_same_run": true,
+    "parallel_start_http": 409,
+    "same_stop_request_replay": "stopping",
+    "terminal_stop_replay": "stopped",
+    "next_run_after_stop_generation": 9,
+    "next_run_terminal": "stopped",
+    "cmd_vel_after_stop": {
+      "linear_mps": 0.0,
+      "angular_radps": 0.0
+    }
+  },
+  "pending_finish_and_unknown_outcomes": {
+    "stop_then_new_generation_ignores_late_finish_success_test": "passed",
+    "stale_observation_aborts_pending_finish_test": "passed",
+    "unknown_collect_score_reconciliation_test": "existing test passed in full backend suite",
+    "unknown_finish_without_score_not_success_test": "passed"
+  },
+  "transient_stale_failure": {
+    "run_id": "00e1a271073b45c9afdb3b0ec0c3bc74",
+    "generation": 5,
+    "seed": 2,
+    "result": "failed: observations_stale",
+    "followup_same_seed": "generation 6 completed after idle validation stack was stopped",
+    "resource_contention_cause": "plausible but not proven"
+  },
+  "limitations": [
+    "Sequential mission evidence comes from the isolated single-robot easy/static configuration.",
+    "The delayed judge service crossing a real supervisor reset is directly proven at RosBridge; controller lifecycle across reset is proven at HTTP/application test seam rather than one natural Gazebo return path."
+  ],
+  "backend_suite": {
+    "command": "backend/.venv/bin/python -m pytest backend/tests -q",
+    "result": "187 passed, 2 skipped, 1 warning",
+    "duration_seconds": 42.96,
+    "warning": "Starlette TestClient imports httpx; deprecation warning only"
+  }
+}

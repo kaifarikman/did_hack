@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-08",
+  "issue": "NavigationService.observe_dynamic_obstacles renewed per-cell expiry each scan, then compared old cell keys with expiry timestamps. The sets always differed, so dynamic_obstacle_revision advanced on every scan and MissionController repeatedly stopped/cancelled a valid route.",
+  "fix": "Compare the inflated blocked-cell set before and after the observation update. A stable hit renews TTL without reporting a route-affecting revision; expiry or geometry changes still increment it.",
+  "verification": {
+    "tests": "backend/.venv/bin/python -m pytest backend/tests/test_dynamic_obstacles.py backend/tests/test_controller.py backend/tests/test_plans.py -q: 36 passed in 10.92s",
+    "compose_backend": "Rebuilt didhack-t02 backend; health ready and ros_connected true on ROS_DOMAIN_ID 82.",
+    "live_runs": [
+      {
+        "generation": 22,
+        "scenario": "easy",
+        "seed": 23,
+        "result": "Robot progressed from x=-2.00 to x=-1.61, advanced through sequential approach targets, and returned to base; terminal no_confirmed_sample because no sample was confirmed. No dynamic obstacle was on the route."
+      },
+      {
+        "generation": 1,
+        "scenario": "easy",
+        "seed": 23,
+        "result": "Obstacle was visible in lidar after insertion; route advanced from revision 1 to 3 and robot moved through approach targets. Probe ended via Stop with zero samples. The object disappeared after world reset/recreation, so obstacle-caused replan or stop-before-contact is not claimed."
+      }
+    ]
+  },
+  "open": [
+    "Controlled Gazebo obstacle must persist after supervisor reset and be positioned across an observed commanded route.",
+    "Capture an obstacle-specific route replan or braking stop with zero collision events.",
+    "Live stale-scan stop and expiry behavior remain unverified; unit tests cover TTL and guard geometry."
+  ]
+}

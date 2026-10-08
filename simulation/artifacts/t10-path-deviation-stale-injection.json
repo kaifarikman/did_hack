@@ -1,0 +1,283 @@
+{
+  "stack": "isolated didhack-t02",
+  "cross_track_offset_m": 0.6,
+  "run_id": "4b873206833d460ab5c3ebdc2101e2df",
+  "scan_rate_before_injection": "",
+  "scan_rate_restored": "",
+  "initial_status": "running",
+  "initial_route_revision": 1,
+  "initial_plan_revision": 1,
+  "active_segment_length_m": 0.5,
+  "injected_world_pose_xy_m": [
+    -2.0,
+    0.1
+  ],
+  "injection_duration_s": 2.159,
+  "final_status_during_injection": "failed",
+  "final_route_revision": 1,
+  "final_plan_revision": 1,
+  "current_goal_after_injection": null,
+  "route_replan_journaled": false,
+  "journal_titles": [
+    "Начало миссии",
+    "План получен",
+    "Подцель: approach",
+    "observations_stale"
+  ],
+  "states_during_injection": [
+    {
+      "elapsed_in_injection_s": 0.03,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.116,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.169,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.194,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.263,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.326,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.355,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.395,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.432,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.509,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.524,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.562,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.579,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.595,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.69,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.74,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.767,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.869,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.891,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.9,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 0.947,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 1.048,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    },
+    {
+      "elapsed_in_injection_s": 1.079,
+      "status": "failed",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.835674990402627,
+        "position_y_m": -0.499999999999753,
+        "heading_rad": 3.4937330979880824e-13
+      }
+    }
+  ],
+  "stop_requested": true
+}

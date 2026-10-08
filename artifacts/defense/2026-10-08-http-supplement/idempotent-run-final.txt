@@ -1,0 +1,1 @@
+1e7f318ab2c045d5b0681ff333750461 completed 5 {'target': {'position_x_m': -2.0, 'position_y_m': 0.75, 'map_id': 'map-33a36ebf'}, 'phase': 'finished', 'target_reached': True, 'target_reached_at_s': 12.794, 'arrival_tolerance_m': 0.12} None 23.248 57.33585627138711

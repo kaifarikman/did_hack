@@ -8,9 +8,12 @@ from domain.geometry import Point, Pose
 from domain.grid import OccupancyGrid
 from domain.hypotheses import HypothesisBook, HypothesisStatus
 from domain.mission import Mission, MissionError, MissionStatus
-from domain.navigation import PathTracker, StuckDetector
+from domain.navigation import PathDeviationDetector, PathTracker, StuckDetector
 from domain.pathfinding import find_path, path_length_m
+from domain.observations import ObservationFreshness, SourceFreshness
+from domain.plans import MissionPlan, PlanStep, StepStatus
 from domain.search import SignalSearch
+from domain.subgoals import GoalKind, Subgoal
 from fakes import build_arena
 from harness import make_mission
 
@@ -81,12 +84,52 @@ def test_path_tracker_turns_then_drives_and_arrives():
     assert tracker.next_command(Pose(0.95, 0, 0)) is None
 
 
+def test_path_tracker_does_not_skip_ahead_to_a_future_waypoint():
+    tracker = PathTracker([Point(1, 0), Point(2, 0)], tolerance_m=0.1, start=Point(0, 0))
+    tracker.next_command(Pose(2.0, 0, 0))
+    assert tracker.waypoint_index == 0
+    assert tracker.cross_track_error_m(Pose(2.0, 0, 0)) == pytest.approx(1.0)
+
+
+def test_path_progress_is_measured_along_active_route_and_never_regresses():
+    tracker = PathTracker([Point(1, 0), Point(1, 1)], tolerance_m=0.1, start=Point(0, 0))
+    assert tracker.progress_m(Pose(0.0, 0.0, math.pi / 2)) == pytest.approx(0.0)
+    assert tracker.progress_m(Pose(0.5, 0.0, math.pi / 2)) == pytest.approx(0.5)
+    tracker.next_command(Pose(0.95, 0.0, math.pi / 2))
+    assert tracker.waypoint_index == 1
+    assert tracker.progress_m(Pose(0.95, 0.0, math.pi / 2)) == pytest.approx(1.0)
+    assert tracker.progress_m(Pose(0.8, 0.0, math.pi / 2)) == pytest.approx(1.0)
+
+
+def test_path_deviation_requires_time_uses_hysteresis_and_cooldown():
+    detector = PathDeviationDetector(
+        tolerance_m=0.3, hysteresis_m=0.05, confirmation_s=0.6, cooldown_s=2.0,
+    )
+    assert not detector.is_deviated(0.4, 1.0)
+    assert not detector.is_deviated(0.27, 1.3)  # hysteresis band preserves timer
+    assert detector.is_deviated(0.4, 1.61)
+    assert not detector.is_deviated(0.5, 2.0)  # cooldown suppresses duplicate replan
+    assert not detector.is_deviated(0.24, 3.7)  # inside reset threshold clears timer
+    assert not detector.is_deviated(0.4, 4.0)
+    assert detector.is_deviated(0.4, 4.61)
+
+
 def test_stuck_detector_fires_without_progress_and_resets_on_progress():
     detector = StuckDetector(window_s=5, min_progress_m=0.05)
-    assert not detector.is_stuck(2.0, 0)
-    assert not detector.is_stuck(1.5, 4)
-    assert not detector.is_stuck(1.5, 8)
-    assert detector.is_stuck(1.5, 9.5)
+    assert not detector.is_stuck(0.0, 0)
+    assert not detector.is_stuck(0.1, 4)
+    assert not detector.is_stuck(0.1, 8)
+    assert detector.is_stuck(0.1, 9.5)
+
+
+def test_stuck_detector_does_not_count_turning_or_waiting_as_no_progress():
+    detector = StuckDetector(window_s=5, min_progress_m=0.05)
+    assert not detector.is_stuck(0.0, 0.0, translating=False)
+    assert not detector.is_stuck(0.0, 1.0, translating=False)
+    assert not detector.is_stuck(0.0, 20.0, translating=False)
+    assert not detector.is_stuck(0.0, 20.1, translating=True)
+    assert not detector.is_stuck(0.0, 24.9, translating=True)
+    assert detector.is_stuck(0.0, 25.2, translating=True)
 
 
 # ---- оценка грунта
@@ -285,3 +328,29 @@ def test_revision_monotonic_snapshot_immutable_and_failure_terminal():
     mission.fail(MissionError("z", "w"))  # терминальное состояние не перезаписывается
     assert mission.snapshot().last_error.code == "x"
     assert mission.status is MissionStatus.FAILED
+
+
+def test_snapshot_exposes_robot_source_freshness_and_independent_revisions():
+    mission = make_mission()
+    mission.update_telemetry(1.0, Pose(1, 1, 0), 50.0, 0.3, freshness=ObservationFreshness(
+        odom=SourceFreshness(0.02, True), scan=SourceFreshness(0.1, True),
+        battery=SourceFreshness(0.08, True), clock=SourceFreshness(0.03, True),
+    ))
+    goal = Subgoal(GoalKind.RETURN, Point(-2, -0.5), "на базу", "fallback")
+    mission.set_goal(goal, (Point(1, 1), Point(-2, -0.5)))
+    plan = MissionPlan("plan-1", mission.run_id, 0, 0, (PlanStep(goal),), "rationale", (), "fallback")
+    mission.set_plan(plan, (StepStatus.ACTIVE,), None)
+    mission.set_map_id("map#r2", 2)
+
+    snapshot = mission.snapshot()
+    assert snapshot.robot_id == "robot_1"
+    assert snapshot.freshness.scan == SourceFreshness(0.1, True)
+    assert snapshot.route_revision == 1
+    assert snapshot.plan_revision == 1
+    assert snapshot.map_revision == 2
+    assert snapshot.model_revision == 0
+
+    mission.set_map_id("map#r2", 2)
+    mission.set_goal(goal, (Point(1, 1), Point(-2, -0.5)))
+    assert mission.snapshot().map_revision == 2
+    assert mission.snapshot().route_revision == 1

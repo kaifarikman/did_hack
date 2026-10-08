@@ -1,0 +1,85 @@
+{
+  "backend_terminal_state_before_probe": "failed",
+  "scenario": "hard",
+  "seed": 27,
+  "generation": 21,
+  "observed_until_simulation_s": 245.065,
+  "telemetry_count": 578,
+  "fault_observations": {
+    "dropout": {
+      "scheduled_window_s": [
+        94.50991342801649,
+        114.50991342801649
+      ],
+      "telemetry_samples": 0,
+      "null_samples": 0,
+      "unique_rounded_values": 0
+    },
+    "stuck": {
+      "scheduled_window_s": [
+        136.3854258766372,
+        156.3854258766372
+      ],
+      "telemetry_samples": 133,
+      "null_samples": 0,
+      "unique_rounded_values": 31
+    },
+    "noisy": {
+      "scheduled_window_s": [
+        153.62808379292318,
+        173.62808379292318
+      ],
+      "telemetry_samples": 133,
+      "null_samples": 0,
+      "unique_rounded_values": 110
+    }
+  },
+  "hazard_route_length_m": 2.102081528017131,
+  "hazard_route_started": true,
+  "hazard_route_reached": true,
+  "judge_events": [],
+  "latest_score": {
+    "judge_mode": "local",
+    "generation": 21,
+    "state": "running",
+    "score": 0.0,
+    "collected": 0,
+    "collisions": 0,
+    "false_collects": 0,
+    "finished": false,
+    "finish_success": false,
+    "battery": 57.76420890559652,
+    "simulation_time_s": 244.199
+  },
+  "post_run_schedule_audit": {
+    "soil_shift_time_s": 84.93642173875654,
+    "shifted_zone_center": [
+      1.4750000000000014,
+      1.5250000000000004
+    ],
+    "hazard_time_s": 208.18996328121594,
+    "hazard_center": [
+      -0.22499999999999964,
+      -1.625
+    ],
+    "sensor_faults": [
+      {
+        "kind": "dropout",
+        "start_s": 94.50991342801649,
+        "end_s": 114.50991342801649
+      },
+      {
+        "kind": "stuck",
+        "start_s": 136.3854258766372,
+        "end_s": 156.3854258766372
+      },
+      {
+        "kind": "noisy",
+        "start_s": 153.62808379292318,
+        "end_s": 173.62808379292318
+      }
+    ],
+    "visibility": "test-only audit; not published to the agent/backend"
+  },
+  "limitations": "Direct controlled probe, not an autonomous mission or adaptation success."
+}

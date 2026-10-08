@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-08",
+  "compose_project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "backend_container_id": "63fc5fba8b7103d41cd36fa3cb6979cf49598b1388e5a8324915649fe8fe6b4e",
+  "backend_started_at": "2026-10-07T20:31:42.956926918Z",
+  "backend_restart_count": 0,
+  "consecutive_successful_runs": [
+    {
+      "run_id": "13a85583d3394965a9ea8ed73cae2634",
+      "generation": 6,
+      "scenario": "easy",
+      "seed": 2,
+      "status": "completed",
+      "samples_collected": 1,
+      "judge_confirmed_return": true,
+      "battery_remaining": 53.3
+    },
+    {
+      "run_id": "a600cbe8242d45d590690343aa6d5103",
+      "generation": 7,
+      "scenario": "easy",
+      "seed": 1,
+      "status": "completed",
+      "samples_collected": 1,
+      "judge_confirmed_return": true,
+      "battery_remaining": 51.3
+    }
+  ],
+  "request_id_checks": {
+    "same_start_request_replayed_same_run": true,
+    "different_start_while_active_http_status": 409,
+    "different_start_error": "run_conflict"
+  },
+  "other_attempts": [
+    {
+      "generation": 2,
+      "run_id": "de7d53487fe7468ba8b2cf23706ec249",
+      "result": "stopped_after_240s_harness_timeout",
+      "samples_before_stop": 1
+    },
+    {
+      "generation": 3,
+      "run_id": "487664f40b764c4b99f5f35b2adb92bd",
+      "result": "failed",
+      "error": "no_confirmed_sample"
+    },
+    {
+      "generation": 5,
+      "run_id": "00e1a271073b45c9afdb3b0ec0c3bc74",
+      "result": "failed",
+      "error": "observations_stale"
+    }
+  ],
+  "diagnostic_followup": {
+    "idle_validation_compose_containers_stopped": true,
+    "same_seed_after_resource_change_generation": 6,
+    "same_seed_result": "completed",
+    "causality": "consistent_with_resource_contention_but_not_proven"
+  },
+  "limitations": [
+    "The first generation 2 run was stopped at the harness timeout; it is not counted in the successful pair.",
+    "The generation 5 stale-observation failure was not reproduced on generation 6; system load is a plausible, unproven factor."
+  ]
+}

@@ -53,6 +53,7 @@ class PlanExecutor:
         self._is_cancelled = is_cancelled
         self._pending: Future[MissionPlan] | None = None
         self._pending_context: PlanningContext | None = None
+        self._pending_started_s: float | None = None
         self._progress: PlanProgress | None = None
         self._epoch = 0
         self._plans = 0
@@ -88,6 +89,7 @@ class PlanExecutor:
     def cancel(self) -> None:
         self._pending = None
         self._pending_context = None
+        self._pending_started_s = None
 
     def step_finished(self, success: bool) -> None:
         progress = self._progress
@@ -111,9 +113,18 @@ class PlanExecutor:
                 plan = self._fallback_plan(context, "исчерпан лимит запросов к планировщику за прогон")
                 return self._adopt_and_choose(plan, context, verdict)
             self._pending, self._pending_context = self._executor.submit(self._propose, context), context
+            self._pending_started_s = self._now_s()
             self.requests += 1
             self._last_request_s = self._now_s()
         if not self._pending.done():
+            started = self._pending_started_s
+            if started is not None and self._now_s() - started >= self._settings.planner_timeout_s:
+                context = self._pending_context
+                self.cancel()
+                if context is None:
+                    return NothingValid()
+                plan = self._fallback_plan(context, "таймаут планировщика; применён алгоритмический резерв")
+                return self._adopt_and_choose(plan, context, verdict)
             return Waiting()
         plan, context = self._pending.result(), self._pending_context
         self.cancel()

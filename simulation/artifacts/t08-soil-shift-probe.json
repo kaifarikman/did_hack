@@ -1,0 +1,142 @@
+{
+  "backend_terminal_state_before_probe": "failed",
+  "scenario": "hard",
+  "seed": 7,
+  "generation": 24,
+  "soil_shift_time_s": 225.0173361796575,
+  "old_zone": {
+    "center": [
+      -1.625,
+      1.1750000000000007
+    ],
+    "radius_m": 0.5
+  },
+  "new_zone_center": [
+    -0.02499999999999858,
+    0.625
+  ],
+  "measurements": [
+    {
+      "label": "old_zone_before_shift",
+      "simulation_time_s": 8.08,
+      "start_world": [
+        -1.7819013734277298,
+        1.1364050246780373,
+        1.2802528078996285
+      ],
+      "end_world": [
+        -1.5145148028293742,
+        1.1720663233840347,
+        0.07425076115705855
+      ],
+      "distance_m": 0.26975415911853473,
+      "heading_change_rad": 1.2060020467425698,
+      "battery_before": 56.95214402888311,
+      "battery_after": 56.01482756322337,
+      "observed_battery_drop": 0.937316465659741,
+      "rotation_energy_estimate": 0.12060020467425699,
+      "observed_energy_per_m_after_rotation": 3.0276317653608613,
+      "judge_expected_energy_per_m": 3.0,
+      "midpoint_in_soil": true
+    },
+    {
+      "label": "new_center_before_shift",
+      "simulation_time_s": 59.804,
+      "start_world": [
+        -0.21361995802733258,
+        0.6250016099334837,
+        0.00021582535055103362
+      ],
+      "end_world": [
+        0.0850653522346512,
+        0.6250027981512059,
+        -5.954227366678275e-05
+      ],
+      "distance_m": 0.2986853102643472,
+      "heading_change_rad": 0.0002753676242178164,
+      "battery_before": 52.790613846998106,
+      "battery_after": 52.40270009994139,
+      "observed_battery_drop": 0.38791374705671444,
+      "rotation_energy_estimate": 2.7536762421781638e-05,
+      "observed_energy_per_m_after_rotation": 1.298645085528309,
+      "judge_expected_energy_per_m": 1.0,
+      "midpoint_in_soil": false
+    },
+    {
+      "label": "old_zone_after_shift",
+      "simulation_time_s": 226.018,
+      "start_world": [
+        -1.737803829585472,
+        1.1664656921956338,
+        2.762470524763329
+      ],
+      "end_world": [
+        -1.514501315702788,
+        1.1796722921438112,
+        -0.09800415895254408
+      ],
+      "distance_m": 0.22369270660555188,
+      "heading_change_rad": 2.860474683715873,
+      "battery_before": 48.416717601375304,
+      "battery_after": 47.88553886080453,
+      "observed_battery_drop": 0.5311787405707733,
+      "rotation_energy_estimate": 0.28604746837158734,
+      "observed_energy_per_m_after_rotation": 1.0958393589087272,
+      "judge_expected_energy_per_m": 1.0,
+      "midpoint_in_soil": false
+    },
+    {
+      "label": "new_zone_after_shift",
+      "simulation_time_s": 291.913,
+      "start_world": [
+        -0.21471633940501295,
+        0.6250013021365326,
+        2.6282892052921348e-05
+      ],
+      "end_world": [
+        0.08562498665399206,
+        0.6250014411813086,
+        -2.7481022142740024e-05
+      ],
+      "distance_m": 0.3003413260590372,
+      "heading_change_rad": 5.376391419566137e-05,
+      "battery_before": 45.033761313881925,
+      "battery_after": 44.13273195926296,
+      "observed_battery_drop": 0.9010293546189629,
+      "rotation_energy_estimate": 5.3763914195661375e-06,
+      "observed_energy_per_m_after_rotation": 3.000000000167915,
+      "judge_expected_energy_per_m": 3.0,
+      "midpoint_in_soil": true
+    }
+  ],
+  "published_guard_state_after_shift": {
+    "base": [
+      -2.0,
+      -0.5
+    ],
+    "speed_factor": 0.5,
+    "zones": [
+      [
+        1.7250000000000014,
+        -1.0749999999999993,
+        0.5
+      ],
+      [
+        0.4750000000000014,
+        0.375,
+        0.5
+      ],
+      [
+        0.9250000000000007,
+        -0.3249999999999993,
+        0.5
+      ],
+      [
+        -0.02499999999999858,
+        0.625,
+        0.5
+      ]
+    ]
+  },
+  "interpretation": "direct test-side motion through identical 0.3m segments; no mission planner"
+}

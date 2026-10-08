@@ -1,0 +1,11 @@
+{
+  "map_id": "map-33a36ebf",
+  "resolution_m": 0.05,
+  "width": 384,
+  "height": 384,
+  "origin": {
+    "position_x_m": -10.0,
+    "position_y_m": -10.0,
+    "heading_rad": 0.0
+  }
+}

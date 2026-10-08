@@ -1,0 +1,20 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "backend_run_id": "868f2084d83f4963ab24cb9e005509ea",
+  "status": "stopped",
+  "api_state": {
+    "schema_version": "1.2",
+    "generation": 6,
+    "observation_sequence": 1,
+    "sample_signal_age_s": 0.0378543750011886,
+    "simulation_time_s": 2.09
+  },
+  "supervisor_generation": 6,
+  "claim": "Public state exposes the active generation, observation sequence, and sample-signal age; supervisor and backend generations match.",
+  "limits": [
+    "Critical-source freshness is enforced internally as a shared observation age, not exposed separately for odom, scan, battery, and clock.",
+    "Stale message injection and a truly paused Gazebo clock remain unverified."
+  ]
+}

@@ -1,0 +1,426 @@
+<!-- Исходник презентации защиты. Собирается в defense.html: python3 scripts/defense/build_deck.py -->
+<title>GoatWhistle · защита DID Hack</title>
+<style>
+  /* ---------- Общие элементы защиты ---------- */
+  .lead { margin-top: var(--space-32); font-size: 34px; line-height: 1.4; max-width: 1500px; }
+  .slide--ink .lead { color: var(--text-on-ink); }
+  .slide--paper .lead { color: var(--text-on-paper); }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font: 500 22px/1 var(--font-sans);
+    padding: 8px 16px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .status::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+  .status--live { background: var(--accent); color: var(--ink); }
+  .status--live::before { background: var(--ink); }
+  .status--tests { border: 2px solid currentColor; }
+  .status--pending { border: 2px dashed currentColor; }
+  .slide--ink .status--tests, .slide--ink .status--pending { color: var(--text-on-ink); }
+  .slide--paper .status--tests, .slide--paper .status--pending { color: var(--text-on-paper); }
+
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- 1. Задача ---------- */
+  .cover__title { font-size: 88px; font-weight: 700; line-height: 1.06; letter-spacing: -0.025em; text-wrap: balance; }
+  .cover__title .accent { color: var(--accent); }
+  .nowrap { white-space: nowrap; }
+  .task { flex: 1; display: grid; grid-template-columns: 1fr 560px; gap: var(--space-96); align-items: center; }
+  .task__goal { margin-top: var(--space-48); display: flex; flex-direction: column; gap: var(--space-16); }
+  .task__goal b { font-size: 30px; font-weight: 600; }
+  .facts { display: flex; flex-direction: column; border-left: 1px solid var(--ink-line); padding-left: var(--space-64); }
+  .fact { padding: var(--space-24) 0; border-top: 1px solid var(--ink-line); }
+  .fact:first-child { border-top: none; padding-top: 0; }
+  .fact__value { font: 700 56px/1 var(--font-mono); letter-spacing: -0.02em; color: var(--paper); }
+  .fact__label { margin-top: var(--space-8); font-size: 24px; color: var(--muted-on-ink); line-height: 1.35; }
+
+  /* ---------- 2. Сценарий ---------- */
+  .flow-block { margin-top: var(--space-64); }
+  .flow-block + .flow-block { margin-top: var(--space-48); }
+  .flow-head { display: flex; align-items: center; gap: var(--space-24); margin-bottom: var(--space-24); }
+  .flow-head h3 { font-size: 36px; font-weight: 600; }
+  .flow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; position: relative; }
+  .step { position: relative; padding: 0 var(--space-16) 0 0; }
+  .step__dot { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--ink); background: var(--paper-raised); position: relative; z-index: 1; }
+  .step__line { position: absolute; left: 22px; right: 0; top: 10px; height: 2px; background: var(--paper-line); }
+  .step:last-child .step__line { display: none; }
+  .step__name { margin-top: var(--space-16); font-size: 26px; font-weight: 600; line-height: 1.2; color: var(--ink); }
+  .step__hint { margin-top: var(--space-8); font-size: 21px; line-height: 1.35; color: var(--muted-on-paper); }
+  .flow--live .step__dot { border-color: var(--accent-ink); background: var(--accent-ink); }
+  .flow--live .step__line { background: var(--accent-ink); }
+  .flow--pending .step__dot { border-style: dashed; border-color: var(--muted-on-paper); }
+  .flow--pending .step__line { background: repeating-linear-gradient(90deg, var(--muted-on-paper) 0 8px, transparent 8px 16px); }
+  .flow--pending .step--live .step__dot { border-style: solid; border-color: var(--accent-ink); background: var(--accent-ink); }
+
+  /* ---------- 3. Архитектура ---------- */
+  .arch { display: grid; grid-template-columns: 420px 1fr 400px; gap: var(--space-48); align-items: start; margin-top: var(--space-48); }
+  .arch__col { display: flex; flex-direction: column; gap: var(--space-16); }
+  .box { border: 2px solid var(--ink-line); border-radius: var(--radius); padding: 20px 26px; background: var(--ink-raised); }
+  .box h3 { font-size: 28px; font-weight: 600; }
+  .box p { margin-top: 6px; font-size: 21px; line-height: 1.4; color: var(--text-on-ink); }
+  .box .mono { font-size: 20px; color: var(--muted-on-ink); }
+  .box--accent { border-color: var(--accent); }
+  .box--muted { border-style: dashed; background: transparent; }
+  .layers { display: flex; flex-direction: column; gap: 12px; margin-top: var(--space-16); }
+  .layer { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-16); align-items: baseline; padding: 14px 0; border-top: 1px solid var(--ink-line); }
+  .layer b { font: 700 22px/1.2 var(--font-mono); color: var(--accent); }
+  .layer span { font-size: 22px; line-height: 1.4; color: var(--text-on-ink); }
+  .arrow-label { font: 500 20px/1.3 var(--font-mono); color: var(--muted-on-ink); text-align: center; }
+
+  /* ---------- 4. Технологии ---------- */
+  .tech { margin-top: var(--space-48); display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--space-96); }
+  .tech__row { display: grid; grid-template-columns: 340px 1fr; gap: var(--space-24); padding: 20px 0; border-top: 1px solid var(--paper-line); align-items: baseline; }
+  .tech__name { font-size: 28px; font-weight: 600; color: var(--ink); }
+  .tech__name .mono { display: block; margin-top: 6px; font-size: 20px; font-weight: 500; color: var(--muted-on-paper); }
+  .tech__why { font-size: 24px; line-height: 1.4; color: var(--text-on-paper); }
+
+  /* ---------- 5. Карта и движение ---------- */
+  .mapslide { display: grid; grid-template-columns: 600px 1fr; gap: var(--space-96); align-items: start; margin-top: var(--space-48); }
+  .mapfig { display: flex; flex-direction: column; gap: var(--space-16); }
+  .real-map { width: 600px; height: 600px; display: block; border-radius: var(--radius); }
+  .mapfig figcaption { font-size: 20px; line-height: 1.4; color: var(--muted-on-ink); }
+  .pipeline { display: flex; flex-direction: column; }
+  .pipe { display: grid; grid-template-columns: 64px 1fr; gap: var(--space-16); padding: 16px 0; border-top: 1px solid var(--ink-line); }
+  .pipe:first-child { border-top: none; }
+  .pipe__index { font: 700 22px/1.4 var(--font-mono); color: var(--accent); }
+  .pipe__text { font-size: 25px; line-height: 1.4; color: var(--text-on-ink); }
+  .pipe__text b { color: var(--paper); font-weight: 600; }
+
+  /* ---------- 6. Живой показ ---------- */
+  .demo { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-96); margin-top: var(--space-48); }
+  .demo ol { list-style: none; counter-reset: demo; display: flex; flex-direction: column; gap: var(--space-16); }
+  .demo li { counter-increment: demo; display: grid; grid-template-columns: 56px 1fr; font-size: 28px; line-height: 1.35; color: var(--text-on-ink); }
+  .demo li::before { content: counter(demo, decimal-leading-zero); font: 700 22px/1.6 var(--font-mono); color: var(--accent); }
+  .demo h3 { font-size: 32px; font-weight: 600; margin-bottom: var(--space-24); display: flex; gap: var(--space-24); align-items: center; }
+
+  /* ---------- 7. Готово и в работе ---------- */
+  .readiness { margin-top: var(--space-48); display: grid; grid-template-columns: repeat(3, 1fr); }
+  .readiness__col { padding: 0 var(--space-48); border-left: 1px solid var(--paper-line); }
+  .readiness__col:first-child { padding-left: 0; border-left: none; }
+  .readiness__col h3 { margin-bottom: var(--space-32); }
+  .readiness .dash-list { font-size: 26px; gap: 14px; }
+
+  /* ---------- 8. Результаты ---------- */
+  .results { margin-top: var(--space-48); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-48) var(--space-64); }
+  .result { border-top: 2px solid var(--ink-line); padding-top: var(--space-24); }
+  .result__value { font: 700 54px/1.05 var(--font-mono); letter-spacing: -0.02em; color: var(--paper); }
+  .result__value small { font-size: 28px; font-weight: 500; color: var(--text-on-ink); }
+  .result__label { margin-top: var(--space-16); font-size: 24px; line-height: 1.4; color: var(--text-on-ink); }
+  .result__meta { margin-top: var(--space-8); font: 500 18px/1.4 var(--font-mono); color: var(--muted-on-ink); }
+
+  /* ---------- 9. ИИ в разработке ---------- */
+  .aidev { margin-top: var(--space-48); display: grid; grid-template-columns: 520px 1fr; gap: var(--space-96); }
+  .process { display: flex; flex-direction: column; gap: 0; }
+  .process__step { position: relative; padding: 0 0 var(--space-32) 48px; font-size: 26px; line-height: 1.4; color: var(--text-on-paper); }
+  .process__step b { display: block; color: var(--ink); font-weight: 600; }
+  .process__step::before { content: ""; position: absolute; left: 0; top: 10px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--accent-ink); background: var(--paper-raised); }
+  .process__step::after { content: ""; position: absolute; left: 10px; top: 34px; bottom: 4px; width: 2px; background: var(--paper-line); }
+  .process__step:last-child::after { display: none; }
+  .cases { display: flex; flex-direction: column; }
+  .case { display: grid; grid-template-columns: 260px 1fr; gap: var(--space-32); padding: 22px 0; border-top: 1px solid var(--paper-line); }
+  .case h4 { font-size: 26px; font-weight: 600; line-height: 1.25; color: var(--ink); }
+  .case p { font-size: 22px; line-height: 1.45; color: var(--text-on-paper); }
+  .case p b { color: var(--ink); font-weight: 600; }
+</style>
+
+<!--SLIDES-->
+  <!-- 1. Задача и цель -->
+  <section class="slide slide--ink" aria-label="Слайд 1: задача и цель"
+    data-notes="Задача: TurtleBot3 в Gazebo ищет скрытые образцы, платит батареей за путь и обязан вернуться на базу. Цель проекта — исследователь, который проверяет гипотезы. К защите показываем базовые навыки робота: карту, позу, точку назначения, путь и движение.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <div class="task">
+      <div>
+        <h1 class="cover__title tt">Автономный <span class="nowrap">ИИ-исследователь</span> <span class="accent">на TurtleBot3</span></h1>
+        <p class="lead a" style="--d:160ms">Робот в Gazebo ищет скрытые образцы по шумному датчику, платит батареей за каждый метр и возвращается на базу до того, как заряд кончится.</p>
+        <div class="task__goal">
+          <b class="a" style="--d:300ms">Сегодня показываем</b>
+          <ul class="dash-list" style="color:var(--text-on-ink)">
+            <li class="a" style="--d:360ms">готовую карту и положение робота на ней</li>
+            <li class="a" style="--d:420ms">точку назначения, путь с запасом и движение</li>
+            <li class="a" style="--d:480ms">возврат на базу и подтверждённый результат</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facts">
+        <div class="fact a" style="--d:300ms"><div class="fact__value">60</div><div class="fact__label">единиц батареи на всю миссию</div></div>
+        <div class="fact a" style="--d:380ms"><div class="fact__value">0.30 м</div><div class="fact__label">радиус сбора образца</div></div>
+        <div class="fact a" style="--d:460ms"><div class="fact__value">0.05 м</div><div class="fact__label">клетка карты, 384 × 384 клетки</div></div>
+        <div class="fact a" style="--d:540ms"><div class="fact__value">ROS 2</div><div class="fact__label">Jazzy, Gazebo Harmonic, TurtleBot3 Burger</div></div>
+      </div>
+    </div>
+    <span class="foot f" style="--d:700ms">Команда GoatWhistle · DID Hack · защита 08.10</span>
+    <span class="num f" style="--d:700ms">01 / 09</span>
+  </section>
+
+  <!-- 2. Сценарий -->
+  <section class="slide slide--paper" aria-label="Слайд 2: сценарий работы робота"
+    data-notes="Два сценария на одном движке, оба прошли в Gazebo от старта до подтверждённого финиша. Точку пользователя проверили на репетиции сегодня: шесть из шести успешных прогонов к цели к северу от базы. У стены есть известный ложный отказ, его чинят.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Один движок, два сценария: исследование и точка назначения</h2>
+
+    <div class="flow-block a" style="--d:200ms">
+      <div class="flow-head"><h3>Исследование</h3><span class="status status--live">live в Gazebo</span></div>
+      <div class="flow flow--live">
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Запуск</div><div class="step__hint">reset среды, seed</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Карта</div><div class="step__hint">загрузка Nav2-карты</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Задача</div><div class="step__hint">LLM выбирает подцель, алгоритм проверяет</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Путь</div><div class="step__hint">A* с запасом</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Движение</div><div class="step__hint">сбор по датчику</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Возврат</div><div class="step__hint">резерв энергии</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Результат</div><div class="step__hint">finish, счёт судьи</div></div>
+      </div>
+    </div>
+
+    <div class="flow-block a" style="--d:400ms">
+      <div class="flow-head"><h3>Точка пользователя</h3><span class="status status--live">live, репетиция 08.10</span></div>
+      <div class="flow flow--live">
+        <div class="step step--live"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Запуск</div><div class="step__hint">тот же стенд</div></div>
+        <div class="step step--live"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Карта</div><div class="step__hint">та же карта</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Точка</div><div class="step__hint">клик на карте, без LLM</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Путь</div><div class="step__hint">проверка достижимости</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Прибытие</div><div class="step__hint">допуск 0.12 м</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Возврат</div><div class="step__hint">на базу</div></div>
+        <div class="step"><div class="step__dot"></div><div class="step__line"></div><div class="step__name">Результат</div><div class="step__hint">completed только после finish</div></div>
+      </div>
+    </div>
+
+    <span class="foot f" style="--d:900ms">Оба сценария проверены в Gazebo. Ограничение точки пользователя: у стены возможен ложный отказ (дефект в работе)</span>
+    <span class="num f" style="--d:700ms">02 / 09</span>
+  </section>
+
+  <!-- 3. Архитектура -->
+  <section class="slide slide--ink" aria-label="Слайд 3: архитектура решения"
+    data-notes="Три контейнера. Симуляция: Gazebo и локальный судья, который знает скрытую истину. Backend видит только публичную карту и ROS-наблюдения. Внутри backend чистая архитектура: в domain нет ни ROS, ни HTTP, ни LLM. Панель общается с backend только через HTTP.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Агент видит наблюдения, истина — у судьи</h2>
+
+    <div class="arch">
+      <div class="arch__col">
+        <div class="box a" style="--d:200ms">
+          <h3>Симуляция</h3>
+          <p>Gazebo Harmonic, TurtleBot3 Burger, лидар, одометрия</p>
+        </div>
+        <div class="box a" style="--d:280ms">
+          <h3>Локальный судья</h3>
+          <p>Батарея, сбор, finish, столкновения. Скрытые образцы и зоны видит только он.</p>
+        </div>
+        <div class="box box--muted a" style="--d:360ms">
+          <h3>Супервизор</h3>
+          <p>reset по seed и профилю, поколение прогона</p>
+        </div>
+        <div class="arrow-label f" style="--d:600ms">ROS 2 топики и сервисы<br>/odom /scan /did/* /cmd_vel</div>
+      </div>
+
+      <div class="box box--accent a" style="--d:300ms">
+        <h3>Backend · Python</h3>
+        <div class="layers">
+          <div class="layer"><b>adapters</b><span>ROS-мост, HTTP API, LLM-клиент, журнал JSONL, загрузка карты</span></div>
+          <div class="layer"><b>application</b><span>MissionController: один владелец состояния прогона; навигация, исполнение плана, Stop</span></div>
+          <div class="layer"><b>domain</b><span>A*, запас, ведение по пути, энергия, гипотезы. Без ROS, HTTP и LLM</span></div>
+        </div>
+        <p style="margin-top:var(--space-24)">Зависимости направлены внутрь: adapters → application → domain</p>
+      </div>
+
+      <div class="arch__col">
+        <div class="box a" style="--d:400ms">
+          <h3>Панель · React</h3>
+          <p>Карта, поза, путь, цель, батарея, журнал, Start/Stop, экспорт</p>
+          <p class="mono">HTTP /api/v1</p>
+        </div>
+        <div class="box a" style="--d:480ms">
+          <h3>LLM</h3>
+          <p>В исследовании предлагает план из 1–3 шагов. Каждый шаг проверяет алгоритм.</p>
+          <p class="mono">OpenAI-совместимый API</p>
+        </div>
+        <div class="box box--muted a" style="--d:560ms">
+          <h3>Резервная политика</h3>
+          <p>Работает, если LLM недоступна или отвечает мусором</p>
+        </div>
+      </div>
+    </div>
+
+    <span class="num f" style="--d:700ms">03 / 09</span>
+  </section>
+
+  <!-- 4. Технологии -->
+  <section class="slide slide--paper" aria-label="Слайд 4: технологии и их назначение"
+    data-notes="Стек задан ТЗ: ROS 2 Jazzy и Gazebo Harmonic. Всё собрано в Docker Compose, стенд поднимается одной командой, Gazebo виден через браузер. Backend на Python и FastAPI, панель на React и TypeScript.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Технологии и зачем каждая нужна</h2>
+    <div class="tech">
+      <div>
+        <div class="tech__row a" style="--d:160ms"><div class="tech__name">ROS 2 Jazzy</div><div class="tech__why">Топики одометрии, лидара, батареи; сервисы сбора и финиша</div></div>
+        <div class="tech__row a" style="--d:220ms"><div class="tech__name">Gazebo Harmonic</div><div class="tech__why">Физика, контакты, лидар; мир turtlebot3_world</div></div>
+        <div class="tech__row a" style="--d:280ms"><div class="tech__name">TurtleBot3 Burger</div><div class="tech__why">Робот из ТЗ; команда скорости TwistStamped</div></div>
+        <div class="tech__row a" style="--d:340ms"><div class="tech__name">Docker Compose<span class="mono">+ noVNC</span></div><div class="tech__why">Стенд одной командой, изоляция по ROS domain; Gazebo в браузере</div></div>
+      </div>
+      <div>
+        <div class="tech__row a" style="--d:220ms"><div class="tech__name">Python · FastAPI<span class="mono">rclpy, uvicorn</span></div><div class="tech__why">Backend: ядро без фреймворков, HTTP и ROS как адаптеры</div></div>
+        <div class="tech__row a" style="--d:280ms"><div class="tech__name">LLM<span class="mono">OpenAI-совместимый</span></div><div class="tech__why">План исследования с обоснованием; строгий разбор JSON, таймаут 10 с</div></div>
+        <div class="tech__row a" style="--d:340ms"><div class="tech__name">React 19 · TypeScript<span class="mono">Vite</span></div><div class="tech__why">Панель: карта, путь, журнал гипотез, экспорт</div></div>
+        <div class="tech__row a" style="--d:400ms"><div class="tech__name">pytest · vitest</div><div class="tech__why">Тесты ядра, контракта HTTP и ROS-адаптера, панели</div></div>
+      </div>
+    </div>
+    <span class="num f" style="--d:700ms">04 / 09</span>
+  </section>
+
+  <!-- 5. Карта и движение -->
+  <section class="slide slide--ink" aria-label="Слайд 5: построение карты и движения"
+    data-notes="Карта готовая: Nav2 map.yaml из пакета turtlebot3. Мы честно её загружаем, это не SLAM. Вокруг препятствий запрещённый запас 21 сантиметр: радиус робота плюс 10 сантиметров. A* ищет путь по сетке, затем путь упрощается до путевых точек. Поза приходит из ROS-одометрии. Рисунок слева посчитан тем же кодом на этой карте.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Готовая карта, путь с запасом, контроль хода</h2>
+    <div class="mapslide">
+      <figure class="mapfig f" style="--d:200ms;--t:900ms">
+        <!--MAP_SVG-->
+        <figcaption>Реальная публичная карта. База, демо-цели T1–T4 и пути посчитаны тем же A* офлайн. Тёмная кайма — запас 0.21 м, крест — недостижимая цель.</figcaption>
+      </figure>
+      <div class="pipeline">
+        <div class="pipe a" style="--d:300ms"><span class="pipe__index">01</span><span class="pipe__text"><b>Карта.</b> Nav2 map.yaml → сетка 384 × 384, клетка 0.05 м. Загружается готовая, не строится.</span></div>
+        <div class="pipe a" style="--d:380ms"><span class="pipe__index">02</span><span class="pipe__text"><b>Запас.</b> Радиус робота 0.11 м + 0.10 м. Неизвестные клетки непроходимы.</span></div>
+        <div class="pipe a" style="--d:460ms"><span class="pipe__index">03</span><span class="pipe__text"><b>Путь.</b> A* по 8 соседям без срезания углов, затем упрощение до путевых точек.</span></div>
+        <div class="pipe a" style="--d:540ms"><span class="pipe__index">04</span><span class="pipe__text"><b>Поза.</b> ROS /odom → мир: x = −2.0 + odom.x, y = −0.5 + odom.y.</span></div>
+        <div class="pipe a" style="--d:620ms"><span class="pipe__index">05</span><span class="pipe__text"><b>Исполнение.</b> До 0.15 м/с по отрезкам. Отклонение > 0.30 м → новый путь. Лидар тормозит перед препятствием.</span></div>
+        <div class="pipe a" style="--d:700ms"><span class="pipe__index">06</span><span class="pipe__text"><b>Безопасность.</b> Устаревшие данные или Stop → нулевая скорость. Возврат с резервом энергии.</span></div>
+      </div>
+    </div>
+    <span class="num f" style="--d:700ms">05 / 09</span>
+  </section>
+
+  <!-- 6. Живой показ -->
+  <section class="slide slide--ink" aria-label="Слайд 6: живой показ"
+    data-notes="Переключаюсь на стенд. Слева панель, справа Gazebo. Если навигация к точке не прошла приёмку, показываю исследовательский режим и говорю об этом. Если стенд недоступен, включаю запись и называю её записью.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Живой показ: панель и Gazebo рядом</h2>
+    <div class="demo">
+      <div class="a" style="--d:200ms">
+        <h3>Основной сценарий <span class="status status--live">live, репетиция 08.10</span></h3>
+        <ol>
+          <li>Стенд готов: карта загружена, робот на базе</li>
+          <li>Клик по точке T3 (−1.75; 0.75)</li>
+          <li>Пунктир пути, Start, робот едет</li>
+          <li>Цель достигнута → возврат на базу</li>
+          <li>Finish подтверждён → completed</li>
+          <li>Stop в движении, затем цель в стене → отказ</li>
+        </ol>
+      </div>
+      <div class="a" style="--d:400ms">
+        <h3>План Б <span class="status status--tests">запись</span></h3>
+        <ol>
+          <li>Сбой стенда — видео репетиции 08.10, подписанное «ЗАПИСЬ»</li>
+          <li>Ложный отказ у стены — показать безопасный возврат и повторить</li>
+          <li>Исследовательский режим, easy seed 7 — тот же навигатор</li>
+        </ol>
+      </div>
+    </div>
+    <span class="foot f" style="--d:700ms">Панель :8090 · Gazebo noVNC :6090 · стенд did-defense</span>
+    <span class="num f" style="--d:700ms">06 / 09</span>
+  </section>
+
+  <!-- 7. Готово и в работе -->
+  <section class="slide slide--paper" aria-label="Слайд 7: что готово и что в работе"
+    data-notes="Разделяем три уровня. Проверено в Gazebo. Есть код и тесты или подменная среда, но в живом стенде не доказано. И то, что ещё в работе. SLAM, два робота и три LLM-роли работающими не называем.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Что проверено, что только в тестах, что в работе</h2>
+    <div class="readiness">
+      <div class="readiness__col a" style="--d:200ms">
+        <h3><span class="status status--live">live в Gazebo</span></h3>
+        <ul class="dash-list">
+          <li>Стенд Gazebo + ROS 2 + судья в Docker</li>
+          <li>Статичная карта, поза и путь на панели</li>
+          <li>Точка пользователя: клик → путь → возврат</li>
+          <li>A* с запасом, перепланирование, торможение</li>
+          <li>Stop и отказ при устаревших данных</li>
+          <li>Возврат с резервом энергии</li>
+          <li>LLM-план с проверкой и резервом</li>
+        </ul>
+      </div>
+      <div class="readiness__col a" style="--d:320ms">
+        <h3><span class="status status--tests">тесты, подменная среда</span></h3>
+        <ul class="dash-list">
+          <li>Научный цикл и адаптация: серии офлайн</li>
+          <li>Сценарии medium и hard; на ROS — пробы</li>
+          <li>SLAM: модули есть, в API закрыт</li>
+          <li>Два робота: координация офлайн</li>
+          <li>Выход из застревания: частично live</li>
+        </ul>
+      </div>
+      <div class="readiness__col a" style="--d:440ms">
+        <h3><span class="status status--pending">в работе</span></h3>
+        <ul class="dash-list">
+          <li>Ложный отказ цели у стены <span class="nowrap">(D1-live-2)</span></li>
+          <li>SLAM и два робота в живом стенде</li>
+          <li>Три LLM-роли: оркестратор, исследователь, критик</li>
+          <li>Серии надёжности и сравнение стратегий</li>
+        </ul>
+      </div>
+    </div>
+    <span class="num f" style="--d:700ms">07 / 09</span>
+  </section>
+
+  <!-- 8. Реальные результаты -->
+  <section class="slide slide--ink" aria-label="Слайд 8: реальные результаты"
+    data-notes="Только измеренное, с числом прогонов. Это единичные прогоны, а не статистика надёжности. Важная честная деталь: в прогоне seed 7 LLM ответила один раз из тринадцати, остальное сделала резервная политика из-за сети. Точка пользователя: шесть из шести к северу от базы, а у нижней стены три из пяти — там ложный отказ, его чинят.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">Реальные результаты в Gazebo</h2>
+    <div class="results">
+      <div class="result a" style="--d:200ms">
+        <div class="result__value">50.97<small> / 60</small></div>
+        <div class="result__label">Батарея после полной миссии easy: 1 образец, возврат, completed</div>
+        <div class="result__meta">seed 7 · 1 прогон · 07.10</div>
+      </div>
+      <div class="result a" style="--d:280ms">
+        <div class="result__value">0.0001<small> м</small></div>
+        <div class="result__label">Дрейф после Stop; до этого 0.493 м за 5 с при 0.1 м/с</div>
+        <div class="result__meta">ROS-проверка · 1 прогон · 07.10</div>
+      </div>
+      <div class="result a" style="--d:360ms">
+        <div class="result__value">0<small> столкновений</small></div>
+        <div class="result__label">Препятствие на пути: completed, возврат ~0.10 м от базы; запас до коробки не меньше 0.31 м</div>
+        <div class="result__meta">seed 23 · 1 миссия + 2 пробы · 08.10</div>
+      </div>
+      <div class="result a" style="--d:440ms">
+        <div class="result__value">1.38<small> ед./м</small></div>
+        <div class="result__label">Измерено против прогноза ≥ 1.68: гипотеза о дорогом участке опровергнута</div>
+        <div class="result__meta">seed 1 через панель · 07.10</div>
+      </div>
+      <div class="result a" style="--d:520ms">
+        <div class="result__value">1 / 13</div>
+        <div class="result__label">Планов от LLM; 12 сделала резервная политика при сбоях сети</div>
+        <div class="result__meta">seed 7 · 1 прогон · 07.10</div>
+      </div>
+      <div class="result a" style="--d:600ms">
+        <div class="result__value">6 / 6</div>
+        <div class="result__label">Точка пользователя к северу от базы: completed; по ROS 0.10–0.11 м до цели при допуске 0.12</div>
+        <div class="result__meta">репетиция через UI · 6 прогонов · 08.10</div>
+      </div>
+    </div>
+    <span class="foot f" style="--d:800ms">Малые выборки, не статистика надёжности. У стены точка пользователя — 3 из 5. Судья локальный.</span>
+    <span class="num f" style="--d:700ms">08 / 09</span>
+  </section>
+
+  <!-- 9. ИИ в разработке -->
+  <section class="slide slide--paper" aria-label="Слайд 9: как использовали ИИ при разработке"
+    data-notes="ИИ-агенты писали код по задачам из репозитория: AGENTS.md и папка context. Два агента работали параллельно в отдельных worktree. Каждое изменение проверялось тестами или живым прогоном. Три примера, где проверка нашла реальный дефект.">
+    <div class="brand f"><svg aria-hidden="true"><use href="#brand-mark"/></svg>GoatWhistle</div>
+    <h2 class="title tt">ИИ-агенты писали код, проверки ловили их ошибки</h2>
+    <div class="aidev">
+      <div class="process">
+        <div class="process__step a" style="--d:200ms"><b>Задача в репозитории</b>AGENTS.md, контракты и критерии приёмки в context/</div>
+        <div class="process__step a" style="--d:280ms"><b>Параллельные агенты</b>Потоки A и B в отдельных worktree, затем слияние</div>
+        <div class="process__step a" style="--d:360ms"><b>Проверка</b>Тесты, живой прогон, скиллы <span class="nowrap">ros-check</span> и <span class="nowrap">research-run</span></div>
+        <div class="process__step a" style="--d:440ms"><b>Ревью и журнал</b>Дефект → регрессионный тест → запись в отчёт</div>
+      </div>
+      <div class="cases">
+        <div class="case a" style="--d:300ms"><h4>Лимиты сбора обходились</h4><p>Ревью: решение LLM collect не проверяло число попыток и порог сигнала. <b>Добавлены проверки; тест падал до исправления и проходит после.</b></p></div>
+        <div class="case a" style="--d:380ms"><h4>Ошибка при выключении ROS</h4><p>Публикация в закрытый контекст (publisher's context is invalid). <b>Сначала ноль скорости, затем закрытие ROS; 3 теста на настоящем ROS, 2 падали до исправления.</b></p></div>
+        <div class="case a" style="--d:460ms"><h4>Ложные тревоги грунта</h4><p>10 ложных тревог на 30 неизменных прогонах. <b>Тревога только после двух проездов: 2 тревоги, обе опровергнуты.</b> Две неудачные попытки откатили. Подменная среда.</p></div>
+      </div>
+    </div>
+    <span class="foot f" style="--d:800ms">Источники: context/review-2026-10-06.md, mvp/acceptance-2026-10-07.md, reports/b-process.md</span>
+    <span class="num f" style="--d:700ms">09 / 09</span>
+  </section>
+<!--/SLIDES-->

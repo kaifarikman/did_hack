@@ -8,9 +8,25 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from domain.geometry import Pose
+from domain.geometry import Point, Pose
 
 DEFAULT_ROBOT_ID = "robot_1"
+
+
+@dataclass(frozen=True)
+class SourceFreshness:
+    """Возраст и пороговая свежесть одного измерительного источника."""
+
+    age_s: float | None = None
+    fresh: bool | None = None
+
+
+@dataclass(frozen=True)
+class ObservationFreshness:
+    odom: SourceFreshness = SourceFreshness()
+    scan: SourceFreshness = SourceFreshness()
+    battery: SourceFreshness = SourceFreshness()
+    clock: SourceFreshness = SourceFreshness()
 
 
 class LocalizationStatus(str, Enum):
@@ -35,6 +51,8 @@ class Observation:
     sample_signal_age_s: float | None = None  # возраст последнего сообщения датчика образцов
     localization: LocalizationStatus = LocalizationStatus.OK
     localization_error_m: float | None = None  # оценка ошибки позы, если её даёт источник
+    freshness: ObservationFreshness | None = None
+    scan_obstacles: tuple[Point, ...] = ()  # попадания LaserScan в координатах world
 
     @property
     def motion_critical_missing(self) -> bool:

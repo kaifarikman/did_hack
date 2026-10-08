@@ -1,0 +1,50 @@
+{
+  "captured_at": "2026-10-08T12:50:45+00:00",
+  "commit": "c98ad902a70fe08f73e71ae94cc66c8b70aa4c06",
+  "working_tree_dirty": true,
+  "working_tree": {
+    "stash_commit": "3d127986f41a68b9e193b3bae2e9ae192cb9491c",
+    "diff_and_untracked_sha256": "c18151464c71967b6100e15a393a89dfcbaabdfaadd859d62fc39e5d5b77f63f",
+    "untracked_code_files": 45
+  },
+  "compose_project": "did-defense",
+  "env_file": "scripts/defense/defense.env",
+  "images": [
+    {
+      "service": "did-defense-gui-1",
+      "repository": "did-defense-gui",
+      "tag": "latest",
+      "id": "sha256:0b16187fc6fbd422886975625d74d35523eea578b3b59912f45f7452deb7a37e"
+    },
+    {
+      "service": "did-defense-backend-1",
+      "repository": "did-defense-backend",
+      "tag": "latest",
+      "id": "sha256:e34532dcaa181ceddc14cf07dfc860aff1e6fccd1b0a5a1a5339ac002c920628"
+    },
+    {
+      "service": "did-defense-frontend-1",
+      "repository": "did-defense-frontend",
+      "tag": "latest",
+      "id": "sha256:bdc5e8acb8826dc293ab9ba9f1c0e2cf383a0871a96896cadd20c67693b768e9"
+    },
+    {
+      "service": "did-defense-simulation-1",
+      "repository": "did-sim",
+      "tag": "dev",
+      "id": "sha256:31a865646dd91effa3d0d1772f54a00fcf6b079cee4674f4b36b8d4fdaa9a2dc"
+    }
+  ],
+  "panel_url": "http://localhost:8090",
+  "http_status": {
+    "health": 200,
+    "state": 200,
+    "map": 200
+  },
+  "run_id": "2ddfcfcf68fd4e59bd8e7bca0ec2111d",
+  "status": "stopped",
+  "schema_version": "1.4",
+  "task_type": "navigation",
+  "journal_entries": 4,
+  "note": "Финальная репетиция через UI headless Chrome (CDP), 15:45–15:49 MSK: 1-main T3 completed, 2-stop Stop на ходу, 3-wall отказ. state/journal в корне папки — последнего прогона (2-stop). Запись, не живой показ на защите."
+}

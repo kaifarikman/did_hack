@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-08",
+  "task": "T12 bounded and safe recovery after loss of route progress",
+  "implementation": {
+    "progress_watchdog": "Path progress is projected along the active route and made monotonic. No-progress time accrues only while positive translation is commanded; in-place turns and explicit holds pause the watchdog.",
+    "recovery_maneuver": "One reverse-then-turn maneuver per goal: retreat 0.12 m, rotate 0.60 rad, speeds 0.06 m/s and 0.40 rad/s, total timeout 4.0 s.",
+    "space_checks": "Each reverse command checks the fresh-scan stopping corridor and inflated static/known occupancy along the swept retreat. Rotation checks fresh scan clearance and the inflated map footprint; either turn direction is selected only if clear.",
+    "energy_and_attempt_limits": "Recovery starts only when battery covers conservative return energy with localization margin, return_reserve, and 1.0 additional recovery energy. At most one recovery attempt is allowed per goal; existing max_replans bounds subsequent route retries, after which exploration is abandoned or return fails explicitly.",
+    "failure_behavior": "Blocked or timed-out recovery stops immediately and triggers one validated route recomputation; unreachable return fails as stuck_returning/no_route_home rather than repeating motion indefinitely."
+  },
+  "verification": {
+    "targeted_suite": "backend/.venv/bin/python -m pytest -q backend/tests/test_domain.py backend/tests/test_dynamic_obstacles.py backend/tests/test_controller.py: 69 passed.",
+    "full_backend_suite": "backend/.venv/bin/python -m pytest backend/tests -q: 212 passed, 2 skipped in 42.61 s.",
+    "ros_jazzy_callbacks": "ROS Jazzy container: test_ros_generation.py: 17 passed in 0.27 s.",
+    "backend_image": "Compose backend image rebuilt from current worktree and recreated with production topic defaults /odom and /scan.",
+    "runtime_smoke": "Generation 7 easy start-stop reached terminal stopped; odom/scan/battery/clock freshness all true; native battery 59.9950/60.",
+    "static_checks": "py_compile passed for modified domain/application/adapter/test/probe files; git diff --check clean.",
+    "full_backend_suite_latest": "backend/.venv/bin/python -m pytest backend/tests -q: 212 passed, 2 skipped in 42.97 s.",
+    "ros_jazzy_callbacks_latest": "ROS Jazzy container: test_ros_generation.py: 17 passed in 0.19 s.",
+    "runtime_smoke_latest": "Restored the isolated stack to production topic defaults /odom and /scan. Easy seed0 generation1 start-stop ended stopped; health ready/ros_connected true and odom/scan/battery/clock all fresh.",
+    "live_recovery_probe": "Controlled Gazebo probe on easy seed7 reached journal events “Нет прогресса” and “Безопасное восстановление”. The probe did not observe “Восстановление завершено”; concurrent sample-sensor anomaly caused a model update/replan during the probe window, so no end-to-end recovery pass is claimed.",
+    "live_probe_raw": "../../simulation/artifacts/t12-stuck-recovery-probe.json",
+    "live_probe_trigger_summary": "../../simulation/artifacts/t12-recovery-trigger-summary.json"
+  },
+  "limitations": [
+    "The bounded recovery behavior is covered by unit/application tests and the live probe confirmed that the watchdog enters recovery. A complete physical reverse-then-turn sequence has not yet been verified; the probe run was interrupted by a concurrent sample-sensor anomaly and route replan.",
+    "The probe supplies isolated odometry on /t12/odom while Gazebo executes the same velocity commands; therefore it is a controlled induced-stall test, not a natural mechanical-stuck reproduction. Sample signal is held constant in the relay to isolate recovery from unrelated sensor behavior.",
+    "The configured recovery energy budget is a conservative project setting for the local judge and should be calibrated against measured reverse/turn battery loss before final evaluation."
+  ]
+}

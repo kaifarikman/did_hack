@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.3",
   "run_id": "fixture-run-001",
   "revision": 12,
   "status": "running",
@@ -136,5 +136,31 @@
     "planner_requests": 4
   },
   "map_mode": "static",
-  "team": null
+  "team": null,
+  "generation": 1,
+  "observation_sequence": 1,
+  "sample_signal_age_s": 0.1,
+  "robot_id": "robot_1",
+  "freshness": {
+    "odom": {
+      "age_s": 0.1,
+      "fresh": true
+    },
+    "scan": {
+      "age_s": 0.1,
+      "fresh": true
+    },
+    "battery": {
+      "age_s": 0.1,
+      "fresh": true
+    },
+    "clock": {
+      "age_s": 0.1,
+      "fresh": true
+    }
+  },
+  "route_revision": 1,
+  "plan_revision": 1,
+  "map_revision": 0,
+  "model_revision": 1
 }

@@ -17,11 +17,18 @@ def example(name: str) -> dict:
     return json.loads((EXAMPLES / name).read_text(encoding="utf-8"))
 
 
+def state_example(name: str) -> dict:
+    """Общий пример 1.3 и поля 1.4 из D1: research по умолчанию, navigation=null."""
+    return {**example(name), "schema_version": "1.4", "task_type": "research", "navigation": None}
+
+
 @pytest.fixture
 def stack():
     clock = FakeClock()
     world = SimWorld(clock, SAMPLES)
-    service, environment, maps, journal = make_service(world, clock)
+    from fakes import FakeEnvironment
+    service, environment, maps, journal = make_service(
+        world, clock, environment=FakeEnvironment(scenarios=("easy", "medium", "hard")))
     client = TestClient(create_app(service, environment, maps), raise_server_exceptions=False)
     return client, service, world, environment, maps
 
@@ -48,7 +55,7 @@ def start(client, request_id="req-1", seed=42, scenario="easy"):
 def test_idle_state_matches_example_exactly(stack):
     client, *_ = stack
     body = client.get("/api/v1/state").json()
-    expected = example("state-idle.json")
+    expected = state_example("state-idle.json")
     expected["map_id"] = "test-arena"
     assert body == expected
 
@@ -61,7 +68,13 @@ def test_running_state_has_same_fields_and_types_as_example(stack):
         service.tick()
     body = client.get("/api/v1/state").json()
     assert body["status"] == "running" and body["run_id"] == run["run_id"]
-    assert_same_shape(body, example("state-running.json"))
+    assert body["schema_version"] == "1.4" and body["robot_id"] == "robot_1"
+    assert body["task_type"] == "research" and body["navigation"] is None
+    assert all(body[key] >= 0 for key in ("route_revision", "plan_revision", "map_revision", "model_revision"))
+    assert set(body["freshness"]) == {"odom", "scan", "battery", "clock"}
+    assert all(body["freshness"][source]["fresh"] in (True, False, None)
+               for source in ("odom", "scan", "battery", "clock"))
+    assert_same_shape(body, state_example("state-running.json"))
     assert body["current_goal"] is not None and set(body["current_goal"]) == {"kind", "target", "reason"}
 
 
@@ -69,8 +82,8 @@ def test_health_map_and_error_shape(stack):
     client, _, _, environment, maps = stack
     assert client.get("/api/v1/health").json() == {
         "status": "ready", "ros_connected": True, "judge_mode": "local", "llm_available": False,
-        "supported_scenarios": ["easy"], "supported_map_modes": ["static"],
-        "supported_robot_counts": [1]}
+        "supported_scenarios": ["easy", "medium", "hard"], "supported_map_modes": ["static"],
+        "supported_robot_counts": [1], "supported_task_types": ["research", "navigation"]}
     body = client.get("/api/v1/map").json()
     assert set(body) == set(example("map.json")) and len(body["cells"]) == body["width"] * body["height"]
     assert body["origin"].keys() == example("map.json")["origin"].keys()
@@ -89,8 +102,14 @@ def test_start_is_202_conflicts_and_validation(stack):
     assert first.status_code == 202 and first.json()["status"] == "starting" and first.json()["revision"] >= 0
     other = start(client, request_id="req-2")
     assert other.status_code == 409 and other.json()["error"]["code"] == "run_conflict"
-    unavailable = start(client, request_id="req-3", scenario="hard")
+    client.post(f"/api/v1/runs/{first.json()['run_id']}/stop", json={"request_id": "stop-1"})
+    service.tick()
+    unavailable = client.post("/api/v1/runs", json={"request_id": "req-3", "scenario": "easy", "seed": 42,
+                                                      "map_mode": "slam"})
     assert unavailable.status_code == 409 and unavailable.json()["error"]["code"] == "scenario_unavailable"
+    unavailable_team = client.post("/api/v1/runs", json={"request_id": "req-3b", "scenario": "easy", "seed": 42,
+                                                           "robot_count": 2})
+    assert unavailable_team.status_code == 409 and unavailable_team.json()["error"]["code"] == "scenario_unavailable"
     assert start(client, request_id="req-4", scenario="extreme").status_code == 422
     assert client.post("/api/v1/runs", json={"request_id": "x", "scenario": "easy"}).status_code == 422
     assert client.post("/api/v1/runs", json={"request_id": "x", "scenario": "easy", "seed": "1"}).status_code == 422
@@ -124,6 +143,53 @@ def test_stop_flow_unknown_old_and_terminal_runs(stack):
     assert second["run_id"] != run_id
     old = client.post(f"/api/v1/runs/{run_id}/stop", json={"request_id": "s3"})
     assert old.status_code == 409
+
+
+def test_stop_during_pending_finish_then_reset_ignores_late_success(stack):
+    from application.ports import JudgeReply
+
+    client, service, world, *_ = stack
+
+    class DeferredOperation:
+        reply = None
+
+        def poll(self):
+            return self.reply
+
+    operation = DeferredOperation()
+
+    def begin_finish():
+        world.finish()
+        return operation
+
+    world.begin_finish = begin_finish
+    first = start(client, "pending-finish", seed=1).json()
+    for _ in range(30000):
+        world.advance()
+        service.tick()
+        if world.finished:
+            break
+
+    assert world.finished and operation.reply is None
+    stopped = client.post(
+        f"/api/v1/runs/{first['run_id']}/stop", json={"request_id": "pending-finish-stop"}
+    )
+    assert stopped.status_code == 202 and stopped.json()["status"] == "stopping"
+    service.tick()
+    assert client.get("/api/v1/state").json()["status"] == "stopped"
+
+    second = start(client, "pending-finish-reset", seed=2).json()
+    service.tick()
+    assert second["generation"] == first["generation"] + 1
+    assert client.get("/api/v1/state").json()["run_id"] == second["run_id"]
+
+    operation.reply = JudgeReply(True, "late success from previous generation")
+    service.tick()
+    old_journal = client.get(f"/api/v1/runs/{first['run_id']}/journal").json()
+    old_titles = [entry["title"] for entry in old_journal["entries"]]
+    assert "Миссия остановлена" in old_titles
+    assert "Миссия завершена" not in old_titles
+    assert client.get("/api/v1/state").json()["run_id"] == second["run_id"]
 
 
 def test_start_stop_start_resets_world_and_memory(stack):

@@ -1,0 +1,509 @@
+{
+  "stack": "isolated didhack-t02",
+  "physical_lateral_offset_m": 0.6,
+  "synthetic_scan_published": true,
+  "run_id": "3b2ef89af29745c0979c7f4186e635a9",
+  "route_revision_before": 1,
+  "plan_revision_before": 1,
+  "active_segment_length_m": 0.5256,
+  "physical_pose_before_offset": [
+    -2.0079719245572525,
+    -0.5000000000013909,
+    -1.3841368304188172e-08
+  ],
+  "backend_to_physical_pose_gap_before_m": 0.008,
+  "injected_odom_offset_xy_m": [
+    0.5993,
+    -0.0285
+  ],
+  "backend_odom_input_topic": "/t10/odom",
+  "backend_scan_input_topic": "/t10/scan",
+  "lidar_returns_reprojected_to_preserve_world_points": true,
+  "deviation_replan_journaled": true,
+  "journal_titles": [
+    "Начало миссии",
+    "План получен",
+    "Подцель: explore",
+    "Коррекция позы",
+    "План пересмотрен",
+    "Перепланирование после отклонения",
+    "Подцель: explore"
+  ],
+  "route_revision_after_offset": 1,
+  "plan_revision_after_offset": 1,
+  "goal_after_offset": {
+    "kind": "explore",
+    "target": {
+      "position_x_m": -1.975,
+      "position_y_m": 0.025
+    },
+    "reason": "Ближайшая точка с высоким баллом для первичного обследования рядом с базой."
+  },
+  "offset_samples": [
+    {
+      "elapsed_s": 0.128,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.9999999903991805,
+        "position_y_m": -0.5,
+        "heading_rad": -5.071888426086026e-13
+      }
+    },
+    {
+      "elapsed_s": 0.144,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072438407,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -4.489668804373115e-13
+      }
+    },
+    {
+      "elapsed_s": 0.205,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072438407,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -4.489668804373115e-13
+      }
+    },
+    {
+      "elapsed_s": 0.331,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072438407,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -4.489668804373115e-13
+      }
+    },
+    {
+      "elapsed_s": 0.476,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072438185,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -4.783844564874588e-13
+      }
+    },
+    {
+      "elapsed_s": 0.558,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072438185,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -4.783844564874588e-13
+      }
+    },
+    {
+      "elapsed_s": 0.586,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072438185,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -4.783844564874588e-13
+      }
+    },
+    {
+      "elapsed_s": 0.675,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072437905,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -5.20282480762965e-13
+      }
+    },
+    {
+      "elapsed_s": 0.737,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072437905,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -5.20282480762965e-13
+      }
+    },
+    {
+      "elapsed_s": 0.823,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4006791072437905,
+        "position_y_m": -0.5285390787141199,
+        "heading_rad": -5.20282480762965e-13
+      }
+    },
+    {
+      "elapsed_s": 0.988,
+      "status": "running",
+      "route_revision": 1,
+      "plan_revision": 1,
+      "robot_pose": {
+        "position_x_m": -1.4005981782559105,
+        "position_y_m": -0.5285386958116927,
+        "heading_rad": 0.12106684491443935
+      }
+    }
+  ],
+  "cooldown_window_s": 1.122,
+  "replan_count_before_cooldown_probe": 1,
+  "replan_count_during_cooldown_probe": 1,
+  "second_deviation_suppressed_during_cooldown": true,
+  "cooldown_probe_samples": [
+    {
+      "elapsed_s": 0.086,
+      "status": "running",
+      "route_revision": 1,
+      "current_goal": {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -1.975,
+          "position_y_m": 0.025
+        },
+        "reason": "Ближайшая точка с высоким баллом для первичного обследования рядом с базой."
+      }
+    },
+    {
+      "elapsed_s": 0.114,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.263,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.304,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.316,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.386,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.477,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.559,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.688,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.825,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.848,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 0.962,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    },
+    {
+      "elapsed_s": 1.084,
+      "status": "running",
+      "route_revision": 2,
+      "current_goal": null
+    }
+  ],
+  "goal_after_cooldown_probe": null,
+  "journal_after_offset_removed": [
+    "Начало миссии",
+    "План получен",
+    "Подцель: explore",
+    "Коррекция позы",
+    "План пересмотрен",
+    "Перепланирование после отклонения",
+    "Подцель: explore",
+    "Коррекция позы",
+    "Остановка перед препятствием",
+    "Коррекция позы"
+  ],
+  "extra_replan_during_one_second_after_offset_removed": false,
+  "physical_pose_after_probe": [
+    -2.015233856644176,
+    -0.5031179328789529,
+    1.0388754376954128
+  ],
+  "physical_robot_drift_during_probe_m": 0.0079,
+  "recovery_samples": [
+    {
+      "elapsed_s": 0.003,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -2.598312345211556,
+        "position_y_m": -0.4706725029946358,
+        "heading_rad": 0.8024014629605217
+      }
+    },
+    {
+      "elapsed_s": 0.11,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -2.598312345211556,
+        "position_y_m": -0.4706725029946358,
+        "heading_rad": 0.8024014629605217
+      }
+    },
+    {
+      "elapsed_s": 0.136,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562357,
+        "position_y_m": -0.49921158170882113,
+        "heading_rad": 0.8024014629623117
+      }
+    },
+    {
+      "elapsed_s": 0.154,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562357,
+        "position_y_m": -0.49921158170882113,
+        "heading_rad": 0.8024014629623117
+      }
+    },
+    {
+      "elapsed_s": 0.211,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562357,
+        "position_y_m": -0.49921158170882113,
+        "heading_rad": 0.8024014629623117
+      }
+    },
+    {
+      "elapsed_s": 0.306,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562226,
+        "position_y_m": -0.4992115817088076,
+        "heading_rad": 0.802401462962285
+      }
+    },
+    {
+      "elapsed_s": 0.378,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562226,
+        "position_y_m": -0.4992115817088076,
+        "heading_rad": 0.802401462962285
+      }
+    },
+    {
+      "elapsed_s": 0.402,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562226,
+        "position_y_m": -0.4992115817088076,
+        "heading_rad": 0.802401462962285
+      }
+    },
+    {
+      "elapsed_s": 0.404,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562226,
+        "position_y_m": -0.4992115817088076,
+        "heading_rad": 0.802401462962285
+      }
+    },
+    {
+      "elapsed_s": 0.422,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562226,
+        "position_y_m": -0.4992115817088076,
+        "heading_rad": 0.802401462962285
+      }
+    },
+    {
+      "elapsed_s": 0.47,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562226,
+        "position_y_m": -0.4992115817088076,
+        "heading_rad": 0.802401462962285
+      }
+    },
+    {
+      "elapsed_s": 0.518,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620561993,
+        "position_y_m": -0.4992115817087834,
+        "heading_rad": 0.8024014629622355
+      }
+    },
+    {
+      "elapsed_s": 0.541,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620561993,
+        "position_y_m": -0.4992115817087834,
+        "heading_rad": 0.8024014629622355
+      }
+    },
+    {
+      "elapsed_s": 0.553,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620561993,
+        "position_y_m": -0.4992115817087834,
+        "heading_rad": 0.8024014629622355
+      }
+    },
+    {
+      "elapsed_s": 0.561,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620561993,
+        "position_y_m": -0.4992115817087834,
+        "heading_rad": 0.8024014629622355
+      }
+    },
+    {
+      "elapsed_s": 0.592,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620561993,
+        "position_y_m": -0.4992115817087834,
+        "heading_rad": 0.8024014629622355
+      }
+    },
+    {
+      "elapsed_s": 0.626,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562361,
+        "position_y_m": -0.4992115817088215,
+        "heading_rad": 0.8024014629624975
+      }
+    },
+    {
+      "elapsed_s": 0.707,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562361,
+        "position_y_m": -0.4992115817088215,
+        "heading_rad": 0.8024014629624975
+      }
+    },
+    {
+      "elapsed_s": 0.796,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562317,
+        "position_y_m": -0.499211581708817,
+        "heading_rad": 0.8024014629624886
+      }
+    },
+    {
+      "elapsed_s": 0.814,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562141,
+        "position_y_m": -0.49921158170879887,
+        "heading_rad": 0.8024014629624534
+      }
+    },
+    {
+      "elapsed_s": 0.863,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562141,
+        "position_y_m": -0.49921158170879887,
+        "heading_rad": 0.8024014629624534
+      }
+    },
+    {
+      "elapsed_s": 0.929,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562141,
+        "position_y_m": -0.49921158170879887,
+        "heading_rad": 0.8024014629624534
+      }
+    },
+    {
+      "elapsed_s": 1.015,
+      "status": "running",
+      "route_revision": 2,
+      "robot_pose": {
+        "position_x_m": -1.9989914620562141,
+        "position_y_m": -0.49921158170879887,
+        "heading_rad": 0.8024014629624534
+      }
+    }
+  ],
+  "stop_requested": true
+}

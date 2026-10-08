@@ -31,3 +31,15 @@ class ScenarioUnavailable(ApplicationError):
     """Профиль известен, но текущая среда его не применяет: повтор без смены среды не поможет."""
 
     code = "scenario_unavailable"
+
+
+class NavigationTargetUnreachable(ApplicationError):
+    """Цель вне карты, в запретной зоне, без пути туда/домой или без запаса энергии."""
+
+    code = "navigation_target_unreachable"
+
+
+class MapChanged(ApplicationError):
+    """Цель выбрана по другой версии карты: нужна новая карта и подтверждение пользователя."""
+
+    code = "map_changed"

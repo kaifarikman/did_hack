@@ -16,6 +16,7 @@ class JudgeEvent:
     kind: str  # collision | false_collect | hazard_hit | sample_collected
     simulation_time_s: float
     battery: float
+    position: Point | None = None  # снимок позиции судьи в том же simulation time
 
 
 @dataclass(frozen=True)
@@ -160,4 +161,4 @@ class JudgeEngine:
         return "depleted" if self.depleted else "running"
 
     def _record(self, kind: str):
-        self.events.append(JudgeEvent(kind, self.simulation_time_s, self.battery))
+        self.events.append(JudgeEvent(kind, self.simulation_time_s, self.battery, self._pose))

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-08",
+  "run_id": "a000ea196611487d8bee318732de1775",
+  "scenario": "easy",
+  "seed": 7,
+  "generation": 1,
+  "stuck_window_s": 2.0,
+  "anchor_pose_world_m_rad": [
+    -1.9902139106759835,
+    -0.06576183373114147,
+    1.5638421205478987
+  ],
+  "physical_pose_when_recovery_started_world_m_rad": [
+    -1.917162918585473,
+    -0.13186277030119592,
+    -0.5117325844560882
+  ],
+  "physical_displacement_during_induced_stall_m": 0.1304,
+  "journal_titles_at_trigger": [
+    "Начало миссии",
+    "План получен",
+    "Подцель: explore",
+    "Подцель: explore",
+    "Подозрение на неисправность датчика",
+    "Нет прогресса",
+    "Безопасное восстановление"
+  ],
+  "journal_titles_after_window": [
+    "Начало миссии",
+    "План получен",
+    "Подцель: explore",
+    "Подцель: explore",
+    "Подозрение на неисправность датчика",
+    "Нет прогресса",
+    "Безопасное восстановление",
+    "Неисправность датчика подтверждена",
+    "План пересмотрен",
+    "Перепланирование",
+    "Датчик восстанавливается",
+    "Подозрение на неисправность датчика"
+  ],
+  "recovery_completed": false,
+  "recovery_failed_event": false,
+  "reverse_command_count_in_probe_window": 2,
+  "turn_command_count_in_probe_window": 12,
+  "interpretation": "Watchdog and recovery entry were observed. Counts include all commands in the probe window; they do not establish a complete physical reverse-then-turn maneuver. Concurrent sensor anomaly caused plan invalidation/replanning before a terminal recovery event.",
+  "source": "Captured command output from the live probe run; detailed raw artifact was subsequently overwritten by the later seed7 attempt."
+}

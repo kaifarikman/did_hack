@@ -1,0 +1,108 @@
+{
+  "backend_terminal_state_before_probe": "failed",
+  "scenario": "hard",
+  "seed": 27,
+  "generation": 22,
+  "observed_until_simulation_s": 250.192,
+  "telemetry_count": 1224,
+  "fault_observations": {
+    "dropout": {
+      "scheduled_window_s": [
+        94.50991342801649,
+        114.50991342801649
+      ],
+      "telemetry_samples": 133,
+      "null_samples": 103,
+      "unique_rounded_values": 30
+    },
+    "stuck": {
+      "scheduled_window_s": [
+        136.3854258766372,
+        156.3854258766372
+      ],
+      "telemetry_samples": 134,
+      "null_samples": 0,
+      "unique_rounded_values": 31
+    },
+    "noisy": {
+      "scheduled_window_s": [
+        153.62808379292318,
+        173.62808379292318
+      ],
+      "telemetry_samples": 135,
+      "null_samples": 0,
+      "unique_rounded_values": 111
+    }
+  },
+  "hazard_route_length_m": 2.122792206135786,
+  "hazard_route_started": true,
+  "hazard_route_reached": true,
+  "final_world_pose": [
+    -0.34943945321540976,
+    -1.5897295104323226,
+    -0.27775793463631676
+  ],
+  "final_odom_world_estimate": [
+    -0.34368042605060434,
+    -1.6116991175601365,
+    -0.3123000915095909
+  ],
+  "judge_events": [
+    {
+      "type": "hazard_hit",
+      "sequence": 1,
+      "generation": 22,
+      "robot_id": "robot_1",
+      "position": [
+        -0.6037700369810906,
+        -1.508318606788991
+      ],
+      "simulation_time_s": 244.656,
+      "battery": 54.778803655915986
+    }
+  ],
+  "latest_score": {
+    "judge_mode": "local",
+    "generation": 22,
+    "state": "running",
+    "score": 0.0,
+    "collected": 0,
+    "collisions": 0,
+    "false_collects": 0,
+    "finished": false,
+    "finish_success": false,
+    "battery": 54.502731362680244,
+    "simulation_time_s": 249.573
+  },
+  "post_run_schedule_audit": {
+    "soil_shift_time_s": 84.93642173875654,
+    "shifted_zone_center": [
+      1.4750000000000014,
+      1.5250000000000004
+    ],
+    "hazard_time_s": 208.18996328121594,
+    "hazard_center": [
+      -0.22499999999999964,
+      -1.625
+    ],
+    "sensor_faults": [
+      {
+        "kind": "dropout",
+        "start_s": 94.50991342801649,
+        "end_s": 114.50991342801649
+      },
+      {
+        "kind": "stuck",
+        "start_s": 136.3854258766372,
+        "end_s": 156.3854258766372
+      },
+      {
+        "kind": "noisy",
+        "start_s": 153.62808379292318,
+        "end_s": 173.62808379292318
+      }
+    ],
+    "visibility": "test-only audit; not published to the agent/backend"
+  },
+  "limitations": "Direct controlled probe, not an autonomous mission or adaptation success."
+}

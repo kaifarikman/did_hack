@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.4",
+  "run_id": "run-1",
+  "robot_id": "robot_1",
+  "generation": 1,
+  "observation_sequence": null,
+  "sample_signal_age_s": null,
+  "revision": 9,
+  "route_revision": 1,
+  "plan_revision": 0,
+  "map_revision": 0,
+  "model_revision": 0,
+  "freshness": {
+    "odom": {
+      "age_s": null,
+      "fresh": null
+    },
+    "scan": {
+      "age_s": null,
+      "fresh": null
+    },
+    "battery": {
+      "age_s": null,
+      "fresh": null
+    },
+    "clock": {
+      "age_s": null,
+      "fresh": null
+    }
+  },
+  "status": "stopped",
+  "scenario": "easy",
+  "seed": 7,
+  "judge_mode": "local",
+  "planner_mode": "fallback",
+  "simulation_time_s": 100.49999999999997,
+  "map_id": "test-arena",
+  "robot_pose": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5,
+    "heading_rad": 0.18574092343806103
+  },
+  "base_position": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5
+  },
+  "battery_remaining": 60.0,
+  "battery_initial": 60.0,
+  "sample_signal": 0.08638766943299785,
+  "samples_collected": 0,
+  "return_energy_estimate": 0.0,
+  "current_goal": null,
+  "trajectory": [
+    {
+      "position_x_m": -2.0,
+      "position_y_m": -0.5
+    }
+  ],
+  "planned_path": [],
+  "collected_samples": [],
+  "terrain_estimates": [],
+  "last_error": null,
+  "mission_text": "Дойти до заданной точки и вернуться на базу с положительной батареей.",
+  "map_mode": "static",
+  "target_samples": 3,
+  "plan": null,
+  "research": {
+    "sensor": {
+      "state": "ok",
+      "fault": null,
+      "quality": 1.0
+    },
+    "hazards": [],
+    "hypotheses": [],
+    "last_replan_reason": null,
+    "last_replan_detection_id": null,
+    "planner_requests": 0
+  },
+  "team": null,
+  "task_type": "navigation",
+  "navigation": {
+    "target": {
+      "position_x_m": 1.5,
+      "position_y_m": 1.5,
+      "map_id": "test-arena"
+    },
+    "phase": "stopped",
+    "target_reached": false,
+    "target_reached_at_s": null,
+    "arrival_tolerance_m": 0.12
+  }
+}

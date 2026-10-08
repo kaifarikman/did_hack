@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-08",
+  "status": "complete",
+  "compose_project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "live_run": {
+    "generation": 16,
+    "scenario": "easy",
+    "seed": 23,
+    "run_id": "50b7322b77da40d0bf1780a71e137d55",
+    "supervisor_state": "ready",
+    "backend_state_before_probe": "stopped",
+    "judge_mode": "local"
+  },
+  "contact_pipeline": {
+    "source": "Gazebo Sim Contact sensors and gz.msgs.Contacts",
+    "ros_message": "ros_gz_interfaces/msg/Contacts",
+    "sensor_links": ["base_link", "base_scan", "wheel_left_link", "wheel_right_link", "caster_back_link"],
+    "all_five_topics": "publisher=1, subscription=1",
+    "physical_contact_messages_received_by_probe": 1448,
+    "unique_contact_pair": {
+      "robot": "burger::base_link::base_collision",
+      "other": "turtlebot3_world::ros_symbol::symbol::one_one"
+    },
+    "judge_collision_events": 1,
+    "judge_score": -1.0,
+    "collisions_in_public_score": 1,
+    "ground_contact_filter": "unit-tested; ground_plane contacts do not create penalties",
+    "lidar_used_as_collision_evidence": false
+  },
+  "energy_reconciliation": {
+    "initial_battery": 59.44651794433594,
+    "battery_at_collision_event": 58.01541845430864,
+    "observed_drop_to_event": 1.4310994900273002,
+    "gazebo_distance_m_from_start_to_event": 0.42766759962255785,
+    "heading_change_rad": 0.027999725169996714,
+    "configured_rotation_energy_per_rad": 0.1,
+    "configured_collision_penalty_energy": 1.0,
+    "expected_drop_from_straight_distance_turn_and_penalty": 1.4304675721395574,
+    "residual": 0.00063191788774275,
+    "qualification": "Straight-line endpoint distance is a lower-bound path estimate; observed difference is within 0.001 energy units for this short, nearly straight contact approach."
+  },
+  "motion_stop": {
+    "command_path": "/agent/cmd_vel -> cmd_vel_guard -> /cmd_vel",
+    "contact_to_final_odom_drift_m": 0.00008022445919047422
+  },
+  "regression": {
+    "judge_tests_in_jazzy_container": "102 passed, 1 skipped",
+    "backend_tests_host": "190 passed, 2 skipped (unchanged from T05 suite)",
+    "evaluation_harness_tests": "14 passed",
+    "compose_config": "passed",
+    "compose_only_leak_check": "passed",
+    "xml_and_python_compile": "passed"
+  },
+  "remaining_qualification": "Terrain slowdown remains software command scaling (0.275m in-zone vs 0.548m outside at factor 0.5), not Gazebo friction. Judge rules are project assumptions pending organizer confirmation."
+}

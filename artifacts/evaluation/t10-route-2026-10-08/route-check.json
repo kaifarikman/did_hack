@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-08",
+  "task": "T10 route following and deviation handling",
+  "settings": {
+    "path_deviation_tolerance_m": 0.3,
+    "path_deviation_hysteresis_m": 0.05,
+    "path_deviation_confirmation_s": 0.6,
+    "path_replan_cooldown_s": 2.0,
+    "waypoint_advances_per_observation": 1
+  },
+  "behavior": {
+    "segment_tracking": "Cross-track distance is measured to the active segment from the route start/current previous waypoint to the active waypoint. A future segment cannot be selected as a shortcut.",
+    "deviation": "Sustained cross-track error triggers stop, plan invalidation, and route recomputation from the current observation while retaining the current goal.",
+    "hazard_priority": "Immediate command_blocked check runs before deviation confirmation/cooldown; a scan obstacle still stops motion immediately."
+  },
+  "verification": {
+    "targeted_cases": [
+      "test_path_tracker_does_not_skip_ahead_to_a_future_waypoint",
+      "test_path_deviation_requires_time_uses_hysteresis_and_cooldown",
+      "test_motion_executor_replans_after_sustained_cross_track_deviation",
+      "test_controller_replans_current_goal_after_sustained_path_deviation",
+      "test_sustained_lateral_drift_triggers_controller_replan_from_new_pose"
+    ],
+    "full_backend_suite": "backend/.venv/bin/python -m pytest backend/tests -q: 204 passed, 2 skipped in 42.84 s.",
+    "lateral_drift_integration": "SimWorld controller test injected 0.60 m sustained cross-track offset; controller journaled replan, retained goal, and resumed a route.",
+    "cooldown_and_obstacle_bypass": "Detector test confirmed cooldown suppression; MotionExecutor test confirmed command_blocked returns BLOCKED during cooldown.",
+    "syntax_and_diff": "py_compile passed for modified runtime/probe modules; git diff --check clean.",
+    "live_injection_attempts": {
+      "status": "inconclusive; not counted as T10 acceptance evidence",
+      "prior_attempts": {
+        "status": "inconclusive; not counted as T10 acceptance evidence",
+        "first_attempt": "Competing Gazebo /scan messages produced a dynamic-obstacle stop during the synthetic odom offset; journal did not contain the off-path replan event.",
+        "second_attempt": "With Gazebo scan rate reduced to 0.1 Hz, synthetic scan messages were not accepted by the bridge with fresh simulation timestamps; observations_stale stopped the run.",
+        "recovery": "Restored /scan to 5 Hz, verified 4.87 Hz, reset supervisor to easy/seed23/generation0, and recreated backend.",
+        "raw_diagnostics": [
+          "../../simulation/artifacts/t10-path-deviation-stale-injection.json",
+          "../../simulation/artifacts/t10-path-deviation-probe.json"
+        ]
+      },
+      "latest_attempt": "Gazebo physical pose stream showed backend-to-physical pose gap 0.0072 m and physical robot drift only 0.0035 m. A 0.60 m cross-track odometry offset reached the backend, but /odom observations alternated between the Gazebo publisher and probe. The controller received pose-correction updates and lidar braking before a sustained OFF_PATH event; no deviation-replan journal entry was produced.",
+      "probe_change": "Probe no longer changes Gazebo scan rate. It re-bins lidar returns to preserve their world points during a localization offset; raw attempt remains diagnostic.",
+      "cleanup": "Supervisor fully restarted to easy/seed23/generation0, then backend start-stop lifecycle advanced generation1; backend is healthy, stopped, with fresh odom/scan/battery/clock and native battery 59.9966/60.",
+      "raw_diagnostics": [
+        "../../simulation/artifacts/t10-path-deviation-probe.json",
+        "../../simulation/artifacts/t10-path-deviation-stale-injection.json"
+      ]
+    },
+    "controlled_live_probe": {
+      "run_id": "3b2ef89af29745c0979c7f4186e635a9",
+      "generation": 4,
+      "observation_topics": {
+        "odom": "/t10/odom",
+        "scan": "/t10/scan"
+      },
+      "gazebo_physical_pose_stream": "/world/default/pose/info",
+      "offset_m": 0.6,
+      "backend_to_physical_pose_gap_before_m": 0.008,
+      "physical_robot_drift_m": 0.0079,
+      "result": "journaled Перепланирование после отклонения; active explore goal remained set after the first sustained lateral offset; test kept physical Gazebo robot stationary while offsetting backend odometry and reprojecting lidar points to retain their world positions.",
+      "cooldown_and_priority": "A second opposite offset was preempted by the real dynamic obstacle guard: journal subsequently included Остановка перед препятствием and goal was cleared. This confirms obstacle priority in live operation, but does not independently prove the full 2 s cooldown. The detector cooldown and command_blocked-before-cooldown are covered by test_path_deviation_requires_time_uses_hysteresis_and_cooldown and test_motion_executor_replans_after_sustained_cross_track_deviation.",
+      "cleanup": "Probe run stopped. Simulation reset to easy seed23 generation4; backend restored to default ROS_ODOM_TOPIC=/odom and ROS_SCAN_TOPIC=/scan, then cleanup start-stop reached generation5. Native battery 59.9924/60 and odom/scan/battery/clock freshness all true.",
+      "raw_report": "../../simulation/artifacts/t10-path-deviation-probe.json"
+    },
+    "ros_callback_suite": "ROS Jazzy container: test_ros_generation.py 17 passed in 0.26 s, including configurable observation-topic subscriptions.",
+    "topic_configuration": "ROS_ODOM_TOPIC and ROS_SCAN_TOPIC are environment-configurable in composition root/compose.yaml; production defaults remain /odom and /scan. Isolated live probe used /t10/odom and /t10/scan."
+  },
+  "limitations": [
+    "The cooldown interval is covered by deterministic domain/application tests; the attempted second live drift was preempted by a real lidar obstacle guard, so no standalone live 2 s cooldown timing claim is made.",
+    "Controlled live scenario offsets backend odometry while keeping the Gazebo robot physically stationary; measured physical drift remained below 0.01 m. It verifies route-deviation policy response, not recovery from a physical impact or wheel slip."
+  ]
+}

@@ -1,12 +1,14 @@
 import pytest
 
 from application.planner import FallbackPlanner, ResilientPlanner
+from application.motion import MotionState
 from domain.geometry import Point, Pose
+from domain.grid import OccupancyGrid
 from domain.mission import MissionStatus
 from domain.settings import MissionSettings
 from domain.subgoals import GoalKind, Subgoal
 from fakes import (
-    FailingResetSimulation, FakeClock, ScriptedPlanner, SimWorld, Zone, planner_error,
+    FailingResetSimulation, FakeClock, ScriptedPlanner, SimWorld, Zone, build_arena, planner_error,
 )
 from harness import SETTINGS, make_controller, make_mission, run_ticks
 
@@ -64,6 +66,133 @@ def test_stale_observations_stop_motion_and_fail_independent_of_planner():
         controller.tick()
     assert mission.status is MissionStatus.FAILED
     assert mission.snapshot().last_error.code == "observations_stale"
+    assert world.linear == 0 and world.angular == 0
+
+
+def test_controller_replans_current_goal_after_sustained_path_deviation():
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    controller, mission, journal = make_controller(world, clock)
+    for _ in range(10):
+        world.advance()
+        controller.tick()
+        if mission.snapshot().current_goal is not None:
+            break
+    previous_goal = mission.snapshot().current_goal
+    assert previous_goal is not None
+
+    world.pose = Pose(world.pose.x_m + 0.4, world.pose.y_m + 0.8, world.pose.heading_rad)
+    controller._ports.motion.step = lambda *_args, **_kwargs: MotionState.OFF_PATH
+    world.advance()
+    controller.tick()
+
+    assert mission.snapshot().current_goal == previous_goal
+    assert controller._ports.motion.active
+    assert any(entry.draft.title == "Перепланирование после отклонения"
+               for entry in journal.tail(mission.run_id, 50))
+
+
+def test_sustained_lateral_drift_triggers_controller_replan_from_new_pose():
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    controller, mission, journal = make_controller(world, clock)
+    for _ in range(10):
+        world.advance()
+        controller.tick()
+        if mission.snapshot().planned_path:
+            break
+    snapshot = mission.snapshot()
+    assert snapshot.current_goal is not None and snapshot.planned_path
+
+    start = world.pose.point
+    first = snapshot.planned_path[0]
+    segment_x, segment_y = first.x_m - start.x_m, first.y_m - start.y_m
+    segment_length = (segment_x * segment_x + segment_y * segment_y) ** 0.5
+    assert segment_length > 0
+    lateral_x, lateral_y = -segment_y / segment_length, segment_x / segment_length
+    original_goal = snapshot.current_goal
+    for _ in range(10):
+        clock.now_s += 0.1
+        world.last_received_s = clock.now_s
+        world.pose = Pose(start.x_m + lateral_x * 0.6, start.y_m + lateral_y * 0.6, world.pose.heading_rad)
+        controller.tick()
+        if any(entry.draft.title == "Перепланирование после отклонения"
+               for entry in journal.tail(mission.run_id, 50)):
+            break
+
+    assert any(entry.draft.title == "Перепланирование после отклонения"
+               for entry in journal.tail(mission.run_id, 50))
+    assert mission.snapshot().current_goal == original_goal
+    assert controller._ports.motion.active
+
+
+def test_stuck_controller_starts_one_bounded_recovery_before_replanning():
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    controller, mission, journal = make_controller(world, clock)
+    for _ in range(80):
+        world.advance()
+        controller.tick()
+        if mission.snapshot().current_goal is not None and controller._ports.motion.active:
+            break
+    goal = mission.snapshot().current_goal
+    assert goal is not None
+
+    controller._ports.motion.step = lambda *_args, **_kwargs: MotionState.STUCK
+    world.advance()
+    controller.tick()
+
+    assert mission.snapshot().current_goal == goal
+    assert controller._ports.motion._recovery_phase == "reverse"
+    assert sum(entry.draft.title == "Безопасное восстановление"
+               for entry in journal.tail(mission.run_id, 100)) == 1
+
+
+def test_stuck_controller_skips_recovery_when_return_and_maneuver_energy_are_not_reserved():
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    controller, mission, journal = make_controller(world, clock)
+    for _ in range(80):
+        world.advance()
+        controller.tick()
+        if mission.snapshot().current_goal is not None and controller._ports.motion.active:
+            break
+    assert mission.snapshot().current_goal is not None
+    world.battery = 2.0
+    controller._ports.motion.step = lambda *_args, **_kwargs: MotionState.STUCK
+    world.advance()
+    controller.tick()
+
+    titles = [entry.draft.title for entry in journal.tail(mission.run_id, 100)]
+    assert "Восстановление отменено по энергии" in titles
+    assert "Безопасное восстановление" not in titles
+    assert mission.snapshot().current_goal is None
+
+
+def test_critical_source_staleness_is_visible_and_fails_closed():
+    from dataclasses import replace
+    from domain.observations import ObservationFreshness, SourceFreshness
+
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    controller, mission, _ = make_controller(world, clock)
+    for _ in range(60):
+        world.advance()
+        controller.tick()
+    assert world.linear != 0 or world.angular != 0
+
+    latest = world.latest
+    world.latest = lambda: replace(latest(), freshness=ObservationFreshness(
+        odom=SourceFreshness(0.02, True), scan=SourceFreshness(1.2, False),
+        battery=SourceFreshness(0.03, True), clock=SourceFreshness(0.01, True),
+    ))
+    world.advance()
+    controller.tick()
+
+    snapshot = mission.snapshot()
+    assert snapshot.status is MissionStatus.FAILED
+    assert snapshot.last_error.code == "observations_stale"
+    assert snapshot.freshness.scan.fresh is False
     assert world.linear == 0 and world.angular == 0
 
 
@@ -242,7 +371,7 @@ def test_weak_signal_collect_from_llm_is_rejected_before_calling_judge():
 
 def test_low_reserve_returns_before_asking_llm_at_rest():
     clock = FakeClock()
-    world = SimWorld(clock, SEED_SAMPLES[1], battery=2.0)
+    world = SimWorld(clock, SEED_SAMPLES[1], start=Pose(-1.0, 1.5, 0.0), battery=2.0)
     planner = ScriptedPlanner([Subgoal(GoalKind.COLLECT, None, "собрать", "llm")])
     controller, mission, _ = make_controller(world, clock, planner=planner)
     controller.tick()  # reset
@@ -251,6 +380,13 @@ def test_low_reserve_returns_before_asking_llm_at_rest():
     assert planner.calls == 0
     assert mission.status is MissionStatus.RETURNING
     assert mission.snapshot().current_goal.kind is GoalKind.RETURN
+
+    world.battery = world.battery_initial  # оценка может улучшиться после перепланирования, но возврат уже начат
+    world.advance()
+    controller.tick()
+    assert mission.status is MissionStatus.RETURNING
+    assert mission.snapshot().current_goal.kind is GoalKind.RETURN
+    assert planner.calls == 0
 
 
 def test_reserve_overrides_goal_and_robot_returns_with_positive_battery():
@@ -263,6 +399,26 @@ def test_reserve_overrides_goal_and_robot_returns_with_positive_battery():
     assert snapshot.status is MissionStatus.FAILED and snapshot.last_error.code == "no_confirmed_sample"
     assert snapshot.battery_remaining > 0
     assert world.finished and Point(*[world.pose.x_m, world.pose.y_m]) is not None
+
+
+def test_reserve_failure_without_a_home_route_is_explicit():
+    clock = FakeClock()
+    arena = build_arena()
+    cells = list(arena.cells)
+    for row in range(1, arena.height - 1):
+        cells[row * arena.width + 40] = 100
+    divided_map = OccupancyGrid(
+        arena.map_id, arena.resolution_m, arena.width, arena.height, arena.origin, cells,
+    )
+    world = SimWorld(clock, SEED_SAMPLES[1], start=Pose(1.0, 0.0, 0.0), battery=2.0)
+    controller, mission, _ = make_controller(world, clock, maps=divided_map)
+    controller.tick()
+    world.advance()
+    controller.tick()
+
+    assert mission.status is MissionStatus.FAILED
+    assert mission.snapshot().last_error.code == "no_route_home"
+    assert world.linear == 0 and world.angular == 0
 
 
 def test_finish_rejected_by_judge_is_not_success():
@@ -281,6 +437,102 @@ def test_finish_rejected_by_judge_is_not_success():
     run_ticks(controller, world, mission)
     assert mission.status is MissionStatus.FAILED
     assert mission.snapshot().last_error.code == "finish_rejected"
+
+
+def test_stop_completes_while_finish_reply_is_pending_and_late_success_is_ignored():
+    from application.ports import JudgeReply
+
+    class DeferredOperation:
+        def __init__(self):
+            self.reply = None
+
+        def poll(self):
+            return self.reply
+
+    class DelayedFinishJudge:
+        def __init__(self, world):
+            self.world = world
+            self.finish_operation = DeferredOperation()
+
+        def collect(self):
+            return self.world.collect()
+
+        def finish(self):
+            return self.world.finish()
+
+        def begin_finish(self):
+            self.world.finish()
+            return self.finish_operation
+
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    judge = DelayedFinishJudge(world)
+    controller, mission, _ = make_controller(world, clock, judge=judge)
+    for _ in range(30000):
+        world.advance()
+        controller.tick()
+        if judge.finish_operation.reply is None and world.finished:
+            break
+
+    assert mission.status is MissionStatus.RETURNING
+    assert judge.finish_operation.reply is None
+    mission.request_stop()
+    world.advance()
+    controller.tick()
+    assert mission.status is MissionStatus.STOPPED
+    judge.finish_operation.reply = JudgeReply(True, "late finish reply")
+    world.advance()
+    controller.tick()
+    assert mission.status is MissionStatus.STOPPED
+
+
+def test_stale_observations_fail_while_finish_reply_is_pending():
+    from application.ports import JudgeReply
+
+    class DeferredOperation:
+        reply = None
+
+        def poll(self):
+            return self.reply
+
+    class DelayedFinishJudge:
+        def __init__(self, world):
+            self.world = world
+            self.operation = DeferredOperation()
+
+        def collect(self):
+            return self.world.collect()
+
+        def finish(self):
+            return self.world.finish()
+
+        def begin_finish(self):
+            self.world.finish()
+            return self.operation
+
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    judge = DelayedFinishJudge(world)
+    controller, mission, _ = make_controller(world, clock, judge=judge)
+    for _ in range(30000):
+        world.advance()
+        controller.tick()
+        if world.finished:
+            break
+
+    assert mission.status is MissionStatus.RETURNING
+    world.frozen = True
+    for _ in range(20):
+        world.advance()
+        controller.tick()
+        if mission.status.is_terminal:
+            break
+    assert mission.status is MissionStatus.FAILED
+    assert mission.snapshot().last_error.code == "observations_stale"
+
+    judge.operation.reply = JudgeReply(True, "late finish reply")
+    controller.tick()
+    assert mission.status is MissionStatus.FAILED
 
 
 def test_terrain_cost_experiment_links_hypothesis_measurement_and_conclusion():
@@ -338,3 +590,50 @@ def test_slow_planner_does_not_block_ticks_and_stop_is_prompt():
     release.set()
     assert time.monotonic() - started < 1.0
     assert mission.snapshot().status is MissionStatus.STOPPED
+
+
+def test_hanging_planner_times_out_to_fallback_and_late_answer_is_ignored():
+    from dataclasses import replace
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
+    release = threading.Event()
+
+    class HangingPlanner:
+        def propose(self, context, is_cancelled):
+            release.wait(2.0)
+            from domain.plans import MissionPlan, PlanStep
+            goal = Subgoal(GoalKind.EXPLORE, Point(-1.0, 0.5), "поздняя LLM цель", "llm")
+            return MissionPlan("late-plan", context.run_id, context.model_epoch, context.map_revision,
+                               (PlanStep(goal),), "late", (), "llm")
+
+    clock = FakeClock()
+    world = SimWorld(clock, SEED_SAMPLES[1])
+    settings = replace(SETTINGS, planner_timeout_s=0.2)
+    executor = ThreadPoolExecutor(max_workers=1)
+    controller, mission, _ = make_controller(world, clock, planner=HangingPlanner(), settings=settings,
+                                             planner_executor=executor)
+    try:
+        world.advance(0.1)
+        controller.tick()  # запускает зависший planner
+        world.advance(0.1)
+        controller.tick()
+        assert controller._plans.waiting
+
+        world.advance(0.2)
+        controller.tick()
+        assert not controller._plans.waiting
+        assert mission.snapshot().current_goal is not None
+        assert "таймаут планировщика" in mission.snapshot().current_goal.reason
+
+        release.set()
+        for _ in range(3):
+            world.advance()
+            controller.tick()
+        assert mission.status is MissionStatus.RUNNING
+        assert mission.snapshot().plan is not None
+        assert mission.snapshot().plan.source == "fallback"
+        assert "late-plan" not in mission.snapshot().plan.plan_id
+    finally:
+        release.set()
+        executor.shutdown(wait=True)

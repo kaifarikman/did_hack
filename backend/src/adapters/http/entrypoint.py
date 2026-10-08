@@ -9,7 +9,7 @@ from fastapi import FastAPI
 
 from adapters.http.app import create_app
 from adapters.journal.jsonl import JsonlJournal
-from adapters.legacy_reset import LEGACY_SCENARIOS, LegacySimulationControl
+from adapters.legacy_reset import LEGACY_SCENARIOS
 from adapters.llm.config import LlmConfig
 from adapters.llm.openai_planner import OpenAiCompatiblePlanner
 from adapters.map_file import load_nav2_map
@@ -77,23 +77,25 @@ class _LazyMap:
 
 
 def create_default_app() -> FastAPI:
-    settings = MissionSettings()
+    settings = MissionSettings(
+        stuck_window_s=float(os.environ.get("STUCK_WINDOW_S", "6.0")),
+        stuck_min_progress_m=float(os.environ.get("STUCK_MIN_PROGRESS_M", "0.05")),
+    )
     maps = _LazyMap(Path(os.environ.get("MAP_YAML", "/workspace/simulation/judge/data/map.yaml")))
     journal = JsonlJournal(Path(os.environ.get("JOURNAL_DIR", "/data/journal")))
     llm_config = LlmConfig.from_environment()
-    runtime = RosRuntime(observation_max_age_s=settings.observation_max_age_s)
+    runtime = RosRuntime(
+        observation_max_age_s=settings.observation_max_age_s,
+        odom_topic=os.environ.get("ROS_ODOM_TOPIC", "/odom"),
+        scan_topic=os.environ.get("ROS_SCAN_TOPIC", "/scan"),
+    )
     bridge = runtime.bridge
     supervisor = SupervisorSimulationControl(
-        os.environ.get("SIMULATION_URL", "http://simulation:7000"), bridge.clear_observations)
-    if os.environ.get("SIMULATION_CONTRACT", "legacy") == "2.0":
-        # адаптер A подтверждает ResetRequest сам; профили перечисляет среда
-        simulation, scenarios = supervisor, tuple(os.environ.get("SUPPORTED_SCENARIOS", "easy").split(","))
-        map_modes = tuple(os.environ.get("SUPPORTED_MAP_MODES", "static").split(","))
-        robot_counts = tuple(int(n) for n in os.environ.get("SUPPORTED_ROBOT_COUNTS", "1").split(","))
-    else:
-        # Супервизор MVP принимает только seed: обёртка честно отклоняет medium/hard, SLAM и второго робота.
-        simulation, scenarios = LegacySimulationControl(supervisor), LEGACY_SCENARIOS
-        map_modes, robot_counts = ("static",), (1,)
+        os.environ.get("SIMULATION_URL", "http://simulation:7000"), bridge.clear_observations,
+        set_generation=bridge.set_generation)
+    # Supervisor API передаёт generation судье; другие режимы откроются после их сквозной приёмки.
+    simulation, scenarios = supervisor, LEGACY_SCENARIOS
+    map_modes, robot_counts = ("static",), (1,)
     environment = _Environment(runtime, llm_config is not None, settings.judge_mode, scenarios, map_modes,
                                robot_counts)
     # События и счёт подключаются, когда мост A их реализует (контракт 2.0); иначе ядро работает как в MVP.
@@ -110,7 +112,14 @@ def create_default_app() -> FastAPI:
             OpenAiCompatiblePlanner(llm_config) if llm_config else None, FallbackPlanner(run_settings))
         ports = ControllerPorts(
             observations=bridge,
-            motion=MotionExecutor(bridge, StuckDetector(), run_settings.arrival_tolerance_m),
+            motion=MotionExecutor(
+                bridge, StuckDetector(run_settings.stuck_window_s, run_settings.stuck_min_progress_m),
+                run_settings.arrival_tolerance_m,
+                run_settings.path_deviation_tolerance_m,
+                run_settings.path_deviation_hysteresis_m,
+                run_settings.path_deviation_confirmation_s,
+                run_settings.path_replan_cooldown_s,
+            ),
             judge=bridge, simulation=simulation, planner=planner, journal=journal,
             navigation=NavigationService(grid, estimator, run_settings, hazards), clock=clock,
             events=events, score=score, map_mode=MapMode(mission.map_mode),
@@ -120,7 +129,9 @@ def create_default_app() -> FastAPI:
         return MissionController(mission, ports, run_settings, research, SignalSearch(),
                                  planner_rate_limited=llm_config is not None)
 
-    service = RunService(environment, maps, journal, build_controller, settings)
+    initial_generation = supervisor.current_generation()
+    service = RunService(environment, maps, journal, build_controller, settings,
+                         initial_generation=initial_generation)
     ticker = TickLoop(service)
     ticker.start()
 

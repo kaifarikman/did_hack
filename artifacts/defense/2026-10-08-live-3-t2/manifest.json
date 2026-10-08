@@ -1,0 +1,50 @@
+{
+  "captured_at": "2026-10-08T12:18:58+00:00",
+  "commit": "c98ad902a70fe08f73e71ae94cc66c8b70aa4c06",
+  "working_tree_dirty": true,
+  "working_tree": {
+    "stash_commit": "a6cb9add23ef3a4ee6a93745f8aa8005e4f5c1c8",
+    "diff_and_untracked_sha256": "cd047857e09ef61d7f30b9ff5d0fc54ce5354e914a8517a331420ef97dacdffc",
+    "untracked_code_files": 44
+  },
+  "compose_project": "did-defense",
+  "env_file": "scripts/defense/defense.env",
+  "images": [
+    {
+      "service": "did-defense-frontend-1",
+      "repository": "did-defense-frontend",
+      "tag": "latest",
+      "id": "sha256:bdc5e8acb8826dc293ab9ba9f1c0e2cf383a0871a96896cadd20c67693b768e9"
+    },
+    {
+      "service": "did-defense-simulation-1",
+      "repository": "did-sim",
+      "tag": "dev",
+      "id": "sha256:bf8e6570413153d9244457a070e26ae7189d1e4a987e62af7315f52ed4d654a9"
+    },
+    {
+      "service": "did-defense-gui-1",
+      "repository": "did-defense-gui",
+      "tag": "latest",
+      "id": "sha256:0b16187fc6fbd422886975625d74d35523eea578b3b59912f45f7452deb7a37e"
+    },
+    {
+      "service": "did-defense-backend-1",
+      "repository": "did-defense-backend",
+      "tag": "latest",
+      "id": "sha256:35408d31822b4302b139b40b7bb08fc93e442d93588f21d24964fe793ec8a7cb"
+    }
+  ],
+  "panel_url": "http://localhost:8090",
+  "http_status": {
+    "health": 200,
+    "state": 200,
+    "map": 200
+  },
+  "run_id": "4ce0dccde9ab4868b0f52ce232a42dc4",
+  "status": "returning",
+  "schema_version": "1.4",
+  "task_type": "navigation",
+  "journal_entries": 1357,
+  "note": "Живой UI-прогон к T2 (-0.987,-1.992): цель достигнута, возврат завис в цикле остановки перед препятствием"
+}

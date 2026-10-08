@@ -1,9 +1,4 @@
-"""Путь совместимости: супервизор MVP принимает только seed и всегда поднимает easy со статичной картой.
-
-Обёртка переводит ResetRequest контракта 2.0 в старый вызов и подтверждает только то, что
-старая среда действительно умеет. Другой профиль, SLAM или второй робот — явный отказ, а не
-молчаливый easy.
-"""
+"""Проверки возможностей legacy-режима для сред, которые принимают только seed."""
 from __future__ import annotations
 
 from typing import Protocol
@@ -11,7 +6,7 @@ from typing import Protocol
 from application.ports import MapMode, ResetAck, ResetRequest
 from domain.observations import DEFAULT_ROBOT_ID
 
-LEGACY_SCENARIOS = ("easy",)
+LEGACY_SCENARIOS = ("easy", "medium", "hard")
 
 
 class SeedOnlyReset(Protocol):
@@ -34,5 +29,5 @@ class LegacySimulationControl:
         self._legacy.reset(request.scenario, request.seed)
         return ResetAck(
             generation=request.generation, scenario=request.scenario, seed=request.seed,
-            notes=("legacy_supervisor: поколение подтверждено очисткой кэша наблюдений",),
+            notes=("legacy_supervisor: поколение ROS-сообщениями не подтверждается",),
         )

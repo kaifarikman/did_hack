@@ -4,18 +4,18 @@
 только батарея, шумный сигнал, события и счёт.
 """
 import json
-import math
 import os
 
 import rclpy
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
 from rosgraph_msgs.msg import Clock
-from sensor_msgs.msg import LaserScan
+from ros_gz_interfaces.msg import Contacts
 from std_msgs.msg import Float32, String
 from std_srvs.srv import Trigger
 
 from .config import JudgeConfig
+from .contacts import CONTACT_SENSOR_LINKS, gazebo_contact_topic, has_obstacle_contact
 from .engine import JudgeEngine
 from .occupancy import load_occupancy_grid
 from .dynamics import generate_event_schedule
@@ -24,7 +24,6 @@ from .scenario import generate_scenario
 from .soil_slowdown import DEFAULT_STATE_PATH, write_soil_state
 
 DEFAULT_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
-COLLISION_RANGE_M = 0.14  # лидар Burger стоит у центра; радиус корпуса ~0.105 м
 COLLISION_COOLDOWN_S = 2.0
 
 
@@ -37,12 +36,14 @@ class JudgeNode(Node):
     def __init__(self):
         super().__init__("did_judge")
         self.declare_parameter("seed", 0)
+        self.declare_parameter("generation", 0)
         self.declare_parameter("config_path", "")
         self.declare_parameter("map_yaml", os.path.join(DEFAULT_DATA_DIR, "map.yaml"))
         config_path = self.get_parameter("config_path").value
         self.config = JudgeConfig.from_json_file(config_path) if config_path else JudgeConfig()
         grid = load_occupancy_grid(self.get_parameter("map_yaml").value)
         seed = int(self.get_parameter("seed").value)
+        self.generation = int(self.get_parameter("generation").value)
         scenario = generate_scenario(seed, grid, self.config)
         schedule = generate_event_schedule(seed, grid, self.config, scenario) if self.config.dynamic_events else None
         self.engine = JudgeEngine(scenario, self.config, schedule=schedule)
@@ -55,9 +56,12 @@ class JudgeNode(Node):
         self.sensor_pub = self.create_publisher(Float32, "/did/sample_sensor", 10)
         self.score_pub = self.create_publisher(String, "/did/score", 10)
         self.events_pub = self.create_publisher(String, "/did/events", 10)
+        self.telemetry_pub = self.create_publisher(String, "/did/telemetry", 10)
         self.create_subscription(Clock, "/clock", self._on_clock, 10)
         self.create_subscription(Odometry, "/odom", self._on_odom, 10)
-        self.create_subscription(LaserScan, "/scan", self._on_scan, 10)
+        for link_name, sensor_name in CONTACT_SENSOR_LINKS:
+            self.create_subscription(
+                Contacts, gazebo_contact_topic("burger", link_name, sensor_name), self._on_contact, 10)
         self.create_service(Trigger, "/did/collect", self._on_collect)
         self.create_service(Trigger, "/did/finish", self._on_finish)
         self.create_timer(0.2, self._publish_fast)
@@ -92,11 +96,10 @@ class JudgeNode(Node):
         self.engine.update_pose(base_x + position.x, base_y + position.y,
                                 yaw_of(message.pose.pose.orientation), self.simulation_time_s)
 
-    def _on_scan(self, message):
-        finite = [value for value in message.ranges if math.isfinite(value) and value > 0.0]
-        too_close = bool(finite) and min(finite) < COLLISION_RANGE_M
+    def _on_contact(self, message):
+        touching_obstacle = has_obstacle_contact(message, "burger")
         cooled_down = self.simulation_time_s - self.last_collision_time_s >= COLLISION_COOLDOWN_S
-        if too_close and cooled_down:
+        if touching_obstacle and cooled_down:
             self.last_collision_time_s = self.simulation_time_s
             self.engine.register_collision()
 
@@ -112,17 +115,26 @@ class JudgeNode(Node):
 
     def _publish_fast(self):
         self.battery_pub.publish(Float32(data=float(self.engine.battery)))
+        signal = self.engine.sample_signal() if self.engine.active else None
+        self.telemetry_pub.publish(String(data=json.dumps({
+            "generation": self.generation, "robot_id": "robot_1",
+            "simulation_time_s": self.engine.simulation_time_s,
+            "battery": self.engine.battery, "signal": signal,
+        })))
         if self.engine.active:
-            signal = self.engine.sample_signal()
             if signal is not None:
                 self.sensor_pub.publish(Float32(data=float(signal)))
         for event in self.engine.events[self.published_events:]:
             self.events_pub.publish(String(data=json.dumps({
                 "type": event.kind,
+                "sequence": self.published_events + 1,
+                "generation": self.generation,
+                "robot_id": "robot_1",
+                "position": list(event.position) if event.position is not None else None,
                 "simulation_time_s": event.simulation_time_s,
                 "battery": event.battery,
             })))
-        self.published_events = len(self.engine.events)
+            self.published_events += 1
 
     def _publish_soil_state(self):
         """Закрытый канал к стражу скорости внутри контейнера; не ROS-топик."""
@@ -133,6 +145,7 @@ class JudgeNode(Node):
         engine = self.engine
         self.score_pub.publish(String(data=json.dumps({
             "judge_mode": "local",
+            "generation": self.generation,
             "state": engine.state_label(),
             "score": engine.score(),
             "collected": engine.collected,

@@ -48,6 +48,10 @@ services:
     init: true
     environment:
       ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-7}"
+      ROS_ODOM_TOPIC: "${ROS_ODOM_TOPIC:-/odom}"
+      ROS_SCAN_TOPIC: "${ROS_SCAN_TOPIC:-/scan}"
+      STUCK_WINDOW_S: "${STUCK_WINDOW_S:-6.0}"
+      STUCK_MIN_PROGRESS_M: "${STUCK_MIN_PROGRESS_M:-0.05}"
       SIMULATION_URL: http://simulation:7000
       MAP_YAML: /workspace/simulation/judge/data/map.yaml
       JOURNAL_DIR: /data/journal

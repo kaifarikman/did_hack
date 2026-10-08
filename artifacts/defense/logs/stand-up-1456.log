@@ -1,0 +1,153 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.50kB done
+#1 DONE 0.0s
+
+#2 [frontend internal] load build definition from Dockerfile
+#2 transferring dockerfile: 554B done
+#2 DONE 0.0s
+
+#3 [simulation internal] load build definition from Dockerfile.simulation
+#3 transferring dockerfile: 564B done
+#3 DONE 0.0s
+
+#4 [backend internal] load build definition from Dockerfile
+#4 transferring dockerfile: 735B done
+#4 DONE 0.0s
+
+#5 [backend internal] load metadata for docker.io/library/ros:jazzy-ros-base
+#5 DONE 1.6s
+
+#6 [frontend internal] load metadata for docker.io/library/node:24-alpine
+#6 DONE 1.6s
+
+#7 [frontend internal] load metadata for docker.io/library/nginx:1.29-alpine
+#7 DONE 1.6s
+
+#8 [simulation internal] load .dockerignore
+#8 transferring context: 186B done
+#8 DONE 0.0s
+
+#9 [backend internal] load .dockerignore
+#9 transferring context: 2B done
+#9 DONE 0.0s
+
+#10 [frontend internal] load .dockerignore
+#10 transferring context: 80B done
+#10 DONE 0.0s
+
+#11 [backend internal] load build context
+#11 transferring context: 87.24kB 0.0s done
+#11 DONE 0.0s
+
+#12 [simulation 1/3] FROM docker.io/library/ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca
+#12 resolve docker.io/library/ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca 0.0s done
+#12 DONE 0.0s
+
+#13 [backend 2/6] RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3-pytest     && pip install --no-cache-dir --break-system-packages "fastapi>=0.115" "uvicorn>=0.30" "httpx>=0.27"     && rm -rf /var/lib/apt/lists/*
+#13 CACHED
+
+#14 [backend 3/6] WORKDIR /app
+#14 CACHED
+
+#15 [simulation 2/3] RUN apt-get update && apt-get install -y --no-install-recommends         ros-jazzy-turtlebot3-gazebo         ros-jazzy-turtlebot3-navigation2         ros-jazzy-ros-gz-sim         ros-jazzy-ros-gz-bridge         ros-jazzy-turtlebot3-description         python3-pytest python3-numpy     && rm -rf /var/lib/apt/lists/*
+#15 CACHED
+
+#16 [simulation 3/3] WORKDIR /workspace
+#16 CACHED
+
+#17 [frontend build 1/6] FROM docker.io/library/node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1
+#17 resolve docker.io/library/node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 0.0s done
+#17 DONE 0.0s
+
+#18 [frontend stage-1 1/5] FROM docker.io/library/nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de
+#18 resolve docker.io/library/nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de 0.0s done
+#18 DONE 0.0s
+
+#19 [frontend internal] load build context
+#19 transferring context: 282.96kB 0.0s done
+#19 DONE 0.0s
+
+#20 [frontend build 3/6] COPY package.json package-lock.json ./
+#20 CACHED
+
+#21 [frontend build 2/6] WORKDIR /app
+#21 CACHED
+
+#22 [frontend build 4/6] RUN npm ci
+#22 CACHED
+
+#23 [backend 4/6] COPY src ./src
+#23 DONE 0.0s
+
+#24 [frontend build 5/6] COPY . .
+#24 DONE 0.0s
+
+#25 [simulation] exporting to image
+#25 exporting layers done
+#25 exporting manifest sha256:18bd96798cb8deaecddd37d57690b0ec2e0f51821f1fe1fd9da985d738c6a688 0.0s done
+#25 exporting config sha256:3aaf621a0d66ab7fc6990bb868f303f6e1e2991dbf3042baa7ba3e8a233f8527 done
+#25 exporting attestation manifest sha256:d3471f2ca166c4efcdb03e9701cced824f37cd9a98cd1df72f00fee44b9b2969 0.0s done
+#25 exporting manifest list sha256:6def120c272125bb6030fe2ba5f725b0cb536b4596e7dae4eae141516eb5426e done
+#25 naming to docker.io/library/did-sim:dev done
+#25 unpacking to docker.io/library/did-sim:dev done
+#25 DONE 0.1s
+
+#26 [backend 5/6] COPY tests ./tests
+#26 DONE 0.0s
+
+#27 [backend 6/6] COPY pyproject.toml ./
+#27 DONE 0.0s
+
+#28 [simulation] resolving provenance for metadata file
+#28 DONE 0.0s
+
+#29 [backend] exporting to image
+#29 exporting layers 0.1s done
+#29 exporting manifest sha256:805512bebdd7e11e98901e3c20e6d7a77caad8e425cce3814551d1317bc3852b done
+#29 exporting config sha256:12d14c63b4ae0e407a4178a98dd0dbe03e53eaad25fb185c18a777b72df0a77a 0.0s done
+#29 exporting attestation manifest sha256:12024a9f7b6295fcd2ac83cc8072e1a1917112f3926a86ac0363448bcab724cb done
+#29 exporting manifest list sha256:f29907fb9ed856bfc3dfe11ea75664a2d8a7a3e9558a529a5a300c0867a61eb7 done
+#29 naming to docker.io/library/did-defense-backend:latest done
+#29 unpacking to docker.io/library/did-defense-backend:latest 0.0s done
+#29 DONE 0.2s
+
+#30 [backend] resolving provenance for metadata file
+#30 DONE 0.0s
+
+#31 [frontend build 6/6] RUN npm run build
+#31 0.274 
+#31 0.274 > did-hack-frontend@0.1.0 build
+#31 0.274 > tsc --noEmit && vite build
+#31 0.274 
+#31 0.446 src/adapters/fixture/fixtureGateway.ts(42,7): error TS2741: Property 'supported_task_types' is missing in type '{ status: "ready"; ros_connected: true; judge_mode: "local"; llm_available: true; supported_scenarios: "easy"[]; supported_map_modes: "static"[]; supported_robot_counts: number[]; }' but required in type 'HealthStatus'.
+#31 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+------
+ > [frontend build 6/6] RUN npm run build:
+0.274 
+0.274 > did-hack-frontend@0.1.0 build
+0.274 > tsc --noEmit && vite build
+0.274 
+0.446 src/adapters/fixture/fixtureGateway.ts(42,7): error TS2741: Property 'supported_task_types' is missing in type '{ status: "ready"; ros_connected: true; judge_mode: "local"; llm_available: true; supported_scenarios: "easy"[]; supported_map_modes: "static"[]; supported_robot_counts: number[]; }' but required in type 'HealthStatus'.
+------
+Dockerfile:6
+
+--------------------
+
+   4 |     RUN npm ci
+
+   5 |     COPY . .
+
+   6 | >>> RUN npm run build
+
+   7 |     
+
+   8 |     FROM nginx:1.29-alpine
+
+--------------------
+
+target frontend: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/dz831oyibiz8ggingj1pdj6bf
+

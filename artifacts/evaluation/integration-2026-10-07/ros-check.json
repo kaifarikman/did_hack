@@ -1,0 +1,32 @@
+{
+  "compose_project": "didhack-validation",
+  "ros_domain_id": 81,
+  "gazebo_partition": "did-validation",
+  "reset": {
+    "request": {"seed": 8, "scenario": "easy", "map_mode": "static", "robots": 1},
+    "response": {"state": "ready", "seed": 8, "scenario": "easy", "map_mode": "static", "robots": 1}
+  },
+  "backend_health": {
+    "status": "ready",
+    "ros_connected": true,
+    "judge_mode": "local",
+    "supported_scenarios": ["easy"],
+    "supported_map_modes": ["static"],
+    "supported_robot_counts": [1]
+  },
+  "judge_process": "did_judge.ros_node seed=8 config_path=local_easy.json",
+  "topics": ["/agent/cmd_vel", "/clock", "/cmd_vel", "/did/battery", "/did/events", "/did/sample_sensor", "/did/score", "/imu", "/joint_states", "/odom", "/parameter_events", "/robot_description", "/rosout", "/scan", "/tf", "/tf_static"],
+  "services": ["/did/collect", "/did/finish"],
+  "motion_probe": {
+    "command_linear_mps": 0.1,
+    "duration_s": 5.0,
+    "odom_start_m": [0.0000000096, 0.0],
+    "odom_end_m": [0.4931500096, 0.0],
+    "distance_m": 0.49315,
+    "battery_start": 59.99022,
+    "battery_end": 59.50462,
+    "battery_spent": 0.48560,
+    "drift_after_stop_m": 0.00010
+  },
+  "notes": ["Измерение выполнено в активной миссии после reset seed=8.", "Проверка движения не раскрыла тематику/координаты образцов или расписание."]
+}

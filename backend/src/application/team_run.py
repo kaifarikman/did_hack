@@ -55,7 +55,7 @@ class Run:
             RobotView(
                 mission.robot_id, snap.status, snap.robot_pose, snap.battery_remaining, snap.samples_collected,
                 snap.current_goal, snap.trajectory, snap.planned_path, reservations.get(mission.robot_id),
-                snap.last_error,
+                snap.last_error, snap.freshness,
             )
             for mission, snap in zip(self.missions, snapshots)
         )
@@ -64,7 +64,11 @@ class Run:
         team = TeamView(robots, _outcome(statuses, total), total, not self.coordinator.independent,
                         tuple(sorted(self.coordinator.lost)))
         return replace(lead, status=_team_status(statuses, total), samples_collected=total, team=team,
-                       revision=sum(snap.revision for snap in snapshots))
+                       revision=sum(snap.revision for snap in snapshots),
+                       route_revision=sum(snap.route_revision for snap in snapshots),
+                       plan_revision=sum(snap.plan_revision for snap in snapshots),
+                       map_revision=max((snap.map_revision for snap in snapshots), default=0),
+                       model_revision=sum(snap.model_revision for snap in snapshots))
 
 
 def _outcome(statuses: list[MissionStatus], total: int) -> str:

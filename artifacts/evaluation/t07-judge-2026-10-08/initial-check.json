@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-08",
+  "status": "in_progress",
+  "existing_evidence": {
+    "judge_tests_in_jazzy_container": "95 passed, 1 skipped",
+    "soil_slowdown_live_probe": {
+      "source": "simulation/artifacts/a1-soil-slowdown-probe.log",
+      "command_speed_m_s": 0.1,
+      "duration_s": 5,
+      "inside_zone_distance_m": 0.275,
+      "outside_zone_distance_m": 0.548,
+      "ratio": 0.501,
+      "configured_factor": 0.5,
+      "limitation": "software velocity scaling, not Gazebo friction"
+    },
+    "physical_pose_and_energy": {
+      "source": "context/full-solution/reports/a.md",
+      "gazebo_pose_topic": "/world/default/pose/info",
+      "odom_distance_m": 0.545,
+      "battery_cost": 0.541,
+      "limitation": "prior live report; no same-run independent energy reconciliation artifact in current evidence"
+    }
+  },
+  "verified_gap": {
+    "collision_implementation": "JudgeNode and TeamJudgeNode infer collision from LaserScan min range < 0.14m with 2s cooldown",
+    "gazebo_contact_topic": "none currently published in live world",
+    "contact_events_verified": false,
+    "claim_boundary": "Laser proximity is not physical contact; T07 remains open"
+  },
+  "live_stack": {
+    "compose_project": "didhack-t02",
+    "ros_domain_id": 82,
+    "gazebo_partition": "did-t02",
+    "backend_health": "ready",
+    "simulation_health": "healthy"
+  }
+}

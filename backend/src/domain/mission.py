@@ -10,6 +10,8 @@ from enum import Enum
 
 from domain.errors import InvalidTransition
 from domain.geometry import Point, Pose
+from domain.navigation_task import NavigationPhase, NavigationTask, NavigationView, TaskType
+from domain.observations import ObservationFreshness
 from domain.plans import MissionPlan, StepStatus
 from domain.subgoals import Subgoal
 
@@ -48,6 +50,15 @@ _ALLOWED = {
     MissionStatus.STOPPING: {MissionStatus.STOPPED, MissionStatus.FAILED},
 }
 
+# Фаза навигации следует статусу; при STOPPING остаётся прежней до подтверждения остановки.
+_NAVIGATION_PHASE = {
+    MissionStatus.RUNNING: NavigationPhase.MOVING_TO_TARGET,
+    MissionStatus.RETURNING: NavigationPhase.RETURNING,
+    MissionStatus.COMPLETED: NavigationPhase.FINISHED,
+    MissionStatus.STOPPED: NavigationPhase.STOPPED,
+    MissionStatus.FAILED: NavigationPhase.FAILED,
+}
+
 
 @dataclass(frozen=True)
 class MissionError:
@@ -77,7 +88,16 @@ class TerrainEstimateView:
 @dataclass(frozen=True)
 class MissionSnapshot:
     run_id: str | None
+    robot_id: str
+    generation: int | None
+    observation_sequence: int | None
+    sample_signal_age_s: float | None
+    freshness: ObservationFreshness
     revision: int
+    route_revision: int
+    plan_revision: int
+    map_revision: int
+    model_revision: int
     status: MissionStatus
     scenario: str | None
     seed: int | None
@@ -106,6 +126,8 @@ class MissionSnapshot:
     plan_revision_reason: str | None = None
     research: "ResearchView" = None  # type: ignore[assignment]
     team: "TeamView | None" = None
+    task_type: TaskType = TaskType.RESEARCH
+    navigation: NavigationView | None = None
 
 
 @dataclass(frozen=True)
@@ -120,6 +142,7 @@ class RobotView:
     planned_path: tuple[Point, ...]
     reservation: Point | None
     last_error: MissionError | None
+    freshness: ObservationFreshness
 
 
 @dataclass(frozen=True)
@@ -183,8 +206,11 @@ class Mission:
         robot_id: str = "robot_1",
         target_samples: int | None = None,
         map_mode: str = "static",
+        navigation: NavigationTask | None = None,
     ) -> None:
         self._lock = threading.RLock()
+        self._navigation = navigation
+        self.task_type = TaskType.NAVIGATION if navigation is not None else TaskType.RESEARCH
         self.run_id = run_id
         self.scenario = scenario
         self.seed = seed
@@ -204,7 +230,14 @@ class Mission:
         self._battery_initial = battery_initial
         self._status = MissionStatus.STARTING
         self._revision = 0
+        self._route_revision = 0
+        self._plan_revision = 0
+        self._map_revision = 0
+        self._model_revision = 0
         self._simulation_time_s: float | None = None
+        self._observation_sequence: int | None = None
+        self._sample_signal_age_s: float | None = None
+        self._freshness = ObservationFreshness()
         self._pose: Pose | None = None
         self._battery: float | None = None
         self._signal: float | None = None
@@ -228,10 +261,17 @@ class Mission:
     def stop_requested(self) -> bool:
         return self._status is MissionStatus.STOPPING
 
+    @property
+    def navigation(self) -> NavigationView | None:
+        with self._lock:
+            return None if self._navigation is None else self._navigation.view()
+
     def _transition(self, target: MissionStatus) -> None:
         if target not in _ALLOWED.get(self._status, set()):
             raise InvalidTransition(f"{self._status.value} -> {target.value}")
         self._status = target
+        if self._navigation is not None:
+            self._navigation.enter(_NAVIGATION_PHASE.get(target))
         if target.is_terminal:  # после завершения нет «текущей» цели: последняя цель не выдаётся за активную
             self._goal, self._planned_path = None, ()
         self._revision += 1
@@ -267,9 +307,21 @@ class Mission:
                 raise InvalidTransition("судья не подтвердил завершение")
             if require_sample and not self._collected:
                 raise InvalidTransition("нет подтверждённого сбора")
+            if self._navigation is not None and not self._navigation.target_reached:
+                raise InvalidTransition("цель навигации не достигнута")
             if self._battery is None or self._battery <= 0:
                 raise InvalidTransition("батарея не положительна")
             self._transition(MissionStatus.COMPLETED)
+
+    def mark_target_reached(self, simulation_time_s: float | None) -> bool:
+        """Фиксирует достижение цели навигации; True только при первом достижении."""
+        with self._lock:
+            if self._navigation is None or self._status.is_terminal:
+                return False
+            changed = self._navigation.mark_reached(simulation_time_s)
+            if changed:
+                self._revision += 1
+            return changed
 
     def fail(self, error: MissionError) -> None:
         with self._lock:
@@ -284,6 +336,9 @@ class Mission:
         pose: Pose | None,
         battery_remaining: float | None,
         sample_signal: float | None,
+        observation_sequence: int | None = None,
+        sample_signal_age_s: float | None = None,
+        freshness: ObservationFreshness | None = None,
     ) -> None:
         with self._lock:
             if self._status.is_terminal:
@@ -292,6 +347,9 @@ class Mission:
             self._pose = pose
             self._battery = battery_remaining
             self._signal = sample_signal
+            self._observation_sequence = observation_sequence
+            self._sample_signal_age_s = sample_signal_age_s
+            self._freshness = freshness or ObservationFreshness()
             if pose is not None:
                 point = pose.point
                 if not self._trajectory or self._trajectory[-1] != point:
@@ -299,22 +357,33 @@ class Mission:
                     del self._trajectory[:-TRAJECTORY_LIMIT]
             self._revision += 1
 
+    def set_freshness(self, freshness: ObservationFreshness) -> None:
+        with self._lock:
+            if self._freshness == freshness:
+                return
+            self._freshness = freshness
+            self._revision += 1
+
     def set_goal(self, goal: Subgoal | None, planned_path: tuple[Point, ...] = ()) -> None:
         with self._lock:
             if self._status.is_terminal:
                 return
+            if goal != self._goal or planned_path != self._planned_path:
+                self._route_revision += 1
             self._goal = goal
             self._planned_path = planned_path
             if goal is not None:
                 self._planner_mode = goal.source
             self._revision += 1
 
-    def set_map_id(self, map_id: str | None) -> None:
+    def set_map_id(self, map_id: str | None, map_revision: int | None = None) -> None:
         """SLAM: карта появляется и меняет идентификатор по ходу прогона."""
         with self._lock:
-            if self._status.is_terminal or map_id == self._map_id:
+            if self._status.is_terminal or (map_id == self._map_id and
+                                            (map_revision is None or map_revision == self._map_revision)):
                 return
             self._map_id = map_id
+            self._map_revision = map_revision if map_revision is not None else self._map_revision + 1
             self._revision += 1
 
     def set_return_estimate(self, estimate: float | None) -> None:
@@ -326,6 +395,8 @@ class Mission:
         with self._lock:
             if self._status.is_terminal:
                 return
+            if (plan, statuses, revision_reason) != (self._plan, self._plan_statuses, self._plan_revision_reason):
+                self._plan_revision += 1
             self._plan, self._plan_statuses, self._plan_revision_reason = plan, statuses, revision_reason
             self._revision += 1
 
@@ -334,11 +405,15 @@ class Mission:
             if self._status.is_terminal or view == self._research_view:
                 return
             self._research_view = view
+            self._model_revision += 1
             self._revision += 1
 
     def set_terrain(self, terrain: tuple[TerrainEstimateView, ...]) -> None:
         with self._lock:
+            if terrain == self._terrain:
+                return
             self._terrain = terrain
+            self._model_revision += 1
             self._revision += 1
 
     def add_collected_sample(self, position: Point) -> CollectedSample:
@@ -352,7 +427,16 @@ class Mission:
         with self._lock:
             return MissionSnapshot(
                 run_id=self.run_id,
+                robot_id=self.robot_id,
+                generation=self.generation,
+                observation_sequence=self._observation_sequence,
+                sample_signal_age_s=self._sample_signal_age_s,
+                freshness=self._freshness,
                 revision=self._revision,
+                route_revision=self._route_revision,
+                plan_revision=self._plan_revision,
+                map_revision=self._map_revision,
+                model_revision=self._model_revision,
                 status=self._status,
                 scenario=self.scenario,
                 seed=self.seed,
@@ -380,4 +464,6 @@ class Mission:
                 plan_statuses=self._plan_statuses,
                 plan_revision_reason=self._plan_revision_reason,
                 research=self._research_view,
+                task_type=self.task_type,
+                navigation=None if self._navigation is None else self._navigation.view(),
             )

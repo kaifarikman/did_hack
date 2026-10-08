@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-08",
+  "status": "complete",
+  "capabilities": {
+    "supported_scenarios": ["easy", "medium", "hard"],
+    "supported_map_modes": ["static"],
+    "supported_robot_counts": [1]
+  },
+  "profile_rules": {
+    "easy": {"samples": 3, "soil_zones": 1},
+    "medium": {"samples": 5, "soil_zones": 3},
+    "hard": {"samples": 7, "soil_zones": 4}
+  },
+  "verification": {
+    "backend_contract_http_search_reset": "50 passed",
+    "judge_scenario_generation": "48 passed across 7 seeds; impossible battery configuration rejected",
+    "live_backend_image_rebuilt_from_worktree": true,
+    "live_health": {"status": "ready", "ros_connected": true, "supported_scenarios": ["easy", "medium", "hard"], "supported_map_modes": ["static"], "supported_robot_counts": [1]},
+    "live_runs": [
+      {"scenario": "easy", "seed": 17, "generation": 9, "run_id": "535ba41c4f2e4526a439300baeaf30dd", "target_samples": 3, "supervisor_ready": true, "stop_state": "stopped"},
+      {"scenario": "medium", "seed": 17, "generation": 10, "run_id": "8d6f420a99374f2089cb85a1e33c3062", "target_samples": 5, "supervisor_ready": true, "stop_state": "stopped"},
+      {"scenario": "hard", "seed": 17, "generation": 11, "run_id": "26880cb5aa624aaa913dda6245c8dfed", "target_samples": 7, "supervisor_ready": true, "stop_state": "stopped"}
+    ],
+    "unsupported_capabilities": {"slam": "409 scenario_unavailable", "two_robots": "409 scenario_unavailable"}
+  },
+  "diagnostic": "Reconnect failure was a ROS_DOMAIN_ID mismatch: backend 7 versus simulation 82. Recreating only the isolated backend with ROS_DOMAIN_ID=82 restored ROS connection; the simulation was not restarted."
+}

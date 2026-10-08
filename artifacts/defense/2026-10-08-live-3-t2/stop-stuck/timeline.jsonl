@@ -1,0 +1,3 @@
+{"time":"2026-10-08T12:19:44.863Z","event":"health","status":"ready","ros_connected":true,"judge_mode":"local","llm_available":true,"supported_scenarios":["easy","medium","hard"],"supported_map_modes":["static"],"supported_robot_counts":[1],"supported_task_types":["research","navigation"]}
+{"time":"2026-10-08T12:19:50.335Z","event":"stop_clicked","status":"stopping"}
+{"time":"2026-10-08T12:19:51.460Z","event":"state","status":"stopped","run_id":"4ce0dccde9ab4868b0f52ce232a42dc4","phase":"stopped","last_error":null}

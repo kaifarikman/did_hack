@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-08",
+  "status": "verified",
+  "compose_project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "before_reset": {
+    "generation": 24,
+    "scenario": "hard",
+    "seed": 7,
+    "soil_zones": [
+      [
+        1.725,
+        -1.075
+      ],
+      [
+        0.475,
+        0.375
+      ],
+      [
+        0.925,
+        -0.325
+      ],
+      [
+        -0.025,
+        0.625
+      ]
+    ],
+    "shifted_zone_had_moved": true
+  },
+  "after_reset": {
+    "generation": 25,
+    "scenario": "hard",
+    "seed": 7,
+    "supervisor_state": "ready",
+    "clock_at_observation_s": 16.139,
+    "judge_first_telemetry": {
+      "simulation_time_s": 17.758,
+      "battery": 59.985768130682345,
+      "signal": 0.42745596623304
+    },
+    "soil_state": {
+      "base": [
+        -2.0,
+        -0.5
+      ],
+      "speed_factor": 0.5,
+      "zones": [
+        [
+          1.7250000000000014,
+          -1.0749999999999993,
+          0.5
+        ],
+        [
+          0.4750000000000014,
+          0.375,
+          0.5
+        ],
+        [
+          0.9250000000000007,
+          -0.3249999999999993,
+          0.5
+        ],
+        [
+          -1.625,
+          1.1750000000000007,
+          0.5
+        ]
+      ]
+    }
+  },
+  "public_channel_audit": {
+    "ros_topics": {
+      "observed": [
+        "/did/battery",
+        "/did/contact",
+        "/did/events",
+        "/did/sample_sensor",
+        "/did/score",
+        "/did/telemetry"
+      ],
+      "schedule_topic_found": false,
+      "hidden_coordinate_or_time_topic_found": false
+    },
+    "source_scan": {
+      "backend_frontend_schedule_field_matches": 0
+    },
+    "public_state_behavior": "Existing hard live run exposed only observed sensor condition and ordinary state; no event times, zone centers, or fault schedule."
+  },
+  "limits": "The test-side observer and soil-state reader had direct judge-container access. That diagnostic access is not part of the agent/backend interfaces."
+}

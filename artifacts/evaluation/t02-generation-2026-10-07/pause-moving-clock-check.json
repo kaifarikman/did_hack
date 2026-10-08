@@ -1,0 +1,40 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "run_id": "74b9d774bc264c9a8c39f22372793201",
+  "generation": 11,
+  "mission_text": "Исследуй перспективную точку, измерь сигнал, затем вернись на базу.",
+  "moving_sample_before_pause": {
+    "status": "running",
+    "simulation_time_s": 15.4,
+    "pose_world_m": [-1.9818945221735145, -0.40952836537193543],
+    "goal": {"kind": "explore", "target_world_m": [-1.975, 0.025]}
+  },
+  "pause_service": "/world/default/control",
+  "pause_request": "gz.msgs.WorldControl { pause: true }",
+  "pause_response": {"data": true, "returncode": 0},
+  "immediate_paused_state": {
+    "mission_status": "running",
+    "simulation_time_s": 15.571,
+    "pose_world_m": [-1.980259357852744, -0.38936241972645885]
+  },
+  "clock_while_paused": {"sec": 15, "nanosec": 571000000},
+  "terminal_while_paused": {
+    "mission_status": "failed",
+    "error_code": "observations_stale",
+    "simulation_time_s": 15.571,
+    "pose_world_m": [-1.980259357852744, -0.38936241972645885]
+  },
+  "unpause_request": "gz.msgs.WorldControl { pause: false }",
+  "unpause_response": {"data": true, "returncode": 0},
+  "cmd_vel_topic": "/agent/cmd_vel",
+  "cmd_vel_type": "geometry_msgs/msg/TwistStamped",
+  "cmd_vel_after_unpause": {"linear_mps": 0.0, "angular_radps": 0.0},
+  "mission_after_unpause": "failed",
+  "limits": [
+    "The pause was issued immediately after observing active motion; simulation time stayed at 15.571 through terminal failure.",
+    "The pose changed 0.020 m between the movement sample and immediate paused snapshot; it then stayed fixed through terminal failure.",
+    "After unpause the mission did not resume, and the ROS command was explicitly zero."
+  ]
+}

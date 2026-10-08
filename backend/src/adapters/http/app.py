@@ -4,19 +4,32 @@ from __future__ import annotations
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictFloat, StrictInt, StrictStr
 
 from adapters.http.serialization import journal_page_json, map_json, snapshot_json
 from application.errors import (
-    ApplicationError, EnvironmentNotReady, InvalidRequest, RunConflict, ScenarioUnavailable, UnknownRun,
+    ApplicationError, EnvironmentNotReady, InvalidRequest, MapChanged, NavigationTargetUnreachable, RunConflict,
+    ScenarioUnavailable, UnknownRun,
 )
 from application.ports import EnvironmentStatus, MapSource
 from application.run_service import RunService
+from domain.geometry import Point
+from domain.navigation_task import NavigationTarget
 
 _STATUS_BY_ERROR = {
     InvalidRequest: 422, UnknownRun: 404, RunConflict: 409, EnvironmentNotReady: 503,
-    ScenarioUnavailable: 409,
+    ScenarioUnavailable: 409, NavigationTargetUnreachable: 422, MapChanged: 409,
 }
+
+
+class NavigationTargetBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    position_x_m: StrictFloat | StrictInt
+    position_y_m: StrictFloat | StrictInt
+    map_id: StrictStr
+
+    def to_target(self) -> NavigationTarget:
+        return NavigationTarget(Point(float(self.position_x_m), float(self.position_y_m)), self.map_id)
 
 
 class StartRunBody(BaseModel):
@@ -27,6 +40,8 @@ class StartRunBody(BaseModel):
     mission_text: StrictStr | None = None
     map_mode: StrictStr = "static"
     robot_count: StrictInt = 1
+    task_type: StrictStr = "research"
+    navigation_target: NavigationTargetBody | None = None
 
 
 class StopRunBody(BaseModel):
@@ -68,6 +83,7 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
             "supported_scenarios": list(environment.supported_scenarios()),
             "supported_map_modes": list(environment.supported_map_modes()),
             "supported_robot_counts": list(environment.supported_robot_counts()),
+            "supported_task_types": list(service.supported_task_types()),
         }
 
     @app.get("/api/v1/state")
@@ -83,8 +99,11 @@ def create_app(service: RunService, environment: EnvironmentStatus, maps: MapSou
 
     @app.post("/api/v1/runs", status_code=202)
     def start_run(body: StartRunBody) -> dict:
-        return snapshot_json(service.start_run(body.request_id, body.scenario, body.seed, body.mission_text, body.map_mode,
-                                                body.robot_count))
+        target = None if body.navigation_target is None else body.navigation_target.to_target()
+        return snapshot_json(service.start_run(
+            body.request_id, body.scenario, body.seed, body.mission_text, body.map_mode, body.robot_count,
+            task_type=body.task_type, navigation_target=target,
+        ))
 
     @app.post("/api/v1/runs/{run_id}/stop", status_code=202)
     def stop_run(run_id: str, body: StopRunBody) -> dict:

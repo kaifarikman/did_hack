@@ -1,0 +1,98 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.03kB done
+#1 DONE 0.0s
+
+#2 [simulation internal] load build definition from Dockerfile.simulation
+#2 DONE 0.0s
+
+#3 [backend internal] load build definition from Dockerfile
+#3 transferring dockerfile: 735B done
+#3 DONE 0.0s
+
+#2 [simulation internal] load build definition from Dockerfile.simulation
+#2 transferring dockerfile: 564B done
+#2 DONE 0.0s
+
+#4 [simulation internal] load metadata for docker.io/library/ros:jazzy-ros-base
+#4 DONE 1.6s
+
+#5 [backend internal] load .dockerignore
+#5 transferring context: 2B 0.0s done
+#5 DONE 0.0s
+
+#6 [simulation internal] load .dockerignore
+#6 transferring context: 186B 0.0s done
+#6 DONE 0.0s
+
+#7 [backend 1/6] FROM docker.io/library/ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca
+#7 resolve docker.io/library/ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca 0.0s done
+#7 DONE 0.0s
+
+#8 [simulation 2/3] RUN apt-get update && apt-get install -y --no-install-recommends         ros-jazzy-turtlebot3-gazebo         ros-jazzy-turtlebot3-navigation2         ros-jazzy-ros-gz-sim         ros-jazzy-ros-gz-bridge         ros-jazzy-turtlebot3-description         python3-pytest python3-numpy     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [simulation 3/3] WORKDIR /workspace
+#9 CACHED
+
+#10 [backend internal] load build context
+#10 transferring context: 474.08kB 0.0s done
+#10 DONE 0.0s
+
+#11 [backend 2/6] RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3-pytest     && pip install --no-cache-dir --break-system-packages "fastapi>=0.115" "uvicorn>=0.30" "httpx>=0.27"     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [backend 3/6] WORKDIR /app
+#12 CACHED
+
+#13 [simulation] exporting to image
+#13 exporting layers done
+#13 exporting manifest sha256:18bd96798cb8deaecddd37d57690b0ec2e0f51821f1fe1fd9da985d738c6a688 done
+#13 exporting config sha256:3aaf621a0d66ab7fc6990bb868f303f6e1e2991dbf3042baa7ba3e8a233f8527 done
+#13 exporting attestation manifest sha256:e0509289d2cba61240d8b84285dfb097310fcb6f8248cfd5f98cf8ee4c0ec078 0.0s done
+#13 exporting manifest list sha256:31a865646dd91effa3d0d1772f54a00fcf6b079cee4674f4b36b8d4fdaa9a2dc 0.0s done
+#13 naming to docker.io/library/did-sim:dev
+#13 naming to docker.io/library/did-sim:dev done
+#13 unpacking to docker.io/library/did-sim:dev done
+#13 DONE 0.1s
+
+#14 [backend 4/6] COPY src ./src
+#14 DONE 0.1s
+
+#15 [backend 5/6] COPY tests ./tests
+#15 DONE 0.0s
+
+#16 [backend 6/6] COPY pyproject.toml ./
+#16 DONE 0.0s
+
+#17 [simulation] resolving provenance for metadata file
+#17 DONE 0.0s
+
+#18 [backend] exporting to image
+#18 exporting layers 0.1s done
+#18 exporting manifest sha256:aa1ad4b3861df4ffd6526a04fb8ff325d279788b4265be632695ed43b6b87180
+#18 exporting manifest sha256:aa1ad4b3861df4ffd6526a04fb8ff325d279788b4265be632695ed43b6b87180 done
+#18 exporting config sha256:b9cba2d1ae88f687ac31b1cdf314c9e13234a356a9c65d72ae38790963b39b4f done
+#18 exporting attestation manifest sha256:5c200d192f071f104afeabb83f91a1338f50c19a6e229a0e5ab2201197e6a078 done
+#18 exporting manifest list sha256:e34532dcaa181ceddc14cf07dfc860aff1e6fccd1b0a5a1a5339ac002c920628 done
+#18 naming to docker.io/library/did-defense-backend:latest done
+#18 unpacking to docker.io/library/did-defense-backend:latest 0.0s done
+#18 DONE 0.2s
+
+#19 [backend] resolving provenance for metadata file
+#19 DONE 0.0s
+ did-sim:dev  Built
+ did-defense-backend  Built
+ Container did-defense-simulation-1  Recreate
+ Container did-defense-simulation-1  Recreated
+ Container did-defense-backend-1  Recreate
+ Container did-defense-backend-1  Recreated
+ Container did-defense-simulation-1  Starting
+ Container did-defense-simulation-1  Started
+ Container did-defense-simulation-1  Waiting
+ Container did-defense-simulation-1  Healthy
+ Container did-defense-backend-1  Starting
+ Container did-defense-backend-1  Started
+ Container did-defense-simulation-1  Waiting
+ Container did-defense-backend-1  Waiting
+ Container did-defense-simulation-1  Healthy
+ Container did-defense-backend-1  Healthy

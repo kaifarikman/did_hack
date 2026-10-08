@@ -41,25 +41,28 @@ class Simulation:
         self.scenario = None
         self.map_mode = None
         self.robots = 1
+        self.generation = 0
 
     def restart(self, seed: int, scenario: str = DEFAULT_SCENARIO, map_mode: str = DEFAULT_MAP_MODE,
-                robots: int = 1):
+                robots: int = 1, generation: int = 0):
         with self._lock:
             self.state, self.seed, self.scenario, self.map_mode = "starting", seed, scenario, map_mode
             self.robots = robots
+            self.generation = generation
             self._stop_processes()
-            self._start_processes(seed, scenario, map_mode, robots)
+            self._start_processes(seed, scenario, map_mode, robots, generation)
             self.state = "ready" if self._wait_ready() else "failed"
             return self.state == "ready"
 
-    def _start_processes(self, seed: int, scenario: str, map_mode: str, robots: int = 1):
+    def _start_processes(self, seed: int, scenario: str, map_mode: str, robots: int = 1,
+                         generation: int = 0):
         config = f"{SIM_DIR}/judge/config/local_{scenario}.json"
         if robots == 1:
             commands = [
                 f"exec ros2 launch {SIM_DIR}/launch/headless_world.launch.py",
                 f"exec python3 {SIM_DIR}/scripts/cmd_vel_guard.py",
                 f"cd {SIM_DIR}/judge && exec python3 -m did_judge.ros_node --ros-args "
-                f"-p seed:={seed} -p config_path:={config}",
+                f"-p seed:={seed} -p generation:={generation} -p config_path:={config}",
             ]
         else:
             robot_ids = [f"robot_{index + 1}" for index in range(robots)]
@@ -69,7 +72,8 @@ class Simulation:
                 commands.append(f"ROBOT_ID={robot_id} ROBOT_BASE={base} exec python3 {SIM_DIR}/scripts/cmd_vel_guard.py")
             ids_literal = "[" + ",".join(robot_ids) + "]"
             commands.append(f"cd {SIM_DIR}/judge && exec python3 -m did_judge.team_node --ros-args "
-                            f"-p seed:={seed} -p config_path:={config} -p robot_ids:=\"{ids_literal}\"")
+                            f"-p seed:={seed} -p generation:={generation} -p config_path:={config} "
+                            f"-p robot_ids:=\"{ids_literal}\"")
         if map_mode == "slam" and robots == 1:
             commands.append(f"exec ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true "
                             f"slam_params_file:={SIM_DIR}/config/slam_params.yaml")
@@ -143,7 +147,7 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/status":
             self._reply(200, {"state": SIMULATION.state, "seed": SIMULATION.seed,
                                   "scenario": SIMULATION.scenario, "map_mode": SIMULATION.map_mode,
-                                  "robots": SIMULATION.robots})
+                                  "robots": SIMULATION.robots, "generation": SIMULATION.generation})
         else:
             self._reply(404, {"error": "not_found"})
 
@@ -165,9 +169,12 @@ class Handler(BaseHTTPRequestHandler):
         robots = request.get("robots", 1)
         if not isinstance(robots, int) or not 1 <= robots <= MAX_ROBOTS:
             return self._reply(422, {"error": "unknown_robot_count", "allowed": list(range(1, MAX_ROBOTS + 1))})
-        ok = SIMULATION.restart(seed, scenario, map_mode, robots)
+        generation = request.get("generation", 0)
+        if type(generation) is not int or generation < 0:
+            return self._reply(422, {"error": "invalid_generation"})
+        ok = SIMULATION.restart(seed, scenario, map_mode, robots, generation)
         self._reply(200 if ok else 500, {"state": SIMULATION.state, "seed": seed, "scenario": scenario,
-                                         "map_mode": map_mode, "robots": robots})
+                                         "map_mode": map_mode, "robots": robots, "generation": generation})
 
     def log_message(self, *_args):
         pass

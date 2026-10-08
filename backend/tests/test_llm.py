@@ -73,6 +73,8 @@ def test_valid_reply_becomes_llm_plan_with_steps_evidence_and_conditions():
     json.dumps({"steps": [{**STEP, "evidence": "#1"}], "rationale": "x"}),
     '{"steps": [{"kind": "explore", "target": {"position_x_m": NaN, "position_y_m": 1}, "reason": "x"}], "rationale": "x"}',
     '{"steps": [{"kind": "explore", "target": {"position_x_m": Infinity, "position_y_m": 1}, "reason": "x"}], "rationale": "x"}',
+    '{"steps": [{"kind": "return", "target": null, "target": null, "reason": "x"}], "rationale": "x"}',
+    '{"steps": [{"kind": "return", "target": null, "reason": "x", "reason": "y"}], "rationale": "x"}',
     GOOD_STEP,
 ])
 def test_plan_schema_violations_are_rejected(content):
@@ -105,6 +107,17 @@ def test_schema_violations_are_rejected(content):
 def test_json_in_code_fence_is_accepted():
     assert parse_subgoal("```json\n" + GOOD_STEP + "\n```").kind is GoalKind.EXPLORE
     assert len(parse_plan("```json\n" + GOOD + "\n```", context()).steps) == 2
+
+
+@pytest.mark.parametrize("content", [
+    "```JSON\n" + GOOD_STEP + "\n```",
+    "```json extra\n" + GOOD_STEP + "\n```",
+    "```json\n" + GOOD_STEP + "\n``` trailing",
+    "```json```",
+])
+def test_malformed_code_fences_are_rejected(content):
+    with pytest.raises(LlmResponseError):
+        parse_subgoal(content)
 
 
 @pytest.mark.parametrize("replies,fragment", [

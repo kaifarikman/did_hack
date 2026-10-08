@@ -15,9 +15,9 @@ from domain.subgoals import Candidate
 EnergyAlong = Callable[[Point, Point], float]
 
 
-def spare_energy(battery: float, return_now: float, reserve: float) -> float:
+def spare_energy(battery: float, return_now: float, reserve: float, action_energy: float = 0.0) -> float:
     """Энергия, которую можно потратить на поиск, не трогая возврат и резерв."""
-    return battery - return_now - reserve
+    return battery - return_now - action_energy - reserve
 
 
 def rank_by_utility(
@@ -29,9 +29,10 @@ def rank_by_utility(
     reserve: float,
     energy_along: EnergyAlong,
     energy_price: float,
+    action_energy: float = 0.0,
 ) -> list[Candidate]:
     return_now = energy_along(robot, base)
-    spare = spare_energy(battery, return_now, reserve)
+    spare = spare_energy(battery, return_now, reserve, action_energy)
     if spare <= 0:
         return []
     price = energy_price / max(0.2, spare / battery_initial)
@@ -39,7 +40,7 @@ def rank_by_utility(
     for candidate in candidates:
         energy_to = energy_along(robot, candidate.point)
         energy_back = energy_along(candidate.point, base)
-        if battery - energy_to - energy_back - reserve < 0:
+        if battery - energy_to - action_energy - energy_back - reserve < 0:
             continue  # после этой цели возврат не обеспечен
         extra_return = max(0.0, energy_back - return_now)
         utility = candidate.score - price * (energy_to + extra_return)

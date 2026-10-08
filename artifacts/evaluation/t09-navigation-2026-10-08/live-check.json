@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-08",
+  "stack": "Isolated docker compose project didhack-t02; simulation ROS_DOMAIN_ID=7, GZ_PARTITION=did; main compose stack not restarted.",
+  "implementation": {
+    "scan_to_world": "LaserScan hits are transformed through the backend world pose, downsampled by four, and filtered by finite range <= 4 m.",
+    "dynamic_map": "Inflated overlay uses TTL 1.0 s, requires 2 scan confirmations within 0.35 s, and groups hits into configurable 0.10 m coarse cells to reduce lidar endpoint jitter.",
+    "immediate_guard": "Current scan hits still feed the braking corridor immediately; corridor includes robot clearance, measured scan age, reaction time, speed, and configured deceleration.",
+    "revision_fix": "Overlay revision changes only when inflated blocked cells change, not when per-cell TTL is refreshed."
+  },
+  "verification": {
+    "backend_tests": "pytest -q backend/tests: 195 passed, 2 skipped after T09 overlay aggregation.",
+    "stale_scan_probe": {
+      "run_id": "f89c076ec4cb4dc6a4640f7c2a1ffc30",
+      "generation": 1,
+      "setup": "Isolated Gazebo probe; lidar rate reduced 5 Hz→0.1 Hz during motion.",
+      "terminal_error": "observations_stale",
+      "scan_freshness_at_failure": {
+        "age_s": 1.017,
+        "fresh": false
+      },
+      "odom_battery_clock_remained_fresh": true,
+      "latest_cmd_vel": {
+        "linear_mps": 0.0,
+        "angular_radps": 0.0
+      },
+      "recovery": "Lidar rate restored to 5 Hz; /scan messages resumed."
+    },
+    "completed_obstacle_mission": {
+      "run_id": "d75887f11bc24274adc511a10f0dc83b",
+      "generation": 1,
+      "scenario": "easy",
+      "seed": 23,
+      "status": "completed",
+      "samples_collected": 1,
+      "terminal_pose_m": [
+        -1.9887777293371989,
+        -0.4006150907889424
+      ],
+      "base_distance_m": 0.0995,
+      "public_collision_events": 0,
+      "minimum_active_obstacle_center_to_box_edge_m_from_command_pose": 0.421,
+      "stopping_time_after_insertion_s": 0.671,
+      "replay": "completed-probe-replay.json",
+      "raw_probe": "../../simulation/artifacts/t09-dynamic-obstacle-probe.json"
+    },
+    "physical_clearance_and_ttl_probes": [
+      {
+        "run_id": "be644dbed4904729b0f55178b4c528b5",
+        "seed": 23,
+        "status": "failed",
+        "error": "no_confirmed_sample",
+        "minimum_gazebo_pose_center_to_box_edge_m": 0.4334,
+        "minimum_surface_clearance_after_robot_radius_m": 0.3234,
+        "minimum_command_pose_center_to_box_edge_m": 0.422,
+        "physical_contacts_with_box": 0,
+        "public_collision_events": 0,
+        "first_zero_after_insertion_s": 0.553,
+        "box_removed_after_s": 8.277,
+        "overlay_after_ttl_s": 2.08,
+        "object_associated_cells": 0,
+        "inflated_dynamic_cells": 0,
+        "route_to_base_m": 0.037,
+        "replay": "physical-pose-replay.json",
+        "raw_probe": "../../simulation/artifacts/t09-dynamic-obstacle-physical-pose.json"
+      },
+      {
+        "run_id": "9db734c9600041aa8532581058e30858",
+        "seed": 7,
+        "status": "failed",
+        "error": "no_confirmed_sample",
+        "minimum_gazebo_pose_center_to_box_edge_m": 0.4217,
+        "minimum_surface_clearance_after_robot_radius_m": 0.3117,
+        "minimum_command_pose_center_to_box_edge_m": 0.41,
+        "physical_contacts_with_box": 0,
+        "public_collision_events": 0,
+        "first_zero_after_insertion_s": 0.703,
+        "box_removed_after_s": 8.258,
+        "overlay_after_ttl_s": 2.074,
+        "object_associated_cells": 0,
+        "inflated_dynamic_cells": 0,
+        "route_to_base_m": 0.079,
+        "replay": "seed7-physical-replay.json",
+        "raw_probe": "../../simulation/artifacts/t09-dynamic-obstacle-seed7.json"
+      }
+    ],
+    "historical_failed_obstacle_probe": {
+      "run_id": "6bb2b2a1f6754b43af2545ee4494910d",
+      "generation": 1,
+      "scenario": "easy",
+      "seed": 23,
+      "obstacle_spawn": {
+        "gazebo_world_position_m": [
+          -1.5799999904,
+          -0.5
+        ],
+        "box_size_m": [
+          0.32,
+          0.32,
+          0.5
+        ],
+        "placement": "observer inserted the model 0.42 m ahead of the first nonzero linear command, converting /odom to world coordinates with (-2.0, -0.5)."
+      },
+      "outcome": {
+        "backend_logged_stop_before_obstacle": true,
+        "route_revision": 1,
+        "max_observed_route_revision": 11,
+        "robot_detoured_around_obstacle": true,
+        "observed_robot_path_reached_y_m": 0.081,
+        "minimum_sampled_robot_center_to_box_edge_m": 0.218,
+        "robot_radius_m": 0.11,
+        "public_collision_events": 0,
+        "terminal_status": "failed",
+        "terminal_error": "no_route_home"
+      },
+      "report": "../../simulation/artifacts/t09-dynamic-obstacle-debounced.json",
+      "interpretation": "The robot stopped before the detected obstacle and moved around its north side without a public collision. It later could not validate a route home while the obstacle remained; autonomous mission completion with an obstacle is not yet accepted.",
+      "note": "Superseded by later seed23/gen1 completed obstacle mission at safe 0.65 m placement and direct physical pose/contact probes."
+    },
+    "historical_return_route_diagnosis": {
+      "method": "Loaded the same static map into NavigationService and added a synthetic 0.32 m box footprint at the live world location, then requested a route from the terminal robot pose to base.",
+      "result": {
+        "base_reachable": true,
+        "route_length_m": 0.366
+      },
+      "interpretation": "The box footprint alone does not make home unreachable in the static map. The live no_route_home likely depends on the cumulative scan overlay or live coordinate/occupancy samples; capture the full dynamic cell set next before changing route policy.",
+      "note": "Old near-base placement was under the robot footprint after map-cell quantization; later placement at 0.65 m away remained traversable and TTL probes confirmed return routes."
+    }
+  },
+  "open": []
+}

@@ -1,0 +1,234 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.50kB done
+#1 DONE 0.0s
+
+#2 [backend internal] load build definition from Dockerfile
+#2 transferring dockerfile: 735B done
+#2 DONE 0.0s
+
+#3 [simulation internal] load build definition from Dockerfile.simulation
+#3 transferring dockerfile: 564B done
+#3 DONE 0.0s
+
+#4 [frontend internal] load build definition from Dockerfile
+#4 transferring dockerfile: 554B done
+#4 DONE 0.0s
+
+#5 [simulation internal] load metadata for docker.io/library/ros:jazzy-ros-base
+#5 ...
+
+#6 [frontend internal] load metadata for docker.io/library/nginx:1.29-alpine
+#6 DONE 1.3s
+
+#7 [frontend internal] load metadata for docker.io/library/node:24-alpine
+#7 DONE 1.3s
+
+#8 [frontend internal] load .dockerignore
+#8 transferring context: 80B done
+#8 DONE 0.0s
+
+#5 [backend internal] load metadata for docker.io/library/ros:jazzy-ros-base
+#5 DONE 1.3s
+
+#9 [simulation internal] load .dockerignore
+#9 transferring context: 186B done
+#9 DONE 0.0s
+
+#10 [backend internal] load .dockerignore
+#10 transferring context: 2B done
+#10 DONE 0.0s
+
+#11 [frontend stage-1 1/5] FROM docker.io/library/nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de
+#11 resolve docker.io/library/nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de 0.0s done
+#11 DONE 0.0s
+
+#12 [frontend build 1/6] FROM docker.io/library/node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1
+#12 resolve docker.io/library/node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 0.0s done
+#12 DONE 0.0s
+
+#13 [simulation 1/3] FROM docker.io/library/ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca
+#13 resolve docker.io/library/ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca 0.0s done
+#13 DONE 0.0s
+
+#14 [frontend internal] load build context
+#14 transferring context: 217.28kB done
+#14 DONE 0.0s
+
+#15 [simulation 2/3] RUN apt-get update && apt-get install -y --no-install-recommends         ros-jazzy-turtlebot3-gazebo         ros-jazzy-turtlebot3-navigation2         ros-jazzy-ros-gz-sim         ros-jazzy-ros-gz-bridge         ros-jazzy-turtlebot3-description         python3-pytest python3-numpy     && rm -rf /var/lib/apt/lists/*
+#15 CACHED
+
+#16 [simulation 3/3] WORKDIR /workspace
+#16 CACHED
+
+#17 [frontend build 3/6] COPY package.json package-lock.json ./
+#17 CACHED
+
+#18 [frontend build 2/6] WORKDIR /app
+#18 CACHED
+
+#19 [frontend build 4/6] RUN npm ci
+#19 CACHED
+
+#20 [backend internal] load build context
+#20 transferring context: 777.85kB 0.0s done
+#20 DONE 0.0s
+
+#21 [backend 2/6] RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3-pytest     && pip install --no-cache-dir --break-system-packages "fastapi>=0.115" "uvicorn>=0.30" "httpx>=0.27"     && rm -rf /var/lib/apt/lists/*
+#21 CACHED
+
+#22 [backend 3/6] WORKDIR /app
+#22 CACHED
+
+#23 [frontend build 5/6] COPY . .
+#23 DONE 0.0s
+
+#24 [simulation] exporting to image
+#24 exporting layers done
+#24 exporting manifest sha256:18bd96798cb8deaecddd37d57690b0ec2e0f51821f1fe1fd9da985d738c6a688 done
+#24 exporting config sha256:3aaf621a0d66ab7fc6990bb868f303f6e1e2991dbf3042baa7ba3e8a233f8527 done
+#24 exporting attestation manifest sha256:116eef63d5ac4af8695ef6cb77bbe865e9b4144c0d4951c2ce8c85f285d71165
+#24 exporting attestation manifest sha256:116eef63d5ac4af8695ef6cb77bbe865e9b4144c0d4951c2ce8c85f285d71165 0.0s done
+#24 exporting manifest list sha256:bf8e6570413153d9244457a070e26ae7189d1e4a987e62af7315f52ed4d654a9 done
+#24 naming to docker.io/library/did-sim:dev done
+#24 unpacking to docker.io/library/did-sim:dev done
+#24 DONE 0.1s
+
+#25 [backend 4/6] COPY src ./src
+#25 DONE 0.0s
+
+#26 [backend 5/6] COPY tests ./tests
+#26 DONE 0.0s
+
+#27 [backend 6/6] COPY pyproject.toml ./
+#27 DONE 0.0s
+
+#28 [simulation] resolving provenance for metadata file
+#28 DONE 0.0s
+
+#29 [backend] exporting to image
+#29 exporting layers 0.1s done
+#29 exporting manifest sha256:026be197a16e83ce3527fca6ae5743c66a8cb348e001bbef69a1f8ccb5ee1d74 done
+#29 exporting config sha256:ec41bcb4df626d4cdf94a01a74958c2b0c5baf592a9257f26d6ab4b6a4ae5832 done
+#29 exporting attestation manifest sha256:bac2c0fa7c568f0580b248b041a9889b6a6028762b23df86273d451f56047468 done
+#29 exporting manifest list sha256:35408d31822b4302b139b40b7bb08fc93e442d93588f21d24964fe793ec8a7cb done
+#29 naming to docker.io/library/did-defense-backend:latest done
+#29 unpacking to docker.io/library/did-defense-backend:latest
+#29 unpacking to docker.io/library/did-defense-backend:latest 0.0s done
+#29 DONE 0.2s
+
+#30 [backend] resolving provenance for metadata file
+#30 DONE 0.0s
+
+#31 [frontend build 6/6] RUN npm run build
+#31 0.217 
+#31 0.217 > did-hack-frontend@0.1.0 build
+#31 0.217 > tsc --noEmit && vite build
+#31 0.217 
+#31 0.539 vite v8.3.3 building client environment for production...
+#31 0.545 transforming...
+#31 0.579 ✓ 46 modules transformed.
+#31 0.604 rendering chunks...
+#31 0.644 computing gzip size...
+#31 0.647 dist/index.html                   0.42 kB │ gzip:  0.30 kB
+#31 0.647 dist/assets/index-BH013Zyo.css    8.04 kB │ gzip:  2.29 kB
+#31 0.647 dist/assets/index-Ae4cgilI.js   315.12 kB │ gzip: 95.96 kB
+#31 0.647 
+#31 0.648 ✓ built in 107ms
+#31 DONE 0.7s
+
+#32 [frontend stage-1 2/5] COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
+#32 CACHED
+
+#33 [frontend stage-1 3/5] COPY docker/10-resolver.envsh docker/40-runtime-config.sh /docker-entrypoint.d/
+#33 CACHED
+
+#34 [frontend stage-1 4/5] RUN chmod +x /docker-entrypoint.d/10-resolver.envsh /docker-entrypoint.d/40-runtime-config.sh
+#34 CACHED
+
+#35 [frontend stage-1 5/5] COPY --from=build /app/dist /usr/share/nginx/html
+#35 DONE 0.0s
+
+#36 [frontend] exporting to image
+#36 exporting layers 0.0s done
+#36 exporting manifest sha256:66cf03f2ea81ee2b08998518e78972aaf58fdac33c0de3a772ba21bfd019c737 done
+#36 exporting config sha256:e1f16c33b54f8875769ff3ec71809b17002354743b93c3bb4296db79c1f2bf19 done
+#36 exporting attestation manifest sha256:1cbc79555ff9900ea40ea91bd645ae9cb79fba972208a7fb0658a38e19b4e962 done
+#36 exporting manifest list sha256:bdc5e8acb8826dc293ab9ba9f1c0e2cf383a0871a96896cadd20c67693b768e9 done
+#36 naming to docker.io/library/did-defense-frontend:latest done
+#36 unpacking to docker.io/library/did-defense-frontend:latest done
+#36 DONE 0.1s
+
+#37 [frontend] resolving provenance for metadata file
+#37 DONE 0.0s
+ did-sim:dev  Built
+ did-defense-backend  Built
+ did-defense-frontend  Built
+ Volume did-defense_journal  Creating
+ Volume did-defense_journal  Created
+ Container did-defense-simulation-1  Recreate
+ Container did-defense-simulation-1  Recreated
+ Container did-defense-backend-1  Creating
+ Container did-defense-backend-1  Created
+ Container did-defense-frontend-1  Creating
+ Container did-defense-frontend-1  Created
+ Container did-defense-simulation-1  Starting
+ Container did-defense-simulation-1  Started
+ Container did-defense-simulation-1  Waiting
+ Container did-defense-simulation-1  Healthy
+ Container did-defense-backend-1  Starting
+ Container did-defense-backend-1  Started
+ Container did-defense-backend-1  Waiting
+ Container did-defense-backend-1  Healthy
+ Container did-defense-frontend-1  Starting
+ Container did-defense-frontend-1  Started
+ Container did-defense-backend-1  Waiting
+ Container did-defense-frontend-1  Waiting
+ Container did-defense-simulation-1  Waiting
+ Container did-defense-frontend-1  Healthy
+ Container did-defense-backend-1  Healthy
+ Container did-defense-simulation-1  Healthy
+#1 [internal] load local bake definitions
+#1 reading from stdin 985B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.gui
+#2 transferring dockerfile: 248B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/did-sim:dev
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 186B done
+#4 DONE 0.0s
+
+#5 [1/2] FROM docker.io/library/did-sim:dev@sha256:bf8e6570413153d9244457a070e26ae7189d1e4a987e62af7315f52ed4d654a9
+#5 resolve docker.io/library/did-sim:dev@sha256:bf8e6570413153d9244457a070e26ae7189d1e4a987e62af7315f52ed4d654a9
+#5 resolve docker.io/library/did-sim:dev@sha256:bf8e6570413153d9244457a070e26ae7189d1e4a987e62af7315f52ed4d654a9 done
+#5 DONE 0.0s
+
+#6 [2/2] RUN apt-get update && apt-get install -y --no-install-recommends         xvfb x11vnc novnc websockify mesa-utils libgl1-mesa-dri openbox imagemagick     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 exporting to image
+#7 exporting layers done
+#7 exporting manifest sha256:7aa4985ec9ccfb91bf6626db5f545000d4acc13285bbcb5ac91085ca53de2d15 done
+#7 exporting config sha256:fd798de10ac2c974e6bf531358f5908629a08bfcefe1c61b11b02d68dce52347 done
+#7 exporting attestation manifest sha256:b82ddba77c0aface7eb56219a9c4e954fb6e27ac4b26000d49ce670fc8863315 done
+#7 exporting manifest list sha256:0b16187fc6fbd422886975625d74d35523eea578b3b59912f45f7452deb7a37e done
+#7 naming to docker.io/library/did-defense-gui:latest done
+#7 unpacking to docker.io/library/did-defense-gui:latest done
+#7 DONE 0.1s
+
+#8 resolving provenance for metadata file
+#8 DONE 0.0s
+ did-defense-gui  Built
+ Container did-defense-simulation-1  Running
+ Container did-defense-gui-1  Creating
+ Container did-defense-gui-1  Created
+ Container did-defense-simulation-1  Waiting
+ Container did-defense-simulation-1  Healthy
+ Container did-defense-gui-1  Starting
+ Container did-defense-gui-1  Started
+{"status":"ready","ros_connected":true,"judge_mode":"local","llm_available":true,"supported_scenarios":["easy","medium","hard"],"supported_map_modes":["static"],"supported_robot_counts":[1],"supported_task_types":["research","navigation"]}
+Панель: http://localhost:8090  ·  Gazebo: http://localhost:6090/vnc.html

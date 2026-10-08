@@ -1,0 +1,29 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "isolation": "separate Compose project and unique didhack-t02 images; did_hack containers left running",
+  "first_generation": {
+    "supervisor": {"state": "ready", "seed": 7, "scenario": "easy", "map_mode": "static", "robots": 1, "generation": 1},
+    "backend_run_id": "a1e011cc8d1b4c0693fa1e8582cc77b1",
+    "backend_status": "running",
+    "simulation_time_s": 13.883,
+    "pose_world_m": [-1.9999999903991739, -0.5],
+    "battery": 59.988426208496094
+  },
+  "stop": {"status": "stopped", "simulation_time_s": 35.488},
+  "second_generation": {
+    "supervisor": {"state": "ready", "seed": 7, "scenario": "easy", "map_mode": "static", "robots": 1, "generation": 2},
+    "backend_run_id": "5b576ae8e3924191a9011f065f4edd09",
+    "backend_status": "running",
+    "simulation_time_s": 16.9,
+    "pose_world_m": [-1.9999999903991883, -0.5],
+    "battery": 59.98617172241211
+  },
+  "limits": [
+    "Live run did not trigger a judge event or force a delayed judge service response.",
+    "Public state does not yet expose generation, observation sequence, or source freshness.",
+    "Simulation time reset to a low value after supervisor restart, but no paused-clock or explicit old-message injection test was run.",
+    "Event historical pose and event timestamp were not validated under motion."
+  ]
+}

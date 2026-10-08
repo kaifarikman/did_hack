@@ -35,6 +35,14 @@ def test_same_distance_costs_more_inside_soil(config):
                - 0.25 * (config.energy_per_m + config.soil_surcharge_per_m)) < 1e-9
 
 
+def test_rotation_cost_is_charged_from_physical_heading_change(config):
+    engine = JudgeEngine(Scenario(1, (), ()), config)
+    engine.update_pose(*config.base_world_m, 0.0, 0.0)
+    engine.update_pose(*config.base_world_m, 1.0, 1.0)
+    assert abs((config.battery_initial - engine.battery)
+               - config.rotation_energy_per_rad) < 1e-9
+
+
 def test_pose_jump_is_not_charged(fixed_engine):
     fixed_engine.update_pose(5.0, 5.0, 0.0, 1.0)
     assert fixed_engine.battery == 60.0
@@ -111,6 +119,15 @@ def test_collision_penalty_and_event(fixed_engine):
     assert fixed_engine.collisions == 1
     assert fixed_engine.battery == 60.0 - fixed_engine.config.collision_penalty_energy
     assert fixed_engine.events[-1].kind == "collision"
+
+
+def test_event_keeps_pose_snapshot_from_its_simulation_time(fixed_engine):
+    fixed_engine.update_pose(1.25, -0.75, 0.0, 12.5)
+    fixed_engine.register_collision()
+    fixed_engine.update_pose(2.0, 0.5, 1.0, 13.0)
+    event = fixed_engine.events[-1]
+    assert event.simulation_time_s == 12.5
+    assert event.position == (1.25, -0.75)
 
 
 def test_score_counts_samples_and_penalties(fixed_engine):

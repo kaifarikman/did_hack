@@ -1,0 +1,55 @@
+{
+ "runs": [
+  {
+   "source": "artifacts/evaluation/integration-2026-10-07/easy-seed7.json",
+   "run_id": "31b8ba096e164987abd338dfb28b876b",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 1,
+   "returned": true,
+   "battery_left": 50.97149658203125,
+   "false_collects": 0,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 1,
+   "plans_with_fallback_reason": 12,
+   "planner_requests": 13,
+   "route_prediction_error_median": 0.685,
+   "route_predictions": 12
+  }
+ ],
+ "summary": {
+  "easy/static/x1": {
+   "runs": 1,
+   "returned": 1,
+   "statuses": {
+    "completed": 1
+   },
+   "collected_mean": 1,
+   "collected_median": 1,
+   "collected_min_max": [
+    1,
+    1
+   ],
+   "false_collects_mean": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 1,
+   "route_prediction_error_median": 0.685
+  }
+ }
+}

@@ -9,20 +9,22 @@ from dataclasses import dataclass, replace
 
 from application.event_feed import EventFeed
 from application.motion import MotionExecutor, MotionState
+from application.navigation_goal import TargetAssessment, assess_navigation_target
 from application.plan_execution import NothingValid, PlanExecutor, Waiting
 from application.research import TerrainResearch
 from application.team import RobotLink
 from application.navigation_service import NavigationService
 from application.ports import (
-    Clock, EventSource, JournalStore, JudgeClient, JudgeReply, MapMode, ObservationSource, OperationOutcome,
+    Clock, EventSource, JournalStore, JudgeClient, JudgeOperation, JudgeReply, MapMode, ObservationSource, OperationOutcome,
     Planner, ResetRequest, ScoreSource, SimulationControl,
 )
-from application.validation import GoalVerdict, validate_subgoal
+from application.validation import GoalVerdict, localization_energy_margin, validate_subgoal
 from domain.errors import InvalidTransition
 from domain.geometry import Point, distance_m
 from domain.journal import JournalDraft, JournalKind
 from domain.hypotheses import describe_measurement
-from domain.mission import HazardView, HypothesisView, Mission, MissionError, ResearchView
+from domain.mission import HazardView, HypothesisView, Mission, MissionError, MissionStatus, ResearchView
+from domain.navigation_task import TaskType
 from domain.observations import DEFAULT_ROBOT_ID, LocalizationStatus, Observation
 from domain.target_selection import rank_by_utility
 from domain.search import SignalSearch
@@ -32,6 +34,9 @@ from domain.subgoals import GoalKind, PlanningContext, Subgoal, TerrainView
 STARTUP_OBSERVATION_GRACE_S = 5.0
 LOST_ROBOT_CODES = frozenset({"observations_stale", "observations_incomplete", "localization_lost", "stuck_returning"})
 RETURN_ESTIMATE_REFRESH_M = 0.25
+NAVIGATION_RETRY_S = 0.5  # пока путь к цели закрыт, A* повторяется не чаще этого интервала
+BLOCKED_PROGRESS_M = 0.15  # дальше от места остановки — новый эпизод перекрытия, а не тот же
+MEASURED_RATE_MIN_TRAVEL_M = 0.5  # короче — расход на метр слишком шумный для оценки возврата
 
 
 @dataclass
@@ -49,6 +54,30 @@ class ControllerPorts:
     map_mode: MapMode = MapMode.STATIC
     robot_id: str = DEFAULT_ROBOT_ID
     coordination: RobotLink | None = None  # команда роботов: брони, обмен знаниями, разъезд
+
+
+@dataclass
+class _PendingJudgeOperation:
+    action: str
+    operation: JudgeOperation
+    observation: Observation
+
+
+@dataclass(frozen=True)
+class _BlockedEpisode:
+    """Серия остановок перед препятствием на пути к одной цели без продвижения."""
+
+    goal_key: tuple[str, float | None, float | None]
+    position: Point
+    since_s: float
+
+
+@dataclass
+class _ImmediateJudgeOperation:
+    reply: JudgeReply
+
+    def poll(self) -> JudgeReply:
+        return self.reply
 
 
 class MissionController:
@@ -69,6 +98,7 @@ class MissionController:
         self._estimator = research.estimator
         self._search = search
         self._goal: Subgoal | None = None
+        self._pending_judge: _PendingJudgeOperation | None = None
         # планировщик (LLM) отвечает в фоне, тик не ждёт его; тесты подставляют синхронный исполнитель
         self._plans = PlanExecutor(
             ports.planner, settings,
@@ -78,19 +108,29 @@ class MissionController:
         self._signal_tier = 0
         self._last_replan: tuple[str | None, str | None] = (None, None)
         self._replans = 0
+        self._stuck_recovery_attempts: dict[tuple[str, float | None, float | None], int] = {}
         self._decisions = 0
         self._reset_done_at_s: float | None = None
         self._simulation_time_s: float | None = None
         self._return_estimate: float | None = None
         self._return_estimate_at: Point | None = None
+        self._return_route_length_m: float | None = None
         self._return_estimate_revision: tuple = ()
         self._published_terrain_revision = -1
         self._localization_lost_since_s: float | None = None
         self._map_missing_since_s: float | None = None
         self._seen_map_revision: int | None = None
+        self._seen_dynamic_obstacle_revision = 0
         self._last_pose_point: Point | None = None
         self._yield_since_s: float | None = None
         self._events: EventFeed | None = None
+        self._navigation_checked = False
+        self._navigation_blocked_since_s: float | None = None
+        self._navigation_retry_at_s = 0.0
+        self._navigation_misses = 0
+        self._navigation_return_logged = False
+        self._odometer = _Odometer()
+        self._blocked: _BlockedEpisode | None = None
 
     # ---------------------------------------------------------------- tick
 
@@ -108,21 +148,113 @@ class MissionController:
         if observation is None:
             return
         self._ingest(observation)
+        if self._pending_judge is not None:
+            self._poll_judge_operation()
+            return
         if not self._map_ready():
+            return
+        self._ports.navigation.observe_dynamic_obstacles(
+            observation.scan_obstacles, self._ports.clock.monotonic_s(), observation.pose.point)
+        if self._check_dynamic_obstacles(observation):
             return
         self._check_map_change(observation)
         if self._yield_to_partner(observation):
             return
         pose = observation.pose
-        motion_state = self._ports.motion.step(pose, self._ports.clock.monotonic_s())
+        now_s = self._ports.clock.monotonic_s()
+        scan_age_s = (observation.freshness.scan.age_s
+                      if observation.freshness is not None else None)
+        command_guard = (self._ports.navigation.recovery_command_blocked
+                        if self._ports.motion.recovering else self._ports.navigation.command_blocked)
+        motion_state = self._ports.motion.step(
+            pose, now_s,
+            command_blocked=lambda command: command_guard(
+                pose, command.linear_mps, command.angular_radps, scan_age_s, now_s),
+        )
         if motion_state is MotionState.MOVING:
             self._enforce_reserve(observation)
         elif motion_state is MotionState.ARRIVED:
             self._on_arrival(observation)
         elif motion_state is MotionState.STUCK:
             self._on_stuck(observation)
+        elif motion_state is MotionState.BLOCKED:
+            self._on_dynamic_obstacle_blocked(observation)
+        elif motion_state is MotionState.OFF_PATH:
+            self._on_path_deviation(observation)
+        elif motion_state is MotionState.RECOVERED:
+            self._resume_after_stuck_recovery(observation)
+        elif motion_state is MotionState.RECOVERY_FAILED:
+            self._on_stuck_recovery_failed(observation)
+        elif motion_state is MotionState.RECOVERING:
+            return
         else:
             self._decide(observation)
+
+    def _check_dynamic_obstacles(self, observation: Observation) -> bool:
+        revision = self._ports.navigation.dynamic_obstacle_revision
+        if revision == self._seen_dynamic_obstacle_revision or self._ports.motion.recovering:
+            return False  # манёвр восстановления проверяет каждую команду сам и не идёт по пути
+        self._seen_dynamic_obstacle_revision = revision
+        if self._goal is None:
+            return False
+        path = self._mission.snapshot().planned_path
+        if not self._ports.navigation.path_blocked(observation.pose.point, path):
+            return False
+        self._on_dynamic_obstacle_blocked(observation)
+        return True
+
+    def _on_dynamic_obstacle_blocked(self, observation: Observation) -> None:
+        """Стоп перед препятствием. Повтор у той же цели без продвижения не пишется в журнал,
+        а дольше `blocked_escalation_s` обрабатывается как застревание: восстановление, затем явный отказ."""
+        goal = self._goal
+        self._ports.motion.stop()
+        now = self._ports.clock.monotonic_s()
+        key = self._stuck_recovery_key(goal) if goal is not None else ("none", None, None)
+        episode = self._blocked
+        if (episode is None or episode.goal_key != key
+                or distance_m(observation.pose.point, episode.position) > BLOCKED_PROGRESS_M):
+            self._blocked = _BlockedEpisode(key, observation.pose.point, now)
+            self._log(
+                JournalKind.DECISION, "Остановка перед препятствием",
+                f"Свежий scan перекрыл коридор к {goal.kind.value if goal else 'текущей цели'}; команда обнулена, "
+                "выбирается обход.",
+            )
+        elif goal is not None and now - episode.since_s > self._settings.blocked_escalation_s:
+            self._blocked = _BlockedEpisode(key, observation.pose.point, now)
+            self._log(
+                JournalKind.ERROR, "Препятствие не уходит",
+                f"Коридор к {goal.kind.value} закрыт дольше {self._settings.blocked_escalation_s:.0f} с без "
+                "продвижения; обрабатываем как застревание.",
+            )
+            self._on_stuck(observation)  # цель сохранена: восстановление, перепланирование или отказ
+            return
+        self._goal = None
+        self._plans.invalidate("свежий scan перекрыл безопасный коридор")
+        self._mission.set_goal(None)
+
+    def _repeating_blocked_goal(self, goal: Subgoal) -> bool:
+        return self._blocked is not None and self._blocked.goal_key == self._stuck_recovery_key(goal)
+
+    def _on_path_deviation(self, observation: Observation) -> None:
+        goal = self._goal
+        self._ports.motion.stop()
+        if goal is None:
+            return
+        self._plans.invalidate("устойчивое отклонение от активного маршрута")
+        self._last_replan = ("отклонение от маршрута", None)
+        self._log(
+            JournalKind.DECISION,
+            "Перепланирование после отклонения",
+            f"Робот устойчиво ушёл от сегмента пути к {goal.kind.value}; движение остановлено, маршрут строится от текущей позы.",
+        )
+        verdict = self._verdict(observation, goal)
+        if verdict.accepted:
+            self._start_route(observation, goal, verdict)
+        elif goal.kind is GoalKind.RETURN:
+            self._fail("no_route_home", f"Возврат невозможен после отклонения от маршрута: {verdict.reason}")
+        else:
+            self._goal = None
+            self._mission.set_goal(None)
 
     # ------------------------------------------------------------ команда
 
@@ -194,7 +326,7 @@ class MissionController:
             return
         first = self._seen_map_revision is None
         self._seen_map_revision = revision
-        self._mission.set_map_id(self._ports.navigation.map_id)
+        self._mission.set_map_id(self._ports.navigation.map_id, self._ports.navigation.map_revision)
         if first or self._goal is None:
             return
         path = self._mission.snapshot().planned_path
@@ -274,6 +406,7 @@ class MissionController:
 
     def _finish_stop(self) -> None:
         self._plans.cancel()
+        self._pending_judge = None
         self._ports.motion.stop()
         self._goal = None
         try:
@@ -298,6 +431,7 @@ class MissionController:
 
     def _fail(self, code: str, message: str, retryable: bool = False) -> None:
         self._ports.motion.stop()
+        self._pending_judge = None
         self._mission.fail(MissionError(code, message, retryable))
         self._mission.set_goal(None)
         self._leave_team(lost=code in LOST_ROBOT_CODES)
@@ -321,6 +455,18 @@ class MissionController:
                 self._fail("observations_stale", "Нет свежих наблюдений после сброса.", True)
             return None
         self._localization_lost_since_s = None
+        if observation.freshness is not None:
+            self._mission.set_freshness(observation.freshness)
+            sources = (observation.freshness.odom, observation.freshness.scan,
+                       observation.freshness.battery, observation.freshness.clock)
+            if any(source.fresh is False for source in sources):
+                self._fail("observations_stale", "Критический источник наблюдений устарел; движение остановлено.", True)
+                return None
+            if any(source.fresh is None for source in sources):
+                self._ports.motion.stop()
+                if clock.monotonic_s() - started > STARTUP_OBSERVATION_GRACE_S:
+                    self._fail("observations_stale", "Не получен полный набор критических наблюдений.", True)
+                return None
         if clock.monotonic_s() - observation.received_monotonic_s > self._settings.observation_max_age_s:
             self._fail("observations_stale", "Наблюдения устарели; движение остановлено.", True)
             return None
@@ -349,7 +495,9 @@ class MissionController:
         self._check_pose_jump(observation)
         pose = observation.pose
         self._mission.update_telemetry(
-            observation.simulation_time_s, pose, observation.battery_remaining, observation.sample_signal
+            observation.simulation_time_s, pose, observation.battery_remaining, observation.sample_signal,
+            observation.sequence, observation.sample_signal_age_s,
+            observation.freshness,
         )
         penalty = observation.penalty_recent
         for event in self._events.poll() if self._events else ():
@@ -371,6 +519,8 @@ class MissionController:
         if self._research.revision != self._published_terrain_revision:
             self._published_terrain_revision = self._research.revision
             self._mission.set_terrain(self._research.terrain_views())
+        if self._is_navigation:
+            self._odometer.record(pose.point, observation.battery_remaining, self._settings.pose_jump_m)
         self._refresh_return_estimate(observation)
 
     def _publish_research(self) -> None:
@@ -398,7 +548,7 @@ class MissionController:
         affected = goal is not None and (
             (change.bucket is not None and any(self._estimator.bucket_of(p) == change.bucket for p in path))
             or (change.hazard is not None and self._research.hazards.crossings(observation.pose.point, path) > 0)
-            or (change.bucket is None and change.hazard is None)
+            or (change.bucket is None and change.hazard is None and not self._is_navigation)
         )
         if not affected:
             self._plans.invalidate(change.cause, change.detection_id)
@@ -428,7 +578,9 @@ class MissionController:
         )
         if not moved:
             return
-        self._return_estimate = self._ports.navigation.return_energy(position)
+        route = self._ports.navigation.return_route(position)
+        self._return_estimate = route.energy if route else None
+        self._return_route_length_m = route.length_m if route else None
         self._return_estimate_at = position
         self._return_estimate_revision = self._model_key()
         self._mission.set_return_estimate(self._return_estimate)
@@ -440,9 +592,21 @@ class MissionController:
     def _return_estimate_or_conservative(self, position: Point) -> float:
         """Неизвестная оценка не равна нулю: берём прямое расстояние с запасом и prior."""
         if self._return_estimate is not None:
-            return self._return_estimate
+            return max(self._return_estimate, self._measured_return_energy())
         straight = distance_m(position, self._settings.base) * 1.5
-        return straight * self._estimator.prior_energy_per_m * self._settings.return_safety_factor
+        return max(straight * self._estimator.prior_energy_per_m * self._settings.return_safety_factor,
+                   self._measured_return_energy())
+
+    def _measured_return_energy(self) -> float:
+        """Навигация: возврат не дешевле фактического расхода на метр в этом прогоне.
+
+        Оценка грунта при низкой уверенности тянется к prior и занижает дорогой путь; измеренный
+        расход включает повороты и штрафы, поэтому как нижняя граница консервативен.
+        """
+        rate = self._odometer.energy_per_m(MEASURED_RATE_MIN_TRAVEL_M)
+        if not self._is_navigation or rate is None or self._return_route_length_m is None:
+            return 0.0
+        return rate * self._return_route_length_m * self._settings.return_safety_factor
 
     def _reserve_low(self, observation: Observation) -> bool:
         needed = self._return_estimate_or_conservative(observation.pose.point) * self._localization_margin(observation)
@@ -450,9 +614,7 @@ class MissionController:
 
     def _localization_margin(self, observation: Observation) -> float:
         """Неточная поза удлиняет фактический путь домой: запас растёт с оценкой ошибки."""
-        if observation.localization is LocalizationStatus.DEGRADED:
-            return 1.0 + max(0.2, min(0.5, observation.localization_error_m or 0.0))
-        return 1.0 + min(0.5, observation.localization_error_m or 0.0)
+        return localization_energy_margin(observation.localization_error_m, observation.localization)
 
     # -------------------------------------------------------------- events
 
@@ -478,11 +640,16 @@ class MissionController:
         self._apply_goal(
             observation, Subgoal(GoalKind.RETURN, self._settings.base, "Запас энергии на возврат на пределе.")
         )
+        self._note_navigation_return(observation, "запас энергии на возврат на пределе")
 
     def _on_arrival(self, observation: Observation) -> None:
         goal, self._goal = self._goal, None
         self._replans = 0
+        self._blocked = None
         if goal is None:
+            return
+        if self._is_navigation and goal.kind is not GoalKind.RETURN:
+            self._on_navigation_arrival(observation)
             return
         if self._ports.coordination is not None and goal.kind is not GoalKind.RETURN:
             self._ports.coordination.release()
@@ -506,11 +673,77 @@ class MissionController:
             if goal.kind is GoalKind.RETURN:
                 self._fail("stuck_returning", "Робот застрял при возврате на базу.")
                 return
+            if self._is_navigation:
+                self._return_without_target(observation, "нет прогресса к цели после перепланирований")
+                return
             self._plans.step_finished(False)
             self._publish_plan()
             self._goal = None
             self._replans = 0
             return
+        recovery_key = self._stuck_recovery_key(goal)
+        attempts = self._stuck_recovery_attempts.get(recovery_key, 0)
+        if attempts < self._settings.max_stuck_recovery_attempts_per_goal:
+            return_budget = (self._return_estimate_or_conservative(observation.pose.point)
+                             * self._localization_margin(observation))
+            recovery_budget = self._settings.return_reserve + self._settings.stuck_recovery_energy_budget
+            if observation.battery_remaining - return_budget < recovery_budget:
+                self._log(JournalKind.DECISION, "Восстановление отменено по энергии",
+                          f"Для безопасного манёвра нужно оставить ≈{recovery_budget:.1f} ед. сверх возврата.")
+                if goal.kind is GoalKind.RETURN:
+                    self._fail("stuck_returning", "Не хватает энергии на безопасное восстановление и возврат.")
+                elif self._is_navigation:
+                    self._return_without_target(observation, "нет энергии на манёвр восстановления")
+                else:
+                    self._plans.step_finished(False)
+                    self._publish_plan()
+                    self._goal = None
+                    self._mission.set_goal(None)
+                return
+            self._stuck_recovery_attempts[recovery_key] = attempts + 1
+            self._ports.motion.begin_recovery(
+                observation.pose, self._ports.clock.monotonic_s(),
+                reverse_m=self._settings.stuck_recovery_reverse_m,
+                turn_rad=self._settings.stuck_recovery_turn_rad,
+                reverse_speed_mps=self._settings.stuck_recovery_reverse_speed_mps,
+                turn_speed_radps=self._settings.stuck_recovery_turn_speed_radps,
+                timeout_s=self._settings.stuck_recovery_timeout_s,
+            )
+            self._log(JournalKind.DECISION, "Безопасное восстановление",
+                      f"Попытка {attempts + 1}: короткий отход и проверка поворота; лимит "
+                      f"{self._settings.stuck_recovery_timeout_s:.1f} с.")
+            return
+        self._replan_after_stuck(observation, goal)
+
+    @staticmethod
+    def _stuck_recovery_key(goal: Subgoal) -> tuple[str, float | None, float | None]:
+        target = goal.target
+        return (goal.kind.value,
+                round(target.x_m, 3) if target else None,
+                round(target.y_m, 3) if target else None)
+
+    def _resume_after_stuck_recovery(self, observation: Observation) -> None:
+        goal = self._goal
+        if goal is None:
+            return
+        self._log(JournalKind.DECISION, "Восстановление завершено",
+                  "Отход и проверенный поворот выполнены; повторно проверяем маршрут к сохранённой цели.")
+        verdict = self._verdict(observation, goal)
+        if verdict.accepted:
+            self._start_route(observation, goal, verdict)
+        elif goal.kind is GoalKind.RETURN:
+            self._fail("no_route_home", f"Маршрут на базу не найден после восстановления: {verdict.reason}")
+        else:
+            self._goal = None
+            self._mission.set_goal(None)
+
+    def _on_stuck_recovery_failed(self, observation: Observation) -> None:
+        self._log(JournalKind.ERROR, "Манёвр восстановления прерван",
+                  "Отход/поворот заблокирован scan-проверкой или вышел за временной лимит; пробуем только новый маршрут.")
+        if self._goal is not None:
+            self._replan_after_stuck(observation, self._goal)
+
+    def _replan_after_stuck(self, observation: Observation, goal: Subgoal) -> None:
         verdict = self._verdict(observation, goal)
         if verdict.accepted:
             self._start_route(observation, goal, verdict)
@@ -518,10 +751,41 @@ class MissionController:
             self._fail("no_route_home", "Маршрут на базу не найден.")
         else:
             self._goal = None
+            self._mission.set_goal(None)
 
     def _finish_mission(self, observation: Observation) -> None:
-        reply = self._reconcile_finish(self._ports.judge.finish())
+        self._pending_judge = _PendingJudgeOperation(
+            "finish", self._begin_judge_operation("finish"), observation,
+        )
+        self._poll_judge_operation()
+
+    def _poll_judge_operation(self) -> None:
+        pending = self._pending_judge
+        if pending is None:
+            return
+        reply = pending.operation.poll()
+        if reply is None:
+            return
+        self._pending_judge = None
+        if pending.action == "collect":
+            self._complete_collect(pending.observation, reply)
+        else:
+            self._complete_finish(pending.observation, reply)
+
+    def _begin_judge_operation(self, action: str) -> JudgeOperation:
+        begin = getattr(self._ports.judge, f"begin_{action}", None)
+        if callable(begin):
+            return begin()
+        # Совместимость со старыми адаптерами в fake-world и переходных версиях.
+        reply = getattr(self._ports.judge, action)()
+        return _ImmediateJudgeOperation(reply)
+
+    def _complete_finish(self, observation: Observation, reply: JudgeReply) -> None:
+        reply = self._reconcile_finish(reply)
         mission = self._mission
+        if self._is_navigation:
+            self._complete_navigation_finish(observation, reply)
+            return
         solo = self._ports.coordination is None
         if solo and mission.samples_collected == 0:
             self._fail("no_confirmed_sample", "Возврат без подтверждённого образца; успех не засчитан.")
@@ -544,7 +808,7 @@ class MissionController:
         """Неизвестный исход finish сверяется с публичным счётом; без подтверждения успеха нет."""
         if reply.outcome is not OperationOutcome.UNKNOWN:
             return reply
-        score = self._ports.score.score() if self._ports.score else None
+        score = self._current_score()
         if score is not None and score.finished and score.finish_success is not None:
             self._log(
                 JournalKind.DECISION, "Исход finish сверен со счётом",
@@ -557,10 +821,16 @@ class MissionController:
         """Неизвестный исход collect: засчитываем только рост публичного счёта, повтор не делаем вслепую."""
         if reply.outcome is not OperationOutcome.UNKNOWN:
             return reply
-        score = self._ports.score.score() if self._ports.score else None
+        score = self._current_score()
         if score is not None and score.collected > self._mission.samples_collected:
             return JudgeReply(True, "сверено со счётом: сбор засчитан")
         return reply
+
+    def _current_score(self):
+        score = self._ports.score.score() if self._ports.score else None
+        if score is not None and score.generation is not None and score.generation != self._mission.generation:
+            return None
+        return score
 
     # ------------------------------------------------------------ decisions
 
@@ -583,6 +853,7 @@ class MissionController:
         return validate_subgoal(
             goal, observation.pose.point, observation.battery_remaining, signal,
             self._ports.navigation, self._settings,
+            observation.localization_error_m, observation.localization,
         )
 
     def _build_context(self, observation: Observation, plan_id: str = "plan-0", epoch: int = 0) -> PlanningContext:
@@ -598,6 +869,7 @@ class MissionController:
         candidates = rank_by_utility(
             valued, pose.point, settings.base, observation.battery_remaining, settings.battery_initial,
             settings.return_reserve, self._energy_along, settings.energy_price,
+            action_energy=settings.false_collect_energy_penalty,
         )[:6]
         refine: list = []
         best, center = self._search.best_signal or 0.0, self._search.best_point
@@ -670,6 +942,9 @@ class MissionController:
 
     def _decide(self, observation: Observation) -> None:
         mission = self._mission
+        if self._is_navigation and mission.status is not MissionStatus.RETURNING:
+            self._decide_navigation(observation)
+            return
         if mission.status.value == "returning":
             self._decisions += 1
             self._search.note_decision()
@@ -744,7 +1019,9 @@ class MissionController:
             elif goal.target is not None:
                 link.claim(goal.target, self._ports.clock.monotonic_s())
         mission.set_goal(goal, verdict.route.waypoints)
-        self._ports.motion.follow(list(verdict.route.waypoints))
+        self._ports.motion.follow(list(verdict.route.waypoints), start=observation.pose.point)
+        if self._repeating_blocked_goal(goal):
+            return  # тот же маршрут после остановки перед препятствием: уже записан
         self._log(
             JournalKind.DECISION, f"Подцель: {goal.kind.value}",
             f"{goal.reason} Источник: {goal.source}. Расход по маршруту ≈ {verdict.route.energy:.1f}, "
@@ -758,7 +1035,13 @@ class MissionController:
         self._ports.motion.stop()
         self._research.discard_segment()  # штраф/пауза сбора не относятся к стоимости грунта
         self._mission.set_goal(goal)
-        reply = self._reconcile_collect(self._ports.judge.collect())
+        self._pending_judge = _PendingJudgeOperation(
+            "collect", self._begin_judge_operation("collect"), observation,
+        )
+        self._poll_judge_operation()
+
+    def _complete_collect(self, observation: Observation, reply: JudgeReply) -> None:
+        reply = self._reconcile_collect(reply)
         position = observation.pose.point
         if reply.outcome is OperationOutcome.UNKNOWN:
             self._search.record_collect_attempt(position)
@@ -784,6 +1067,150 @@ class MissionController:
                 f"Судья отклонил попытку при сигнале {observation.sample_signal}; поиск уточняется. {reply.message}".strip(),
             )
         self._goal = None
+
+    # ----------------------------------------------------------- navigation
+
+    @property
+    def _is_navigation(self) -> bool:
+        return self._mission.task_type is TaskType.NAVIGATION
+
+    def _decide_navigation(self, observation: Observation) -> None:
+        """Обязательная цель пользователя без LLM и поиска; запас и возврат имеют приоритет."""
+        task = self._mission.navigation
+        now = self._ports.clock.monotonic_s()
+        if now < self._navigation_retry_at_s:
+            return
+        if not self._navigation_checked and task.target.map_id != self._ports.navigation.map_id:
+            self._fail("map_changed", "Карта после сброса отличается от карты, по которой выбрана цель; "
+                                      "движение не начато.")
+            return
+        if task.is_reached_by(observation.pose.point):
+            self._confirm_navigation_target(observation)
+            self._on_target_reached(observation)
+            return
+        if self._navigation_checked and self._reserve_low(observation):
+            self._enforce_reserve(observation)
+            return
+        assessment = assess_navigation_target(
+            self._ports.navigation, self._settings, observation.pose.point, task.target.point,
+            observation.battery_remaining, self._localization_margin(observation),
+        )
+        if not assessment.accepted:
+            self._on_navigation_refused(observation, assessment, now)
+            return
+        self._navigation_blocked_since_s = None
+        goal = Subgoal(GoalKind.EXPLORE, task.target.point, "Пользовательская цель навигации.")
+        self._start_route(observation, goal, GoalVerdict(True, route=assessment.route))
+        self._confirm_navigation_target(observation)
+
+    def _confirm_navigation_target(self, observation: Observation) -> None:
+        """Проверка после сброса пройдена: цель принята один раз за прогон."""
+        if self._navigation_checked:
+            return
+        self._navigation_checked = True
+        self._navigation_event(
+            JournalKind.DECISION, "navigation_target_set", observation,
+            "Цель проверена после сброса по свежей позе, карте и батарее; движение начато.",
+        )
+
+    def _on_navigation_refused(self, observation: Observation, assessment: TargetAssessment, now_s: float) -> None:
+        if assessment.problem.transient:
+            self._ports.motion.stop()
+            self._navigation_retry_at_s = now_s + NAVIGATION_RETRY_S
+            if self._navigation_blocked_since_s is None:
+                self._navigation_blocked_since_s = now_s
+                self._log(JournalKind.DECISION, "Путь к цели закрыт",
+                          f"{assessment.message} Ожидаем до {self._settings.navigation_blocked_wait_s:.0f} с; "
+                          "робот стоит.")
+                return
+            if now_s - self._navigation_blocked_since_s <= self._settings.navigation_blocked_wait_s:
+                return
+        if not self._navigation_checked:
+            self._fail("navigation_target_unreachable",
+                       f"Проверка цели после сброса: {assessment.message} Движение не начато.")
+            return
+        self._return_without_target(observation, assessment.message.rstrip("."))
+
+    def _on_navigation_arrival(self, observation: Observation) -> None:
+        """Путь пройден; достижение подтверждает только наблюдаемая поза в пределах допуска."""
+        task = self._mission.navigation
+        if task.is_reached_by(observation.pose.point):
+            self._navigation_misses = 0
+            self._on_target_reached(observation)
+            return
+        self._navigation_misses += 1
+        miss_m = distance_m(observation.pose.point, task.target.point)
+        self._log(JournalKind.DECISION, "Цель не подтверждена позой",
+                  f"Путь пройден, но поза в {miss_m:.2f} м от цели при допуске {task.arrival_tolerance_m:.2f} м; "
+                  f"попытка {self._navigation_misses}.")
+        if self._navigation_misses > self._settings.max_replans:
+            self._return_without_target(observation, "поза не подтвердила достижение цели")
+
+    def _on_target_reached(self, observation: Observation) -> None:
+        self._ports.motion.stop()
+        self._goal = None
+        if self._mission.mark_target_reached(observation.simulation_time_s):
+            self._navigation_event(
+                JournalKind.OUTCOME, "navigation_target_reached", observation,
+                "Цель достигнута по наблюдаемой позе. Это не завершение миссии: начинается возврат.",
+            )
+        self._start_navigation_return(observation, "цель достигнута")
+
+    def _return_without_target(self, observation: Observation, reason: str) -> None:
+        self._ports.motion.stop()
+        self._goal = None
+        self._mission.set_goal(None)
+        self._log(JournalKind.DECISION, "Возврат без достижения цели",
+                  f"{reason}. Безопасный возврат имеет приоритет; без достижения цели итог не будет completed.")
+        self._start_navigation_return(observation, reason)
+
+    def _start_navigation_return(self, observation: Observation, reason: str) -> None:
+        self._apply_goal(observation, Subgoal(GoalKind.RETURN, self._settings.base, f"Возврат на базу: {reason}."))
+        self._note_navigation_return(observation, reason)
+
+    def _note_navigation_return(self, observation: Observation, reason: str) -> None:
+        if (not self._is_navigation or self._navigation_return_logged
+                or self._mission.status is not MissionStatus.RETURNING):
+            return
+        self._navigation_return_logged = True
+        reached = self._mission.navigation.target_reached
+        self._navigation_event(
+            JournalKind.DECISION, "navigation_return_started", observation,
+            f"Причина возврата: {reason}. Цель {'достигнута' if reached else 'не достигнута'}.",
+        )
+
+    def _navigation_event(self, kind: JournalKind, name: str, observation: Observation, text: str) -> None:
+        snapshot = self._mission.snapshot()
+        target, pose = snapshot.navigation.target, observation.pose
+        time_text = "нет" if observation.simulation_time_s is None else f"{observation.simulation_time_s:.2f} с"
+        self._log(
+            kind, name,
+            f"{text} Прогон {snapshot.run_id}, поколение {snapshot.generation}; поза ({pose.x_m:.2f}, "
+            f"{pose.y_m:.2f}, {pose.heading_rad:.2f} рад); цель ({target.point.x_m:.2f}, {target.point.y_m:.2f}) "
+            f"на карте {target.map_id}; ревизия пути {snapshot.route_revision}; время симуляции {time_text}.",
+            evidence=(f"run:{snapshot.run_id}", f"generation:{snapshot.generation}",
+                      f"route_revision:{snapshot.route_revision}"),
+        )
+
+    def _complete_navigation_finish(self, observation: Observation, reply: JudgeReply) -> None:
+        mission = self._mission
+        task = mission.navigation
+        if not task.target_reached:
+            verdict = "подтвердил возврат" if reply.success else f"не подтвердил возврат ({reply.message})"
+            self._fail("navigation_goal_not_reached",
+                       f"Робот вернулся на базу без достижения цели; судья {verdict}.")
+            return
+        try:
+            mission.complete(reply.success, require_sample=False)
+        except InvalidTransition as error:
+            self._fail("finish_rejected", f"Завершение не принято: {error}. {reply.message}".strip())
+            return
+        mission.set_goal(None)
+        reached_at = "" if task.target_reached_at_s is None else f" в {task.target_reached_at_s:.1f} с"
+        self._log(
+            JournalKind.OUTCOME, "Миссия завершена",
+            f"Цель достигнута{reached_at}, возврат подтверждён судьёй; батарея {observation.battery_remaining:.1f}.",
+        )
 
     # ----------------------------------------------------------- experiment
 
@@ -824,3 +1251,28 @@ class MissionController:
 
 def _format_energy(value: float | None) -> str:
     return "нет оценки" if value is None else f"{value:.1f}"
+
+
+class _Odometer:
+    """Пройденный путь и потраченная энергия с начала прогона; скачки позы не считаются путём."""
+
+    def __init__(self) -> None:
+        self._last: Point | None = None
+        self._battery_start: float | None = None
+        self._battery_now: float | None = None
+        self.travelled_m = 0.0
+
+    def record(self, position: Point, battery: float, pose_jump_m: float) -> None:
+        if self._battery_start is None:
+            self._battery_start = battery
+        self._battery_now = battery
+        if self._last is not None:
+            step = distance_m(self._last, position)
+            if step < pose_jump_m:
+                self.travelled_m += step
+        self._last = position
+
+    def energy_per_m(self, min_travel_m: float) -> float | None:
+        if self._battery_start is None or self.travelled_m < min_travel_m:
+            return None
+        return max(0.0, self._battery_start - self._battery_now) / self.travelled_m

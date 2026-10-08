@@ -32,13 +32,24 @@ def _reject_constant(name: str) -> float:
     raise LlmResponseError(f"недопустимое число {name}")
 
 
+def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise LlmResponseError(f"повторяющееся поле {key}")
+        result[key] = value
+    return result
+
+
 def _load_json(content: str) -> object:
     text = content.strip()
     if text.startswith("```"):
-        text = text.strip("`")
-        text = text[4:] if text.startswith("json") else text
+        lines = text.splitlines()
+        if len(lines) < 3 or lines[0].strip() not in ("```", "```json") or lines[-1].strip() != "```":
+            raise LlmResponseError("неверная JSON code fence")
+        text = "\n".join(lines[1:-1]).strip()
     try:
-        return json.loads(text, parse_constant=_reject_constant)
+        return json.loads(text, parse_constant=_reject_constant, object_pairs_hook=_unique_object)
     except json.JSONDecodeError:
         raise LlmResponseError("ответ модели не JSON") from None
 

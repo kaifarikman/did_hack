@@ -1,0 +1,24 @@
+{
+  "project": "didhack-t02",
+  "ros_domain_id": 82,
+  "gazebo_partition": "did-t02",
+  "run_id": "22aa2796aa854165b7b06272f14c29fd",
+  "generation": 7,
+  "injected": {
+    "telemetry_generation": 6,
+    "battery": 0.0,
+    "signal": 0.99,
+    "odom_stamp_s": 120.0,
+    "odom_x_m": 100.0,
+    "scan_stamp_s": 120.0
+  },
+  "observed_after_injection": {
+    "generation": 7,
+    "observation_sequence": 158,
+    "simulation_time_s": 21.896,
+    "pose_world_m": [-1.9999999903992243, -0.5],
+    "battery": 59.98382315958092,
+    "sample_signal": 0.37880302922451287
+  },
+  "result": "Old-generation telemetry and future-dated odom/scan were rejected."
+}

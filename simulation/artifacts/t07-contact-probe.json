@@ -1,0 +1,60 @@
+{
+  "terminal_backend_state_before_probe": "stopped",
+  "initial_odom": [
+    0.40623291073858164,
+    -0.23162046769678052,
+    -0.553787089261431
+  ],
+  "start_world": [
+    -1.5937670892614184,
+    -0.7316204676967806
+  ],
+  "initial_battery": 59.44651794433594,
+  "battery_drop_during_probe": 1.43194580078125,
+  "contact_odom": [
+    0.7571389648611278,
+    -0.46242083235288645,
+    -0.5817868144314278
+  ],
+  "final_odom": [
+    0.7572059911326698,
+    -0.4624649168487503,
+    -0.5817738275774464
+  ],
+  "battery_after_contact": 58.01457214355469,
+  "contacts_messages": 1448,
+  "physical_contact_details": [
+    {
+      "collision1": "burger::base_link::base_collision",
+      "collision2": "turtlebot3_world::ros_symbol::symbol::one_one"
+    }
+  ],
+  "judge_collision_events": [
+    {
+      "type": "collision",
+      "sequence": 1,
+      "generation": 16,
+      "robot_id": "robot_1",
+      "position": [
+        -1.260190884562441,
+        -0.999251727876802
+      ],
+      "simulation_time_s": 67.086,
+      "battery": 58.01541845430864
+    }
+  ],
+  "latest_score": {
+    "judge_mode": "local",
+    "generation": 16,
+    "state": "running",
+    "score": -1.0,
+    "collected": 0,
+    "collisions": 1,
+    "false_collects": 0,
+    "finished": false,
+    "finish_success": false,
+    "battery": 58.01457343810536,
+    "simulation_time_s": 68.392
+  },
+  "contact_stop_drift_m": 8.022445919047422e-05
+}
