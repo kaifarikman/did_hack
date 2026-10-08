@@ -1,0 +1,71 @@
+.group {
+  composes: frame from "../../styles/control.module.css";
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0;
+}
+
+.group:focus-within {
+  border-color: var(--border-strong);
+}
+
+.group:has(.input:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.group[data-disabled="true"] {
+  border-color: var(--border-hairline);
+  color: var(--text-disabled);
+}
+
+.input {
+  flex: 1;
+  align-self: stretch;
+  min-inline-size: 0;
+  padding-block: 0;
+  border: 0;
+  background-color: transparent;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-variant-numeric: var(--font-numeric);
+  text-align: center;
+}
+
+.input:focus-visible {
+  outline: 0;
+}
+
+.unit {
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-sm);
+}
+
+.step {
+  composes: pressable from "../../styles/compose.module.css";
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--target-min);
+  min-block-size: var(--target-min);
+  margin-block: calc(var(--hairline) * -1);
+  border-radius: var(--radius-button);
+  color: var(--text-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .step:hover:not(:disabled) {
+    background-color: var(--action-ghost-hover);
+  }
+}
+
+.step:active:not(:disabled) {
+  background-color: var(--action-ghost-press);
+  scale: var(--press-scale);
+}
+
+.step:disabled {
+  color: var(--text-disabled);
+}

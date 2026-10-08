@@ -1,0 +1,11 @@
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--space-element);
+  align-items: end;
+  animation: var(--motion-slide-in);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}

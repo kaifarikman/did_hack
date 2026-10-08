@@ -1,0 +1,26 @@
+.mark {
+  composes: captionText badgeShape from "../../styles/compose.module.css";
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-weight: var(--weight-semibold);
+}
+
+.confirmed {
+  background-color: var(--surface-tint);
+  color: var(--text-primary);
+  animation: var(--motion-verdict);
+}
+
+.refuted {
+  background-color: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  animation: var(--motion-verdict-emphatic);
+}
+
+.inconclusive {
+  outline: var(--hairline) dashed var(--border-strong);
+  outline-offset: calc(var(--hairline) * -1);
+  color: var(--text-secondary);
+  animation: var(--motion-rise-in);
+}

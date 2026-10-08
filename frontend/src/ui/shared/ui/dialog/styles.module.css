@@ -1,0 +1,95 @@
+.dialog {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-dialog);
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  max-inline-size: none;
+  block-size: 100%;
+  max-block-size: none;
+  margin: 0;
+  padding: var(--space-24);
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+}
+
+.dialog::backdrop {
+  background-color: transparent;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background-color: var(--surface-scrim);
+}
+
+.dialog[data-state="open"] .scrim {
+  animation: var(--motion-fade-in);
+}
+
+.dialog[data-state="closed"] .scrim {
+  animation: var(--motion-fade-out);
+}
+
+.panel {
+  composes: floatingSurface from "../../styles/compose.module.css";
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  inline-size: min(100%, var(--dialog-width));
+  max-block-size: 100%;
+  padding: var(--space-24);
+}
+
+.panel:focus-visible {
+  outline: 0;
+}
+
+.wide {
+  inline-size: min(100%, var(--dialog-width-wide));
+}
+
+.dialog[data-state="open"] .panel {
+  animation: var(--motion-scale-in);
+}
+
+.dialog[data-state="closed"] .panel {
+  animation: var(--motion-scale-out);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.heading {
+  display: grid;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  padding-block-start: var(--space-8);
+}
+
+.title {
+  composes: subheadingText from "../../styles/compose.module.css";
+  font-weight: var(--weight-medium);
+}
+
+.description {
+  composes: secondaryText from "../../styles/compose.module.css";
+}
+
+.body {
+  min-block-size: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-12);
+}

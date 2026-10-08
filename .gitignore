@@ -15,3 +15,10 @@ __pycache__/
 
 # Поминутные кадры демо-прогонов: сырьё для backup-demo.mp4, ~100 МБ
 artifacts/defense/**/frames/
+# Local design and build caches
+.impeccable/
+presentation/.vite/
+
+# Generated screenshots and browser tooling
+artifacts/frontend/
+.playwright-mcp/

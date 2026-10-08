@@ -1,0 +1,65 @@
+{
+  "title": "План и исследование",
+  "source": {
+    "llm": "План LLM",
+    "fallback": "Резервный план"
+  },
+  "goal": {
+    "explore": "Исследование",
+    "approach": "Сближение с образцом",
+    "collect": "Сбор образца",
+    "return": "Возврат на базу"
+  },
+  "sensor": {
+    "ok": "в норме",
+    "suspected": "подозрение на неисправность",
+    "degraded": "неисправен",
+    "recovering": "восстанавливается"
+  },
+  "fault": {
+    "noise": "шум",
+    "stuck": "залипание",
+    "dropout": "нет сообщений"
+  },
+  "hypothesis": {
+    "proposed": "предложена",
+    "testing": "проверяется",
+    "confirmed": "подтверждается измерениями",
+    "refuted": "опровергнута",
+    "deferred": "отложена",
+    "unverified": "недостаточно данных",
+    "unknown": "статус «{{status}}»"
+  },
+  "hypothesisKind": {
+    "costlyTerrain": "Дорогой грунт",
+    "terrainChange": "Смена грунта",
+    "unknown": "Гипотеза «{{kind}}»"
+  },
+  "label": {
+    "premises": "Предпосылки",
+    "reviseIf": "Пересмотреть, если:",
+    "revision": "Причина пересмотра",
+    "fallbackReason": "Причина резервного плана",
+    "replan": "Последнее перепланирование:",
+    "plannerRequests": "Запросов к планировщику",
+    "sensor": "Датчик сигнала",
+    "quality": "Качество",
+    "hazards": "Опасности",
+    "hypotheses": "Гипотезы",
+    "terrain": "Модель грунта",
+    "plan": "План",
+    "noPlan": "Плана пока нет",
+    "noHazards": "Опасностей не замечено",
+    "noHypotheses": "Гипотез пока нет",
+    "hazardItem_one": "Опасность {{index}}: {{count}} попадание",
+    "hazardItem_few": "Опасность {{index}}: {{count}} попадания",
+    "hazardItem_many": "Опасность {{index}}: {{count}} попаданий",
+    "hazardItem_other": "Опасность {{index}}: {{count}} попадания",
+    "region": "Участок {{index}}"
+  },
+  "terrain": {
+    "value": "{{energy}} усл. ед./м",
+    "valueSpread": "{{energy}} ± {{spread}} усл. ед./м",
+    "regime": "режим {{regime}}"
+  }
+}

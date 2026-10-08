@@ -1,69 +1,50 @@
-import type { JournalEntry, JournalKind } from "./contract";
+import type { JournalEntry, JournalKind } from "./contract"
 
-export const JOURNAL_KIND_LABELS: Record<JournalKind, string> = {
-  observation: "Наблюдение",
-  hypothesis: "Гипотеза",
-  experiment: "Эксперимент",
-  decision: "Решение",
-  outcome: "Итог",
-  error: "Ошибка",
-};
-
-export const JOURNAL_KINDS = Object.keys(JOURNAL_KIND_LABELS) as JournalKind[];
-
-/** Объединяет записи одного прогона: дубликаты по sequence удаляются, порядок по возрастанию. */
-export function mergeJournalEntries(existing: readonly JournalEntry[], incoming: readonly JournalEntry[]): JournalEntry[] {
-  const bySequence = new Map<number, JournalEntry>();
-  for (const entry of existing) bySequence.set(entry.sequence, entry);
+export function mergeJournalEntries(
+  existing: readonly JournalEntry[],
+  incoming: readonly JournalEntry[],
+): JournalEntry[] {
+  const bySequence = new Map<number, JournalEntry>()
+  for (const entry of existing) bySequence.set(entry.sequence, entry)
   for (const entry of incoming) {
-    if (!bySequence.has(entry.sequence)) bySequence.set(entry.sequence, entry);
+    if (!bySequence.has(entry.sequence)) bySequence.set(entry.sequence, entry)
   }
-  return [...bySequence.values()].sort((first, second) => first.sequence - second.sequence);
+  return [...bySequence.values()].sort((first, second) => first.sequence - second.sequence)
 }
 
-export function filterJournal(entries: readonly JournalEntry[], kind: JournalKind | "all"): JournalEntry[] {
-  return kind === "all" ? [...entries] : entries.filter((entry) => entry.kind === kind);
-}
-
-export interface HypothesisChain {
-  hypothesis_id: string;
-  expectations: string[];
-  experiments: JournalEntry[];
-  observations: string[];
-  conclusions: string[];
+export function filterJournal(
+  entries: readonly JournalEntry[],
+  kind: JournalKind | "all",
+): JournalEntry[] {
+  return kind === "all" ? [...entries] : entries.filter((entry) => entry.kind === kind)
 }
 
 export function listHypothesisIds(entries: readonly JournalEntry[]): string[] {
-  const ids: string[] = [];
+  const ids: string[] = []
   for (const entry of entries) {
-    if (entry.hypothesis_id !== null && !ids.includes(entry.hypothesis_id)) ids.push(entry.hypothesis_id);
+    if (entry.hypothesis_id !== null && !ids.includes(entry.hypothesis_id))
+      ids.push(entry.hypothesis_id)
   }
-  return ids;
-}
-
-/** Цепочка: ожидание → эксперимент → наблюдение → вывод. Отсутствующий вывод остаётся пустым. */
-export function buildHypothesisChain(entries: readonly JournalEntry[], hypothesisId: string): HypothesisChain {
-  const related = entries.filter((entry) => entry.hypothesis_id === hypothesisId);
-  const textsOf = (pick: (entry: JournalEntry) => string | null): string[] =>
-    related.map(pick).filter((text): text is string => text !== null);
-  return {
-    hypothesis_id: hypothesisId,
-    expectations: textsOf((entry) => entry.expected),
-    experiments: related.filter((entry) => entry.kind === "experiment"),
-    observations: textsOf((entry) => entry.observed),
-    conclusions: textsOf((entry) => entry.conclusion),
-  };
+  return ids
 }
 
 export interface JournalExport {
-  run_id: string;
-  /** Последний next_sequence выгрузки: верхняя граница, а не атомарный снимок. */
-  last_sequence: number;
-  entry_count: number;
-  entries: JournalEntry[];
+  run_id: string
+  last_sequence: number
+  entry_count: number
+  entries: JournalEntry[]
 }
 
-export function buildJournalExport(runId: string, entries: readonly JournalEntry[], lastSequence: number): JournalExport {
-  const ordered = mergeJournalEntries([], entries);
-  return { run_id: runId, last_sequence: lastSequence, entry_count: ordered.length, entries: ordered };
+export function buildJournalExport(
+  runId: string,
+  entries: readonly JournalEntry[],
+  lastSequence: number,
+): JournalExport {
+  const ordered = mergeJournalEntries([], entries)
+  return {
+    run_id: runId,
+    last_sequence: lastSequence,
+    entry_count: ordered.length,
+    entries: ordered,
+  }
 }

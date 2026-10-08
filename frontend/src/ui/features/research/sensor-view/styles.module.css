@@ -1,0 +1,19 @@
+.sensor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  align-items: start;
+  gap: var(--space-element);
+}
+
+.state {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--space-4);
+}
+
+.fault {
+  min-block-size: 1lh;
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-sm);
+}

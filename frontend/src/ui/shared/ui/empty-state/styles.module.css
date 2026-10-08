@@ -1,0 +1,30 @@
+.empty {
+  composes: statePanel from "../../styles/compose.module.css";
+  gap: var(--space-8);
+}
+
+.icon {
+  color: var(--text-tertiary);
+}
+
+.title {
+  composes: subheadingText from "../../styles/compose.module.css";
+  font-weight: var(--weight-medium);
+}
+
+.hero .title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display-sm);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-display-sm);
+}
+
+.description {
+  composes: secondaryText from "../../styles/compose.module.css";
+  max-inline-size: 48ch;
+  text-wrap: pretty;
+}
+
+.action {
+  margin-block-start: var(--space-8);
+}

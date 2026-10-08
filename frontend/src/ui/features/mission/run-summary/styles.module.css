@@ -1,0 +1,37 @@
+.summary {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-element);
+  animation: var(--motion-slide-in);
+}
+
+.grid {
+  justify-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: var(--space-element);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.outcome {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  font-size: var(--font-size-subheading);
+  line-height: var(--line-height-subheading);
+  font-weight: var(--weight-medium);
+  text-wrap: pretty;
+}
+
+.reason {
+  display: grid;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+}
+
+.retry {
+  font-size: var(--font-size-body-sm);
+}

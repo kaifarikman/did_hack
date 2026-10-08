@@ -1,0 +1,31 @@
+.close {
+  composes: pressable from "../../styles/compose.module.css";
+  --close-text: var(--text-secondary);
+  --close-text-hover: var(--text-primary);
+  --close-surface-hover: var(--action-ghost-hover);
+
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--target-min);
+  block-size: var(--target-min);
+  border-radius: var(--radius-round);
+  color: var(--close-text);
+}
+
+.inverse {
+  --close-text: var(--text-on-inverse-secondary);
+  --close-text-hover: var(--text-on-inverse);
+  --close-surface-hover: var(--action-inverse-hover);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background-color: var(--close-surface-hover);
+    color: var(--close-text-hover);
+  }
+}
+
+.close:active {
+  scale: var(--press-scale);
+}

@@ -1,0 +1,13 @@
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+  min-inline-size: 0;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+}

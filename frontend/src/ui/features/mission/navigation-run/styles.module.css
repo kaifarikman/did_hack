@@ -1,0 +1,4 @@
+.run {
+  display: grid;
+  gap: var(--space-element);
+}

@@ -1,0 +1,15 @@
+.swap {
+  display: block;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.swap[data-swap="out"] {
+  animation: var(--motion-swap-out);
+}
+
+.swap[data-swap="in"] {
+  animation: var(--motion-swap-in);
+}

@@ -1,0 +1,54 @@
+.choice {
+  composes: bodySmText from "./compose.module.css";
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+  min-block-size: var(--target-min);
+  padding-block: var(--space-12);
+  cursor: pointer;
+}
+
+.choice[data-disabled="true"] {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.hiddenInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.indicator {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--check-size);
+  block-size: var(--check-size);
+  border: var(--hairline) solid var(--border-input);
+  background-color: var(--surface-card);
+  transition: var(--transition-control);
+}
+
+.choice:has(.hiddenInput:focus-visible) .indicator {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.choice:active:not([data-disabled="true"]) .indicator {
+  scale: var(--press-scale);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hint {
+  composes: captionText from "./compose.module.css";
+  color: var(--text-tertiary);
+}

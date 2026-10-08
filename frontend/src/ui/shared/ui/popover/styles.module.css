@@ -1,0 +1,36 @@
+.popover {
+  composes: floatingSurface floatingLayer from "../../styles/compose.module.css";
+  --origin-shift: calc(var(--shift-popover) * -1);
+
+  position: fixed;
+  z-index: var(--layer-popover);
+  min-inline-size: var(--popover-min-width);
+  max-block-size: var(--popover-max-height);
+  padding: var(--space-4);
+  color: var(--text-primary);
+  transform-origin: top left;
+}
+
+.popover[data-side="top"] {
+  --origin-shift: var(--shift-popover);
+  transform-origin: bottom left;
+}
+
+.popover[data-align="end"] {
+  transform-origin: top right;
+}
+
+.popover[data-side="top"][data-align="end"] {
+  transform-origin: bottom right;
+}
+
+.popover[data-state="closed"] {
+  transform: translateY(var(--origin-shift)) scale(var(--enter-scale));
+}
+
+@starting-style {
+  .popover[data-state="open"] {
+    opacity: 0;
+    transform: translateY(var(--origin-shift)) scale(var(--enter-scale));
+  }
+}

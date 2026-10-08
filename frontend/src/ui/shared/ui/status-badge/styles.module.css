@@ -1,0 +1,26 @@
+.badge {
+  composes: captionText badgeShape from "../../styles/compose.module.css";
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  max-inline-size: 100%;
+  background-color: var(--surface-tint);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.emphasis {
+  font-weight: var(--weight-semibold);
+}
+
+.pulse {
+  composes: dot from "../../styles/compose.module.css";
+  flex: none;
+  background-color: currentColor;
+  animation: var(--motion-pulse);
+}
+
+.waiting {
+  animation: var(--motion-spin);
+}

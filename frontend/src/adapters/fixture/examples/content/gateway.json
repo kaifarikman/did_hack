@@ -1,0 +1,19 @@
+{
+  "outage": "Демо: имитация разрыва связи с backend",
+  "stopTimeout": "Демо: Stop не дождался ответа backend",
+  "errors": {
+    "invalidSeed": "seed должен быть целым числом",
+    "environmentNotReady": "Ожидаются наблюдения ROS.",
+    "runActive": "Другой прогон уже выполняется.",
+    "runNotCurrent": "Это не текущий прогон.",
+    "runNotFound": "Неизвестный прогон.",
+    "invalidParams": "Неверные параметры журнала.",
+    "mapNotReady": "Карта SLAM ещё не построена.",
+    "journalUnavailable": "Демо: журнал временно недоступен"
+  },
+  "stopDecision": {
+    "kind": "decision",
+    "title": "Остановка по запросу пользователя",
+    "detail": "Исполнитель прерывает миссию; успех возврата не засчитывается."
+  }
+}

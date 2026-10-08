@@ -1,0 +1,27 @@
+{
+  "badge": "Demo data",
+  "picker": "Demo scenario",
+  "scenario": {
+    "env_starting": "Environment starting",
+    "idle_ready": "Ready to start",
+    "success": "Successful mission",
+    "llm_fallback": "LLM failure → fallback",
+    "plan_revision": "Plan revision",
+    "medium_adaptation": "Adapting to terrain change",
+    "hard_events": "Hazards and sensor faults",
+    "slam_building": "SLAM map building",
+    "team_success": "Two robots: success",
+    "team_partial": "Two robots: partner lost",
+    "disconnect": "Connection lost mid-mission",
+    "failed": "Mission fails",
+    "start_rejected": "Start rejected: environment not ready",
+    "command_unknown": "Stop timed out: outcome unknown",
+    "stopped": "Stopped by user",
+    "journal_long": "Long journal and export",
+    "nav_success": "Navigation: target and return",
+    "nav_not_reached": "Navigation: target not reached",
+    "nav_map_changed": "Navigation: changed map",
+    "nav_refused": "Navigation: rejected",
+    "nav_disconnect": "Navigation: disconnected"
+  }
+}

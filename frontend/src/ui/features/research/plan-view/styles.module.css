@@ -1,0 +1,31 @@
+.plan {
+  display: grid;
+  gap: var(--space-element);
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.rationale {
+  color: var(--text-secondary);
+}
+
+.line {
+  display: block;
+}
+
+.revise {
+  display: block;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-caption);
+}
+
+.evidence {
+  display: grid;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+}

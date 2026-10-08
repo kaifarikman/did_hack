@@ -1,0 +1,10 @@
+.eyebrow {
+  composes: captionText from "../../styles/compose.module.css";
+  color: var(--text-tertiary);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+}
+
+.inverse {
+  color: var(--text-on-inverse-secondary);
+}

@@ -1,0 +1,35 @@
+{
+  "kind": {
+    "network": "No connection to the server",
+    "timeout": "The server did not respond in time",
+    "contract": "The server sent data in an unexpected format",
+    "conflict": "The request conflicts with the current state",
+    "rejected": "The request was rejected",
+    "unavailable": "The environment is not ready",
+    "server": "The server returned an error",
+    "unknown": "Unknown error"
+  },
+  "api": {
+    "scenario_unavailable": "This scenario is unavailable in the current environment",
+    "environment_not_ready": "The environment is not ready yet",
+    "invalid_request": "The request is invalid",
+    "run_conflict": "Another run is already in progress",
+    "run_not_found": "The run was not found",
+    "map_changed": "Map changed. Confirm the target on the current map.",
+    "navigation_target_unreachable": "Target is unreachable. Select another point.",
+    "invalid_target": "Invalid navigation target."
+  },
+  "command": {
+    "awaiting": "Accepted, waiting for the state to change",
+    "unconfirmed": "The command was accepted, but the state change was not confirmed. Check the run status.",
+    "unknown": "The command outcome is unknown. Checking the state…",
+    "reconciled": "State checked: the command did not run. It is safe to retry the command."
+  },
+  "export": {
+    "noRun": "There is no run to export",
+    "cancelled": "Export cancelled: the run changed",
+    "failed": "Export did not finish. No file was created.",
+    "otherRun": "The server returned the journal of another run. No file was created.",
+    "cursorStuck": "The server did not advance the journal cursor. No file was created."
+  }
+}

@@ -1,0 +1,35 @@
+.card {
+  display: grid;
+  gap: var(--space-element);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-16);
+  color: var(--text-secondary);
+}
+
+.robots {
+  display: grid;
+  gap: var(--space-element);
+}
+
+.robot {
+  gap: var(--space-8);
+}
+
+.robot[data-lost="true"] {
+  animation: var(--motion-verdict-emphatic);
+}
+
+.details {
+  display: grid;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-sm);
+}
+
+.reservation[data-reserved="true"] {
+  animation: var(--motion-fade-in);
+}

@@ -1,0 +1,4 @@
+.none {
+  color: var(--text-tertiary);
+  font-variant-numeric: var(--font-numeric);
+}

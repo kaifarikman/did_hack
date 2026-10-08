@@ -1,4 +1,3 @@
 #!/bin/sh
-# DNS-сервер контейнера для nginx (в Docker Compose это 127.0.0.11).
 NGINX_RESOLVER="$(awk '/^nameserver/ {print $2; exit}' /etc/resolv.conf)"
 export NGINX_RESOLVER="${NGINX_RESOLVER:-127.0.0.11}"

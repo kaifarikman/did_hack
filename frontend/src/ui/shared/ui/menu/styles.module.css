@@ -1,0 +1,82 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  composes: controlText listItem from "../../styles/compose.module.css";
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  text-align: start;
+}
+
+.item[data-active="true"] {
+  background-color: var(--surface-option-active);
+}
+
+.item:focus-visible {
+  outline-offset: calc(var(--focus-ring-width) * -1);
+}
+
+.item:disabled {
+  color: var(--text-disabled);
+}
+
+.list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.indicator {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  border-radius: var(--radius-button);
+  background-color: var(--surface-option-active);
+  pointer-events: none;
+}
+
+.list[data-indicator="hidden"] .indicator {
+  display: none;
+}
+
+.list[data-indicator="ready"] .indicator {
+  transition: var(--transition-indicator);
+}
+
+.radio {
+  composes: controlText listItem from "../../styles/compose.module.css";
+  position: relative;
+  z-index: var(--layer-raised);
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  color: var(--text-secondary);
+  text-align: start;
+}
+
+.radio[aria-checked="true"] {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.radio:focus-visible {
+  outline-offset: calc(var(--focus-ring-width) * -1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .radio:not([aria-checked="true"]):hover {
+    background-color: var(--surface-card-hover);
+    color: var(--text-primary);
+  }
+}
+
+.check {
+  composes: mark from "../../styles/compose.module.css";
+  display: inline-grid;
+  place-items: center;
+  margin-inline-start: auto;
+  inline-size: var(--icon-md);
+}

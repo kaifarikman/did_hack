@@ -1,0 +1,46 @@
+{
+  "app": {
+    "title": "Researcher panel"
+  },
+  "action": {
+    "close": "Close",
+    "retry": "Retry",
+    "decrease": "Decrease",
+    "increase": "Increase",
+    "more": "More actions"
+  },
+  "status": {
+    "attention": "Needs attention"
+  },
+  "value": {
+    "none": "—",
+    "noneLabel": "No value"
+  },
+  "meter": {
+    "threshold": "Threshold"
+  },
+  "connection": {
+    "connecting": "Connecting",
+    "live": "Live",
+    "stale": "Data is stale",
+    "offline": "No connection",
+    "staleBanner": "No response from the server. Showing the last known values; updates resume automatically.",
+    "staleBannerDetail": "No response from the server: {{detail}}. Showing the last known values; updates resume automatically."
+  },
+  "step": {
+    "pending": "Pending",
+    "active": "In progress",
+    "done": "Done",
+    "rejected": "Rejected",
+    "dropped": "Dropped"
+  },
+  "select": {
+    "placeholder": "Choose"
+  },
+  "language": {
+    "legend": "Interface language",
+    "current": "Language: {{name}}",
+    "ru": "Русский",
+    "en": "English"
+  }
+}

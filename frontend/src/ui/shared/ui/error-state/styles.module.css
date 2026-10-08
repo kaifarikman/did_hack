@@ -1,0 +1,16 @@
+.error {
+  composes: statePanel from "../../styles/compose.module.css";
+  gap: var(--space-12);
+  color: var(--text-primary);
+}
+
+.title {
+  composes: strongBodyText from "../../styles/compose.module.css";
+  text-wrap: balance;
+}
+
+.description {
+  composes: secondaryText from "../../styles/compose.module.css";
+  max-inline-size: 48ch;
+  overflow-wrap: anywhere;
+}

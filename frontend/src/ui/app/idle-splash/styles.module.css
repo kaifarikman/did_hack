@@ -1,0 +1,18 @@
+.splash {
+  position: absolute;
+  inset: calc(var(--hairline) * -1);
+  z-index: var(--layer-raised);
+  display: grid;
+  place-content: center;
+  border-radius: var(--radius-card);
+  background: var(--surface-canvas);
+  pointer-events: none;
+}
+
+.splash[data-state="open"]:not([data-initial="true"]) {
+  animation: var(--motion-fade-in);
+}
+
+.splash[data-state="closed"] {
+  animation: var(--motion-fade-out);
+}

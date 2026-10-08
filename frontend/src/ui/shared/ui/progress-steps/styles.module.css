@@ -1,0 +1,60 @@
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+  animation: var(--motion-rise-in);
+  animation-delay: calc(var(--i) * var(--stagger));
+}
+
+.marker {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--icon-lg);
+  block-size: var(--icon-lg);
+  border-radius: var(--radius-round);
+  background-color: var(--surface-tint);
+}
+
+.step[data-status="active"] .marker {
+  background-color: var(--surface-inverse);
+  color: var(--text-on-inverse);
+}
+
+.step[data-status="done"] .icon {
+  animation: var(--motion-pop-in);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  padding-block-start: var(--space-4);
+}
+
+.label {
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+}
+
+.step[data-status="active"] .label {
+  font-weight: var(--weight-semibold);
+}
+
+.step[data-status="rejected"] .label,
+.step[data-status="dropped"] .label {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+
+.detail {
+  composes: captionText from "../../styles/compose.module.css";
+  color: var(--text-tertiary);
+}

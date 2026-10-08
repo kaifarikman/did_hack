@@ -1,0 +1,71 @@
+{
+  "replanReason": "сигнал перестал расти у точки подхода",
+  "revisedPlan": {
+    "plan_id": "plan-3",
+    "source": "llm",
+    "rationale": "Подход с юга не подтвердился: идём к образцу коротким путём с севера.",
+    "premises": [
+      "Сигнал образца перестал расти у прежней точки подхода.",
+      "Северный проход свободен по карте."
+    ],
+    "fallback_reason": null,
+    "revision_reason": "Проверка отклонила шаг подхода: сигнал перестал расти. Шаг обхода снят — новый маршрут короче.",
+    "steps": [
+      {
+        "kind": "explore",
+        "target": { "position_x_m": -1.3, "position_y_m": -0.5 },
+        "reason": "Измерить расход на соседнем участке.",
+        "status": "done",
+        "evidence": ["расход 2.1 ед./м на 0.3 м"],
+        "revise_if": null
+      },
+      {
+        "kind": "approach",
+        "target": { "position_x_m": -0.25, "position_y_m": 0.0 },
+        "reason": "Подойти к максимуму сигнала с юга.",
+        "status": "rejected",
+        "evidence": ["сигнал 0.52 → 0.50 на последних 0.3 м"],
+        "revise_if": "сигнал перестанет расти"
+      },
+      {
+        "kind": "explore",
+        "target": { "position_x_m": -0.9, "position_y_m": 0.2 },
+        "reason": "Обойти участок с севера.",
+        "status": "dropped",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "approach",
+        "target": { "position_x_m": -0.25, "position_y_m": 0.25 },
+        "reason": "Подойти к образцу по северному проходу.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": "сигнал ниже 0.6 после 0.5 м"
+      },
+      {
+        "kind": "collect",
+        "target": { "position_x_m": -0.25, "position_y_m": 0.25 },
+        "reason": "Подтвердить сбор образца.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": null
+      },
+      {
+        "kind": "return",
+        "target": { "position_x_m": -2.0, "position_y_m": -0.5 },
+        "reason": "Вернуться по проверенному маршруту.",
+        "status": "pending",
+        "evidence": [],
+        "revise_if": "запас батареи ниже оценки возврата"
+      }
+    ]
+  },
+  "revisionEntry": {
+    "kind": "decision",
+    "title": "План пересмотрен",
+    "detail": "Шаг подхода отклонён проверкой, шаг обхода снят. Новый маршрут идёт северным проходом.",
+    "plan_id": "plan-3",
+    "evidence": ["сигнал 0.52 → 0.50 на последних 0.3 м"]
+  }
+}

@@ -1,0 +1,46 @@
+.checkbox {
+  composes: choice from "../../styles/choice.module.css";
+}
+
+.input {
+  composes: hiddenInput from "../../styles/choice.module.css";
+}
+
+.box {
+  composes: indicator from "../../styles/choice.module.css";
+  border-radius: var(--radius-check);
+  color: var(--text-on-inverse);
+}
+
+.checkbox[data-checked="true"] .box {
+  border-color: var(--action-dark);
+  background-color: var(--action-dark);
+}
+
+.mark {
+  inline-size: var(--icon-sm);
+  block-size: var(--icon-sm);
+}
+
+.path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: calc(var(--icon-stroke) * 1.5);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: var(--transition-draw);
+}
+
+.checkbox[data-checked="true"] .path {
+  stroke-dashoffset: 0;
+}
+
+.text {
+  composes: text from "../../styles/choice.module.css";
+}
+
+.hint {
+  composes: hint from "../../styles/choice.module.css";
+}

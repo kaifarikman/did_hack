@@ -1,0 +1,50 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.group[data-orientation="horizontal"] {
+  flex-flow: row wrap;
+  column-gap: var(--space-24);
+}
+
+.legend {
+  composes: fieldLabel from "../../styles/compose.module.css";
+  margin-block-end: var(--space-4);
+  padding: 0;
+}
+
+.option {
+  composes: choice from "../../styles/choice.module.css";
+}
+
+.input {
+  composes: hiddenInput from "../../styles/choice.module.css";
+}
+
+.ring {
+  composes: indicator from "../../styles/choice.module.css";
+  border-radius: var(--radius-round);
+}
+
+.option[data-checked="true"] .ring {
+  border-color: var(--action-dark);
+}
+
+.dot {
+  composes: dot mark from "../../styles/compose.module.css";
+  background-color: var(--action-dark);
+}
+
+.text {
+  composes: text from "../../styles/choice.module.css";
+}
+
+.hint {
+  composes: hint from "../../styles/choice.module.css";
+}

@@ -1,0 +1,93 @@
+{
+  "replanReason": "смена режима грунта",
+  "hypotheses": {
+    "returnTesting": {
+      "hypothesis_id": "fixture-hypothesis-2",
+      "kind": "costly_terrain",
+      "status": "testing",
+      "center": { "position_x_m": -1.0, "position_y_m": -0.5 },
+      "prediction": "на возврате расход ниже 2.0 ед./м",
+      "measurement": "2.4 ± 0.5 ед./м на 0.2 м",
+      "detection_id": null,
+      "experiment_id": "experiment-2"
+    },
+    "returnRefuted": {
+      "hypothesis_id": "fixture-hypothesis-2",
+      "kind": "costly_terrain",
+      "status": "refuted",
+      "center": { "position_x_m": -1.0, "position_y_m": -0.5 },
+      "prediction": "на возврате расход ниже 2.0 ед./м",
+      "measurement": "2.9 ± 0.4 ед./м на 0.5 м",
+      "detection_id": null,
+      "experiment_id": "experiment-2"
+    },
+    "changeProposed": {
+      "hypothesis_id": "fixture-hypothesis-3",
+      "kind": "terrain_change",
+      "status": "proposed",
+      "center": { "position_x_m": -1.7, "position_y_m": -0.5 },
+      "prediction": "режим грунта сменился: расход ≈ 2.9 ед./м вместо 2.0",
+      "measurement": null,
+      "detection_id": null,
+      "experiment_id": null
+    },
+    "changeConfirmed": {
+      "hypothesis_id": "fixture-hypothesis-3",
+      "kind": "terrain_change",
+      "status": "confirmed",
+      "center": { "position_x_m": -1.7, "position_y_m": -0.5 },
+      "prediction": "режим грунта сменился: расход ≈ 2.9 ед./м вместо 2.0",
+      "measurement": "2.9 ± 0.3 ед./м на 0.7 м",
+      "detection_id": null,
+      "experiment_id": "experiment-3"
+    },
+    "areaDeferred": {
+      "hypothesis_id": "fixture-hypothesis-4",
+      "kind": "costly_terrain",
+      "status": "deferred",
+      "center": { "position_x_m": -0.6, "position_y_m": -0.1 },
+      "prediction": "участок у образца дороже 1.8 ед./м",
+      "measurement": null,
+      "detection_id": null,
+      "experiment_id": null
+    }
+  },
+  "journal": {
+    "experiment": {
+      "kind": "experiment",
+      "title": "Проба на обратном пути",
+      "detail": "Сравниваем расход на возврате с прогнозом гипотезы.",
+      "hypothesis_id": "fixture-hypothesis-2",
+      "experiment_id": "experiment-2"
+    },
+    "observation": {
+      "kind": "observation",
+      "title": "Расход выше прогноза",
+      "detail": "На участке у базы расход вырос без видимой причины.",
+      "hypothesis_id": "fixture-hypothesis-2",
+      "observed": "2.9 ± 0.4 ед./м на 0.5 м",
+      "experiment_id": "experiment-2"
+    },
+    "verdict": {
+      "kind": "outcome",
+      "title": "Гипотеза опровергнута",
+      "detail": "Обратный путь не дешевле: оценка грунта изменилась.",
+      "hypothesis_id": "fixture-hypothesis-2",
+      "conclusion": "Опровергнута: 2.9 ед./м против прогноза ниже 2.0 ед./м.",
+      "experiment_id": "experiment-2"
+    },
+    "regimeChange": {
+      "kind": "hypothesis",
+      "title": "Сменился режим грунта",
+      "detail": "Расход на известном участке вырос на 45%.",
+      "hypothesis_id": "fixture-hypothesis-3",
+      "expected": "Повторное измерение покажет ≈ 2.9 ед./м."
+    },
+    "replan": {
+      "kind": "decision",
+      "title": "Новый маршрут возврата",
+      "detail": "Обходим участок с новым режимом грунта севернее.",
+      "evidence": ["режим 0 → 1", "2.0 → 2.9 ед./м"]
+    }
+  }
+}

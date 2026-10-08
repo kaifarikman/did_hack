@@ -1,0 +1,107 @@
+.bodySmText {
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+}
+
+.controlText {
+  composes: bodySmText;
+  white-space: nowrap;
+}
+
+.fieldLabel {
+  composes: controlText;
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.captionText {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  letter-spacing: var(--tracking-caption);
+}
+
+.pressable {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: var(--transition-control);
+}
+
+.pressable:active {
+  transition: var(--transition-control-press);
+}
+
+.secondaryText {
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-body-sm);
+}
+
+.statePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-32) var(--space-24);
+  text-align: center;
+  animation: var(--motion-slide-in);
+}
+
+.subheadingText {
+  font-size: var(--font-size-subheading);
+  line-height: var(--line-height-subheading);
+  text-wrap: balance;
+}
+
+.strongBodyText {
+  font-size: var(--font-size-body);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-height-body);
+}
+
+.floatingSurface {
+  overflow-y: auto;
+  border-radius: var(--radius-inner);
+  background-color: var(--surface-card);
+  box-shadow: var(--shadow-float);
+}
+
+.floatingLayer {
+  transition: var(--transition-layer-in);
+}
+
+.floatingLayer[data-state="closed"] {
+  opacity: 0;
+  transition: var(--transition-layer-out);
+  pointer-events: none;
+}
+
+.listItem {
+  min-block-size: var(--target-min);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+
+.mark {
+  opacity: 0;
+  transform: scale(var(--enter-scale));
+  transition: var(--transition-mark-out);
+}
+
+.mark[data-on="true"] {
+  opacity: 1;
+  transform: scale(1);
+  transition: var(--transition-mark-in);
+}
+
+.dot {
+  inline-size: var(--dot-size);
+  block-size: var(--dot-size);
+  border-radius: var(--radius-round);
+}
+
+.badgeShape {
+  padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-badge);
+  white-space: nowrap;
+}

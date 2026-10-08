@@ -1,0 +1,25 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-inline-size: 0;
+  max-inline-size: var(--field-max-width);
+}
+
+.label {
+  composes: fieldLabel from "../../styles/compose.module.css";
+}
+
+.hint {
+  composes: captionText from "../../styles/compose.module.css";
+  color: var(--text-tertiary);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--text-primary);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--weight-semibold);
+}

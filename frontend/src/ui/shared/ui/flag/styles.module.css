@@ -1,0 +1,8 @@
+.flag {
+  flex: none;
+  inline-size: var(--flag-width);
+  block-size: auto;
+  border-radius: var(--radius-flag);
+  outline: var(--hairline) solid var(--border-hairline);
+  outline-offset: calc(var(--hairline) * -1);
+}

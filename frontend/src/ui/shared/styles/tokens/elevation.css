@@ -1,0 +1,9 @@
+:root {
+  --layer-raised: 1;
+  --layer-sticky: 10;
+  --layer-popover: 40;
+  --layer-dialog: 50;
+  --layer-tooltip: 60;
+  --opacity-stale: 0.55;
+  --shadow-float: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+}

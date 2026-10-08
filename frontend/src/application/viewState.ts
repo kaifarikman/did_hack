@@ -1,81 +1,143 @@
-import type { JournalEntry, MapData, MissionSnapshot, HealthStatus } from "../domain/contract";
-import { isStartableStatus, isActiveStatus } from "../domain/presentation";
+import type { HealthStatus, JournalEntry, MapData, MissionSnapshot } from "../domain/contract"
+import type { Message } from "../domain/message"
+import { isActiveStatus, isStartableStatus } from "../domain/status"
 
-export type ConnectionState = "connecting" | "live" | "stale";
+export type ConnectionState = "connecting" | "live" | "stale"
 
 export interface JournalState {
-  runId: string | null;
-  entries: JournalEntry[];
-  nextSequence: number;
-  hasMore: boolean;
-  fetchedRevision: number | null;
-  error: string | null;
+  runId: string | null
+  entries: JournalEntry[]
+  nextSequence: number
+  hasMore: boolean
+  fetchedRevision: number | null
+  error: Message | null
 }
 
-export type CommandPhase = "idle" | "sending" | "awaiting" | "unknown" | "failed";
+export type CommandPhase = "idle" | "sending" | "awaiting" | "unknown" | "failed"
+
+export type CommandKind = "start" | "stop"
 
 export interface CommandState {
-  phase: CommandPhase;
-  kind: "start" | "stop" | null;
-  message: string | null;
-  /** Повтор с тем же request_id разрешён только после сверки с /state. */
-  canRetry: boolean;
+  phase: CommandPhase
+  kind: CommandKind | null
+  message: Message | null
+  cause: Message | null
+  canRetry: boolean
 }
 
-export type ExportPhase = "idle" | "exporting" | "failed" | "cancelled";
+export type ExportPhase = "idle" | "exporting" | "failed" | "cancelled"
 
 export interface ExportState {
-  phase: ExportPhase;
-  message: string | null;
+  phase: ExportPhase
+  message: Message | null
+  cause: Message | null
 }
 
 export interface MissionViewState {
-  health: HealthStatus | null;
-  snapshot: MissionSnapshot | null;
-  map: MapData | null;
-  mapError: string | null;
-  connection: ConnectionState;
-  connectionError: string | null;
-  journal: JournalState;
-  selectedHypothesisId: string | null;
-  command: CommandState;
-  exportState: ExportState;
+  health: HealthStatus | null
+  snapshot: MissionSnapshot | null
+  map: MapData | null
+  mapError: Message | null
+  connection: ConnectionState
+  connectionError: Message | null
+  journal: JournalState
+  selectedHypothesisId: string | null
+  command: CommandState
+  exportState: ExportState
 }
 
-export const IDLE_COMMAND: CommandState = { phase: "idle", kind: null, message: null, canRetry: false };
+export type StartBlocker =
+  | "no_snapshot"
+  | "offline"
+  | "health_unknown"
+  | "environment_starting"
+  | "command_busy"
+  | "run_active"
 
-function commandBusy(command: CommandState): boolean {
-  return command.phase === "sending" || command.phase === "awaiting" || command.phase === "unknown";
+export type StopBlocker =
+  | "no_run"
+  | "offline"
+  | "command_busy"
+  | "run_inactive"
+  | "already_stopping"
+
+export const START_BLOCKERS: readonly StartBlocker[] = [
+  "no_snapshot",
+  "offline",
+  "health_unknown",
+  "environment_starting",
+  "command_busy",
+  "run_active",
+]
+
+export const STOP_BLOCKERS: readonly StopBlocker[] = [
+  "no_run",
+  "offline",
+  "command_busy",
+  "run_inactive",
+  "already_stopping",
+]
+
+export const IDLE_COMMAND: CommandState = {
+  phase: "idle",
+  kind: null,
+  message: null,
+  cause: null,
+  canRetry: false,
 }
 
-/** Причина, по которой Start недоступен, либо null. */
-export function startDisabledReason(view: MissionViewState): string | null {
-  if (view.snapshot === null) return "Нет данных о состоянии миссии";
-  if (view.connection !== "live") return "Нет актуальной связи с backend";
-  if (view.health === null) return "Готовность среды неизвестна";
-  if (view.health.status !== "ready") return "Среда ещё запускается";
-  if (commandBusy(view.command)) return "Команда уже отправлена";
-  if (!isStartableStatus(view.snapshot.status)) return "Прогон уже выполняется";
-  return null;
+export const IDLE_EXPORT: ExportState = { phase: "idle", message: null, cause: null }
+
+export const EMPTY_JOURNAL: JournalState = {
+  runId: null,
+  entries: [],
+  nextSequence: 0,
+  hasMore: false,
+  fetchedRevision: null,
+  error: null,
 }
 
-/** Дополнительные условия запуска навигации: возможность объявляет сам backend. */
-export function navigationStartDisabledReason(view: MissionViewState): string | null {
-  if (view.health === null) return "Готовность среды неизвестна";
-  if (!view.health.supported_task_types.includes("navigation")) {
-    return "Backend не объявляет поддержку навигации к точке";
-  }
-  if (!view.health.supported_scenarios.includes("easy")) return "Профиль easy недоступен в среде";
-  if (!view.health.supported_map_modes.includes("static")) return "Готовая карта (static) недоступна в среде";
-  if (!view.health.supported_robot_counts.includes(1)) return "Запуск одного робота недоступен в среде";
-  return null;
+export const INITIAL_VIEW: MissionViewState = {
+  health: null,
+  snapshot: null,
+  map: null,
+  mapError: null,
+  connection: "connecting",
+  connectionError: null,
+  journal: EMPTY_JOURNAL,
+  selectedHypothesisId: null,
+  command: IDLE_COMMAND,
+  exportState: IDLE_EXPORT,
 }
 
-export function stopDisabledReason(view: MissionViewState): string | null {
-  if (view.snapshot === null || view.snapshot.run_id === null) return "Нет активного прогона";
-  if (view.connection !== "live") return "Нет актуальной связи с backend";
-  if (commandBusy(view.command)) return "Команда уже отправлена";
-  if (!isActiveStatus(view.snapshot.status)) return "Прогон не выполняется";
-  if (view.snapshot.status === "stopping") return "Остановка уже идёт";
-  return null;
+export function isCommandBusy(command: CommandState): boolean {
+  return (
+    command.phase === "sending" || command.phase === "awaiting" || command.phase === "unknown"
+  )
+}
+
+export function startDisabledReason(view: MissionViewState): StartBlocker | null {
+  if (view.snapshot === null) return "no_snapshot"
+  if (view.connection !== "live") return "offline"
+  if (view.health === null) return "health_unknown"
+  if (view.health.status !== "ready") return "environment_starting"
+  if (isCommandBusy(view.command)) return "command_busy"
+  if (!isStartableStatus(view.snapshot.status)) return "run_active"
+  return null
+}
+
+export function stopDisabledReason(view: MissionViewState): StopBlocker | null {
+  if (view.snapshot === null || view.snapshot.run_id === null) return "no_run"
+  if (view.connection !== "live") return "offline"
+  if (isCommandBusy(view.command)) return "command_busy"
+  if (!isActiveStatus(view.snapshot.status)) return "run_inactive"
+  if (view.snapshot.status === "stopping") return "already_stopping"
+  return null
+}
+
+export type ConnectionStatus = ConnectionState | "offline"
+
+export function connectionStatus(view: MissionViewState): ConnectionStatus {
+  if (view.connection !== "stale") return view.connection
+  return view.snapshot === null ? "offline" : "stale"
 }

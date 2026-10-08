@@ -5,22 +5,21 @@ export class ApiError extends Error {
     message: string,
     readonly retryable: boolean,
   ) {
-    super(message);
-    this.name = "ApiError";
+    super(message)
+    this.name = "ApiError"
   }
 }
 
-/** Сервер недостижим: запрос мог не дойти или ответ потерян. */
 export class NetworkError extends Error {
-  constructor(message = "Нет связи с backend") {
-    super(message);
-    this.name = "NetworkError";
+  constructor(message = "Backend is unreachable") {
+    super(message)
+    this.name = "NetworkError"
   }
 }
 
 export class RequestTimeoutError extends Error {
-  constructor(message = "Backend не ответил вовремя") {
-    super(message);
-    this.name = "RequestTimeoutError";
+  constructor(message = "Backend did not respond in time") {
+    super(message)
+    this.name = "RequestTimeoutError"
   }
 }
