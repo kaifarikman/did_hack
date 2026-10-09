@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import asdict
 
 from domain.subgoals import PlanningContext
 
@@ -37,6 +38,7 @@ def build_user_message(context: PlanningContext) -> str:
 
     payload = {
         "mission_text": context.mission_text,
+        "run_metrics": None if context.metrics is None else asdict(context.metrics),
         "max_plan_steps": context.max_plan_steps,
         "pose": {**point(context.pose.point), "heading_rad": round(context.pose.heading_rad, 3)},
         "base": point(context.base),

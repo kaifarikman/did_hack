@@ -1,3 +1,8 @@
+import type { HypothesisView } from "./researchContract"
+
+export type { HypothesisView } from "./researchContract"
+
+import type { RunAnalytics } from "./runAnalytics"
 import type { CollectedSample, TerrainEstimate } from "./terrainContract"
 
 export type { CollectedSample, TerrainEstimate } from "./terrainContract"
@@ -110,17 +115,6 @@ export interface HazardView {
   hits: number
 }
 
-export interface HypothesisView {
-  hypothesis_id: string
-  kind: string
-  status: string
-  center: Point
-  prediction: string
-  measurement: string | null
-  detection_id: string | null
-  experiment_id: string | null
-}
-
 export interface ResearchView {
   sensor: { state: SensorState; fault: SensorFault | null; quality: number }
   hazards: HazardView[]
@@ -128,9 +122,11 @@ export interface ResearchView {
   last_replan_reason: string | null
   last_replan_detection_id: string | null
   planner_requests: number
+  active_hypothesis_id?: string | null
 }
 
 export interface MissionSnapshot {
+  analytics?: RunAnalytics | null
   schema_version: string
   run_id: string | null
   robot_id: string

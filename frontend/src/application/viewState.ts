@@ -36,6 +36,8 @@ export interface ExportState {
 export interface MissionViewState {
   health: HealthStatus | null
   snapshot: MissionSnapshot | null
+  lastRunSnapshot?: MissionSnapshot | null
+  lastRunJournal?: JournalState
   map: MapData | null
   mapError: Message | null
   connection: ConnectionState
@@ -133,6 +135,15 @@ export function stopDisabledReason(view: MissionViewState): StopBlocker | null {
   if (!isActiveStatus(view.snapshot.status)) return "run_inactive"
   if (view.snapshot.status === "stopping") return "already_stopping"
   return null
+}
+
+export function showStopAction(view: MissionViewState): boolean {
+  return (
+    (view.snapshot !== null &&
+      view.snapshot.run_id !== null &&
+      isActiveStatus(view.snapshot.status)) ||
+    (view.command.kind === "stop" && isCommandBusy(view.command))
+  )
 }
 
 export type ConnectionStatus = ConnectionState | "offline"

@@ -235,7 +235,8 @@
     "hypotheses": [],
     "last_replan_reason": null,
     "last_replan_detection_id": null,
-    "planner_requests": 3
+    "planner_requests": 3,
+    "active_hypothesis_id": null
   },
   "team": null,
   "generation": 1,
@@ -263,5 +264,6 @@
   "route_revision": 1,
   "plan_revision": 1,
   "map_revision": 0,
-  "model_revision": 1
+  "model_revision": 1,
+  "analytics": null
 }

@@ -5,6 +5,8 @@ import { useGridColumns } from "./gridColumns"
 import styles from "./styles.module.css"
 
 export interface AppLayoutProps {
+  readonly workspace?: ReactNode
+  readonly workspaceActive?: boolean
   readonly header: ReactNode
   readonly notice?: ReactNode
   readonly map: ReactNode
@@ -18,6 +20,8 @@ export interface AppLayoutProps {
 
 export function AppLayout({
   header,
+  workspace,
+  workspaceActive = false,
   notice,
   map,
   mission,
@@ -34,7 +38,12 @@ export function AppLayout({
     <main className={styles.shell} data-view={view}>
       <LayerHost>
         <div className={styles.header}>{header}</div>
-        <div className={styles.main}>
+        {workspaceActive && (
+          <ScrollArea className={styles.workspace} surface="canvas" label={restLabel}>
+            {workspace}
+          </ScrollArea>
+        )}
+        <div className={styles.main} hidden={workspaceActive}>
           <div className={styles.map}>
             {map}
             <div className={styles.notice}>{notice}</div>

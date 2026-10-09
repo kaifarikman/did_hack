@@ -10,6 +10,7 @@ import {
   type Verdict,
   VerdictMark,
 } from "@/ui/shared/ui"
+import { HypothesisObservation } from "@/ui/shared/ui/hypothesis-observation"
 import { hypothesisKindMessage, hypothesisStatusMessage, terrainMessage } from "../labels"
 import { PlanView } from "../plan-view"
 import { SensorView } from "../sensor-view"
@@ -50,12 +51,7 @@ function HypothesisRow({ hypothesis }: HypothesisRowProps) {
           <VerdictMark verdict={verdict} label={status} />
         )}
       </div>
-      <BackendText as="p">{hypothesis.prediction}</BackendText>
-      {hypothesis.measurement !== null && (
-        <BackendText as="p" className={styles.secondary}>
-          {hypothesis.measurement}
-        </BackendText>
-      )}
+      <HypothesisObservation hypothesis={hypothesis} />
     </li>
   )
 }

@@ -27,3 +27,16 @@
   min-inline-size: 0;
 }
 
+.navigation {
+  display: flex;
+  justify-content: center;
+  min-inline-size: 0;
+  order: 3;
+  flex-basis: 100%;
+}
+@media (min-width: 48rem) {
+  .navigation {
+    order: 0;
+    flex-basis: auto;
+  }
+}

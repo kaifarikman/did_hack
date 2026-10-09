@@ -64,6 +64,11 @@ describe("Start and Stop blockers in the form", () => {
     renderWithLocale(
       <MissionForm view={view} compact onStart={() => undefined} onStop={() => undefined} />,
     )
+    if (blocker === "no_run" || blocker === "run_inactive") {
+      expect(screen.queryByRole("button", { name: RU.mission.action.stop })).toBeNull()
+      expect(screen.queryByText(message)).toBeNull()
+      return
+    }
     const stop = screen.getByRole("button", { name: RU.mission.action.stop })
     expect(stop.getAttribute("aria-disabled")).toBe("true")
     fireEvent.focus(stop)

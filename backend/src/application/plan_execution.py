@@ -10,6 +10,7 @@ from __future__ import annotations
 from concurrent.futures import Executor, Future
 from dataclasses import dataclass, replace
 from typing import Callable
+from threading import Event
 
 from application.ports import CancelCheck, Planner, PlannerError
 from application.validation import GoalVerdict
@@ -18,6 +19,7 @@ from domain.plans import MissionPlan, PlanProgress, PlanStep, StepStatus, single
 from domain.policy import decide_subgoal
 from domain.settings import MissionSettings
 from domain.subgoals import GoalKind, PlanningContext, Subgoal
+from domain.run_metrics import PlannerMetrics
 
 Verdict = Callable[[Subgoal], GoalVerdict]
 Log = Callable[..., None]
@@ -53,11 +55,16 @@ class PlanExecutor:
         self._is_cancelled = is_cancelled
         self._pending: Future[MissionPlan] | None = None
         self._pending_context: PlanningContext | None = None
+        self._pending_cancel: Event | None = None
+        self._retired: Future[MissionPlan] | None = None
         self._pending_started_s: float | None = None
         self._progress: PlanProgress | None = None
         self._epoch = 0
         self._plans = 0
         self.requests = 0
+        self._deadline_timeouts = 0
+        self._fallbacks = 0
+        self._last_wait_wall_s: float | None = None
         self._last_request_s: float | None = None
 
     # ------------------------------------------------------------ состояние
@@ -74,6 +81,14 @@ class PlanExecutor:
     def waiting(self) -> bool:
         return self._pending is not None
 
+    @property
+    def metrics(self) -> PlannerMetrics:
+        return PlannerMetrics(self.requests, self._deadline_timeouts, self._fallbacks, self._last_wait_wall_s)
+
+    def _record_wait(self) -> None:
+        if self._pending_started_s is not None:
+            self._last_wait_wall_s = max(0.0, self._now_s() - self._pending_started_s)
+
     def next_plan_id(self) -> str:
         return f"plan-{self._plans + 1}"
 
@@ -87,6 +102,13 @@ class PlanExecutor:
                       plan_id=progress.plan.plan_id, detection_id=detection_id)
 
     def cancel(self) -> None:
+        if self._pending_cancel is not None:
+            self._pending_cancel.set()
+        if self._pending is not None and not self._pending.done():
+            self._pending.cancel()
+            if not self._pending.done():
+                self._retired = self._pending
+        self._pending_cancel = None
         self._pending = None
         self._pending_context = None
         self._pending_started_s = None
@@ -112,7 +134,13 @@ class PlanExecutor:
             if self._rate_limited and self.requests >= self._settings.max_planner_requests:
                 plan = self._fallback_plan(context, "исчерпан лимит запросов к планировщику за прогон")
                 return self._adopt_and_choose(plan, context, verdict)
-            self._pending, self._pending_context = self._executor.submit(self._propose, context), context
+            if self._retired is not None and not self._retired.done():
+                plan = self._fallback_plan(context, "предыдущий отменённый запрос ещё завершается")
+                return self._adopt_and_choose(plan, context, verdict)
+            self._retired = None
+            cancellation = Event()
+            self._pending_cancel = cancellation
+            self._pending, self._pending_context = self._executor.submit(self._propose, context, cancellation), context
             self._pending_started_s = self._now_s()
             self.requests += 1
             self._last_request_s = self._now_s()
@@ -120,6 +148,8 @@ class PlanExecutor:
             started = self._pending_started_s
             if started is not None and self._now_s() - started >= self._settings.planner_timeout_s:
                 context = self._pending_context
+                self._record_wait()
+                self._deadline_timeouts += 1
                 self.cancel()
                 if context is None:
                     return NothingValid()
@@ -127,6 +157,7 @@ class PlanExecutor:
                 return self._adopt_and_choose(plan, context, verdict)
             return Waiting()
         plan, context = self._pending.result(), self._pending_context
+        self._record_wait()
         self.cancel()
         if self._is_cancelled():
             return Waiting()  # ответ после Stop не исполняется
@@ -143,9 +174,9 @@ class PlanExecutor:
         last = self._last_request_s
         return last is not None and self._now_s() - last < self._settings.min_planner_interval_s
 
-    def _propose(self, context: PlanningContext) -> MissionPlan:
+    def _propose(self, context: PlanningContext, cancellation: Event) -> MissionPlan:
         try:
-            plan = self._planner.propose(context, self._is_cancelled)
+            plan = self._planner.propose(context, lambda: cancellation.is_set() or self._is_cancelled())
         except PlannerError as error:
             return self._fallback_plan(context, str(error))
         return replace(plan, plan_id=context.plan_id, run_id=context.run_id, model_epoch=context.model_epoch,
@@ -158,6 +189,8 @@ class PlanExecutor:
 
     def _adopt_and_choose(self, plan: MissionPlan, context: PlanningContext, verdict: Verdict) -> Chosen | NothingValid:
         self._plans += 1
+        if plan.fallback_reason is not None:
+            self._fallbacks += 1
         steps = tuple(
             PlanStep(replace(step.goal, plan_id=plan.plan_id), step.evidence, step.revise_if) for step in plan.steps
         )

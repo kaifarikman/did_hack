@@ -89,6 +89,9 @@ function standardResearch(index: number, marks: TimelineMarks): ResearchView {
     sensor: { state: "ok", fault: null, quality: 1 },
     hazards: [],
     hypotheses: standardHypotheses(index, marks),
+    active_hypothesis_id:
+      standardHypotheses(index, marks).find((item) => item.status === "testing")
+        ?.hypothesis_id ?? null,
     last_replan_reason: null,
     last_replan_detection_id: null,
     planner_requests:

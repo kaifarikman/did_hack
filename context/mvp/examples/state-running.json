@@ -128,12 +128,24 @@
         "prediction": "расход ≈ 2.90 ед./м, подтверждение при ≥ 1.36",
         "measurement": "2.95 ± 0.12 ед./м на 0.41 м",
         "detection_id": null,
-        "experiment_id": "experiment-1"
+        "experiment_id": "experiment-1",
+        "expected_energy_per_m": null,
+        "measured_energy_per_m": null,
+        "confirm_at_least": null,
+        "confirm_at_most": null,
+        "measured_distance_m": 0.0,
+        "expected_signal": null,
+        "measured_signal": null,
+        "baseline_signal": null,
+        "measurement_count": 0,
+        "action": null,
+        "conclusion": null
       }
     ],
     "last_replan_reason": "наблюдаемая опасность",
     "last_replan_detection_id": "hazard-1",
-    "planner_requests": 4
+    "planner_requests": 4,
+    "active_hypothesis_id": null
   },
   "map_mode": "static",
   "team": null,
@@ -162,5 +174,6 @@
   "route_revision": 1,
   "plan_revision": 1,
   "map_revision": 0,
-  "model_revision": 1
+  "model_revision": 1,
+  "analytics": null
 }

@@ -33,7 +33,8 @@
   "hypothesisKind": {
     "costlyTerrain": "Costly terrain",
     "terrainChange": "Terrain change",
-    "unknown": "Hypothesis “{{kind}}”"
+    "unknown": "Hypothesis “{{kind}}”",
+    "sampleSignal": "Sample signal near the target"
   },
   "label": {
     "premises": "Premises",
@@ -59,5 +60,19 @@
     "value": "{{energy}} units/m",
     "valueSpread": "{{energy}} ± {{spread}} units/m",
     "regime": "regime {{regime}}"
+  },
+  "experiment": {
+    "prediction": "Prediction before experiment",
+    "action": "Verification action",
+    "measurement": "Independent measurement",
+    "conclusion": "Conclusion",
+    "pending": "Waiting for the verification to finish.",
+    "missing": "Not enough independent measurements.",
+    "signalEvidence": "Signal measurements · 0–1",
+    "forecastSignal": "Predicted signal",
+    "measuredSignal": "Measured signal",
+    "baselineSignal": "Signal before movement",
+    "measurementCount": "Independent readings",
+    "signalNote": "Signal is a relative reading from 0 to 1, not a probability or energy. Only completed verification measurements are shown."
   }
 }

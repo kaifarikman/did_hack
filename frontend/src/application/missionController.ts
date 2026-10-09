@@ -61,12 +61,14 @@ export class MissionController {
     this.exporter = new JournalExportTask(this.session)
     this.commands = new CommandDispatcher(this.session, {
       generateId: options.generateId,
-      onSnapshot: (snapshot, seq) => this.applySnapshot(snapshot, seq),
+      onSnapshot: (snapshot, seq, startBaselineRunId) =>
+        this.applySnapshot(snapshot, seq, startBaselineRunId),
       onAccepted: () => void this.journal.sync(),
       onMapChanged: () => this.mapLoading.refresh(),
     })
     this.polling = new StatePolling(this.session, {
-      onSnapshot: (snapshot, seq) => this.acceptSnapshot(snapshot, seq),
+      onSnapshot: (snapshot, seq, requestedRunId) =>
+        this.acceptSnapshot(snapshot, seq, requestedRunId),
       onTick: () => this.commands.checkAwaitTimeout(),
     })
   }
@@ -126,31 +128,64 @@ export class MissionController {
     return this.exporter.run()
   }
 
-  private acceptSnapshot(snapshot: MissionSnapshot, seq: number): void {
+  private acceptSnapshot(
+    snapshot: MissionSnapshot,
+    seq: number,
+    requestedRunId: string | null,
+  ): void {
     this.session.markLive()
+    const current = this.session.current.snapshot
+    if (
+      current !== null &&
+      current.run_id !== requestedRunId &&
+      snapshot.run_id === requestedRunId
+    )
+      return
     this.applySnapshot(snapshot, seq)
     this.mapLoading.ensure()
     void this.journal.sync()
   }
 
-  private applySnapshot(snapshot: MissionSnapshot, seq: number): void {
-    if (seq < this.lastAppliedSeq) return
+  private applySnapshot(
+    snapshot: MissionSnapshot,
+    seq: number,
+    startBaselineRunId?: string | null,
+  ): void {
     const previous = this.session.current.snapshot
+    const acceptedStart =
+      startBaselineRunId !== undefined &&
+      previous?.run_id === startBaselineRunId &&
+      snapshot.run_id !== null &&
+      snapshot.run_id !== startBaselineRunId
+    if (seq < this.lastAppliedSeq && !acceptedStart) return
     const outdated =
       previous !== null &&
       previous.run_id === snapshot.run_id &&
       snapshot.revision < previous.revision
     if (outdated) return
-    this.lastAppliedSeq = seq
+    this.lastAppliedSeq = Math.max(this.lastAppliedSeq, seq)
     const runChanged = previous?.run_id !== snapshot.run_id
+    const previousJournal = this.session.current.journal
+    const lastRunJournal =
+      snapshot.run_id !== null && runChanged
+        ? { ...EMPTY_JOURNAL, runId: snapshot.run_id }
+        : previousJournal.runId === this.session.current.lastRunSnapshot?.run_id
+          ? previousJournal
+          : this.session.current.lastRunJournal
+    const retainedRun = {
+      lastRunSnapshot:
+        snapshot.run_id === null ? (this.session.current.lastRunSnapshot ?? null) : snapshot,
+      ...(lastRunJournal === undefined ? {} : { lastRunJournal }),
+    }
     this.session.update(
       runChanged
         ? {
+            ...retainedRun,
             snapshot,
             journal: { ...EMPTY_JOURNAL, runId: snapshot.run_id },
             selectedHypothesisId: null,
           }
-        : { snapshot },
+        : { ...retainedRun, snapshot },
     )
     this.commands.reconcile(snapshot, seq)
   }

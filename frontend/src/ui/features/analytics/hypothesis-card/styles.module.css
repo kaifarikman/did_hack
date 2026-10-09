@@ -1,0 +1,20 @@
+.card {
+  min-inline-size: 0;
+  align-content: start;
+}
+.statement {
+  font-size: var(--font-size-subheading);
+  font-weight: var(--weight-medium);
+}
+.secondary {
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-sm);
+}
+.action {
+  display: grid;
+  gap: var(--space-8);
+}
+.evidence {
+  padding-block: var(--space-12);
+  border-block-end: var(--hairline) solid var(--border-hairline);
+}

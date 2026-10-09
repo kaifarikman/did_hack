@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.4",
+  "run_id": "f003c8aca81d463a90ac78411bc3007f",
+  "robot_id": "robot_1",
+  "generation": 7,
+  "observation_sequence": null,
+  "sample_signal_age_s": null,
+  "revision": 0,
+  "route_revision": 0,
+  "plan_revision": 0,
+  "map_revision": 0,
+  "model_revision": 0,
+  "freshness": {
+    "odom": {
+      "age_s": null,
+      "fresh": null
+    },
+    "scan": {
+      "age_s": null,
+      "fresh": null
+    },
+    "battery": {
+      "age_s": null,
+      "fresh": null
+    },
+    "clock": {
+      "age_s": null,
+      "fresh": null
+    }
+  },
+  "status": "starting",
+  "scenario": "easy",
+  "seed": 42,
+  "judge_mode": "local",
+  "planner_mode": "llm",
+  "simulation_time_s": null,
+  "map_id": "map-33a36ebf",
+  "robot_pose": null,
+  "base_position": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5
+  },
+  "battery_remaining": null,
+  "battery_initial": 60.0,
+  "sample_signal": null,
+  "samples_collected": 0,
+  "return_energy_estimate": null,
+  "current_goal": null,
+  "trajectory": [],
+  "planned_path": [],
+  "collected_samples": [],
+  "terrain_estimates": [],
+  "last_error": null,
+  "mission_text": "Собрать как можно больше образцов и вернуться на базу с положительной батареей.",
+  "map_mode": "static",
+  "target_samples": 3,
+  "plan": null,
+  "research": {
+    "sensor": {
+      "state": "ok",
+      "fault": null,
+      "quality": 1.0
+    },
+    "hazards": [],
+    "hypotheses": [],
+    "last_replan_reason": null,
+    "last_replan_detection_id": null,
+    "planner_requests": 0,
+    "active_hypothesis_id": null
+  },
+  "team": null,
+  "task_type": "research",
+  "navigation": null,
+  "analytics": null
+}

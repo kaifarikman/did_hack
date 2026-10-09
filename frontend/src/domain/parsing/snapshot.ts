@@ -7,6 +7,7 @@ import {
   TASK_TYPES,
   type TerrainEstimate,
 } from "../contract"
+import { readAnalytics } from "./analytics"
 import { readNavigation } from "./navigation"
 import {
   arrayOf,
@@ -96,6 +97,7 @@ function parseSnapshotFields(raw: unknown): MissionSnapshot {
   const legacy = schema !== "1.3" && schema !== "1.4"
   return {
     schema_version: schema,
+    analytics: optionalField(source, "analytics", path, nullable(readAnalytics), null),
     robot_id: optionalField(source, "robot_id", path, readString, "robot_1"),
     generation: optionalField(
       source,

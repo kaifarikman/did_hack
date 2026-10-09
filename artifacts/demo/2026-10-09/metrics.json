@@ -1,0 +1,63 @@
+{
+ "runs": [
+  {
+   "source": "artifacts/defense/demo-2026-10-09-seed7",
+   "run_id": "31f8dad3d8ae4296b33e3fa1a7507293",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 3,
+   "returned": true,
+   "battery_left": 29.605153883157993,
+   "false_collects": 1,
+   "hypotheses": 34,
+   "conclusions": {
+    "confirmed": 13,
+    "insufficient": 13,
+    "refuted": 8
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 39,
+   "planner_requests": 39,
+   "route_prediction_error_median": 0.455,
+   "route_predictions": 34
+  }
+ ],
+ "summary": {
+  "easy/static/x1": {
+   "runs": 1,
+   "returned": 1,
+   "statuses": {
+    "completed": 1
+   },
+   "collected_mean": 3,
+   "collected_median": 3,
+   "collected_min_max": [
+    3,
+    3
+   ],
+   "false_collects_mean": 1,
+   "conclusions": {
+    "confirmed": 13,
+    "insufficient": 13,
+    "refuted": 8
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "route_prediction_error_median": 0.455
+  }
+ }
+}

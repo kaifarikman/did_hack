@@ -15,7 +15,10 @@ export function useGridColumns(ref: RefObject<HTMLElement | null>): number {
   useLayoutEffect(() => {
     const element = ref.current
     if (element === null || typeof ResizeObserver === "undefined") return
-    const sync = () => setColumns(countTracks(getComputedStyle(element).gridTemplateColumns))
+    const sync = () => {
+      if (element.getClientRects().length === 0) return
+      setColumns(countTracks(getComputedStyle(element).gridTemplateColumns))
+    }
     sync()
     const observer = new ResizeObserver(sync)
     observer.observe(element)

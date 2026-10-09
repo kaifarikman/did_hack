@@ -1,0 +1,427 @@
+{
+  "summary": {
+    "run_id": "6769a6c2498f4a5bba781209e30f9440",
+    "robot_id": "robot_1",
+    "generation": 4,
+    "observation_sequence": 431,
+    "simulation_time_s": 46.061,
+    "distance_m": 1.104542732294961,
+    "speed_mps": 3.130119891891317e-13,
+    "reserve_energy": 3,
+    "available_energy": 54.701515285693496,
+    "elapsed_sim_s": 43.624,
+    "elapsed_wall_s": 46.70528972899774,
+    "real_time_factor": 0.9340269646783784,
+    "phase": "turning",
+    "phase_seconds": [
+      [
+        "moving",
+        8.580000000000004
+      ],
+      [
+        "turning",
+        6.242000000000001
+      ],
+      [
+        "planning",
+        28.354
+      ],
+      [
+        "stationary",
+        0.44799999999999507
+      ],
+      [
+        "unknown",
+        0
+      ]
+    ],
+    "planner": {
+      "requests": 3,
+      "deadline_timeouts": 3,
+      "fallbacks": 3,
+      "last_wait_wall_s": 10.095469628999126
+    }
+  },
+  "history": [
+    {
+      "simulation_time_s": 2.437,
+      "battery_remaining": 59.99787691424897,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.449695481890107,
+      "speed_mps": null,
+      "phase": "unknown",
+      "continuous": false
+    },
+    {
+      "simulation_time_s": 3.454,
+      "battery_remaining": 59.99697600498668,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4322799462217411,
+      "speed_mps": 1.518253708889103e-14,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 4.459,
+      "battery_remaining": 59.99585394258169,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.435307048589459,
+      "speed_mps": 1.7763568394002532e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 5.557,
+      "battery_remaining": 59.99507779725847,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.3533367436498672,
+      "speed_mps": 8.074349270001122e-14,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 6.564,
+      "battery_remaining": 59.994090367426665,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4052836482856172,
+      "speed_mps": 1.446345591713507e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 7.671,
+      "battery_remaining": 59.99319388804339,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4147765663428484,
+      "speed_mps": 7.741004575368066e-14,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 8.72,
+      "battery_remaining": 59.992206864352305,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4349635886208962,
+      "speed_mps": 1.646192760651074e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 9.841,
+      "battery_remaining": 59.99150594991989,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.3671387676452854,
+      "speed_mps": 4.922849380508463e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 10.881,
+      "battery_remaining": 59.99060620065906,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4247996645876734,
+      "speed_mps": 1.5820678100908466e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 11.916,
+      "battery_remaining": 59.98972402228108,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4240791013449463,
+      "speed_mps": 1.7568364345716554e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 12.928,
+      "battery_remaining": 59.91021116640747,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4105900966691893,
+      "speed_mps": 9.533040790512476e-14,
+      "phase": "turning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 14.003,
+      "battery_remaining": 59.786335883844515,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.4085408598216927,
+      "speed_mps": 0.00002214469702815372,
+      "phase": "turning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 15.008,
+      "battery_remaining": 59.68891094011892,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.3754115715110933,
+      "speed_mps": 0.1142999628605572,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 16.094,
+      "battery_remaining": 59.53790944282716,
+      "return_energy": 2.8082388514594215e-8,
+      "sample_signal": 0.43404690545493557,
+      "speed_mps": 0.15190026157906203,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 17.114,
+      "battery_remaining": 59.401598841710346,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.46808475674898364,
+      "speed_mps": 0.12812999187606147,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 18.139,
+      "battery_remaining": 59.347321926255376,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.4555887290609657,
+      "speed_mps": 1.5832811359584108e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 19.229,
+      "battery_remaining": 59.346896797536175,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.4437276079640034,
+      "speed_mps": 1.3259180968472585e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 20.273,
+      "battery_remaining": 59.3465166701576,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.42710613632277133,
+      "speed_mps": 1.0821818601464185e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 21.314,
+      "battery_remaining": 59.34609217442895,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.44239503723634693,
+      "speed_mps": 7.851517108646138e-14,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 22.326,
+      "battery_remaining": 59.34580467510181,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.41700051975594554,
+      "speed_mps": 1.6411127850299148e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 23.333,
+      "battery_remaining": 59.34549170458454,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.42980375427274603,
+      "speed_mps": 2.1620700102757378e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 24.366,
+      "battery_remaining": 59.345225635176064,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.41162207939189305,
+      "speed_mps": 1.340152882428576e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 25.378,
+      "battery_remaining": 59.34499465371911,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.4494409683294634,
+      "speed_mps": 4.571595732163921e-14,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 26.466,
+      "battery_remaining": 59.34487328406845,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.42369323390947394,
+      "speed_mps": 6.120129584857483e-14,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 27.513,
+      "battery_remaining": 59.301004817119825,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.43893410386372134,
+      "speed_mps": 5.181753664767544e-13,
+      "phase": "turning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 28.532,
+      "battery_remaining": 59.19780299620794,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.4024404840062583,
+      "speed_mps": 5.093566746074496e-13,
+      "phase": "turning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 29.614,
+      "battery_remaining": 59.08141687749902,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.4089094550570641,
+      "speed_mps": 0.07387922684784105,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 30.676,
+      "battery_remaining": 58.93966944646964,
+      "return_energy": 0.5832656800800866,
+      "sample_signal": 0.47118246307997075,
+      "speed_mps": 0.15031506108832626,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 31.689,
+      "battery_remaining": 58.80573758098406,
+      "return_energy": 0.3595053307557065,
+      "sample_signal": 0.39614564760893933,
+      "speed_mps": 0.15474566427201347,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 32.765,
+      "battery_remaining": 58.63658392491819,
+      "return_energy": 0.3595053307557065,
+      "sample_signal": 0.3714985048336273,
+      "speed_mps": 0.1405526024284659,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 33.789,
+      "battery_remaining": 58.471666054001744,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.3694521805989719,
+      "speed_mps": 0.15444013670403872,
+      "phase": "moving",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 34.867,
+      "battery_remaining": 58.34349892844268,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.32573388706070955,
+      "speed_mps": 1.0571362599674904e-13,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 35.876,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.32194575247377427,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 36.876,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.2978311127081582,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 37.891,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.36346666553762197,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 38.947,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.2788175411706362,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 39.951,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.24927629666103232,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 41.028,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.34781821169496324,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 42.04,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.24276471081752496,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 43.101,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.33042082884800356,
+      "speed_mps": 0,
+      "phase": "planning",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 44.205,
+      "battery_remaining": 58.34326533521451,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.2852581469533998,
+      "speed_mps": 0,
+      "phase": "stationary",
+      "continuous": true
+    },
+    {
+      "simulation_time_s": 45.24,
+      "battery_remaining": 58.25005620863434,
+      "return_energy": 0.4655000401554673,
+      "sample_signal": 0.2624061361716489,
+      "speed_mps": 4.470812640459177e-13,
+      "phase": "turning",
+      "continuous": true
+    }
+  ],
+  "history_limit": 180,
+  "sample_interval_s": 1
+}

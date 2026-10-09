@@ -19,22 +19,26 @@ export function NavigationFields(props: NavigationFieldsProps) {
   const { taskType, draft, evaluation, locked } = props
   return (
     <div className={styles.fields}>
-      <Segmented
-        showLabel
-        label={text({ key: "mission:navigation.type" })}
-        value={taskType}
-        onChange={props.onTaskType}
-        disabled={locked}
-        options={[
-          { value: "research", label: text({ key: "mission:navigation.research" }) },
-          {
-            value: "navigation",
-            label: text({ key: "mission:navigation.navigation" }),
-            disabled: !props.supported,
-            disabledReason: text({ key: "mission:navigation.unsupported" }),
-          },
-        ]}
-      />
+      {(props.supported || taskType === "navigation") && (
+        <Segmented
+          showLabel
+          label={text({ key: "mission:navigation.type" })}
+          value={taskType}
+          onChange={props.onTaskType}
+          disabled={locked}
+          options={[
+            { value: "research", label: text({ key: "mission:navigation.research" }) },
+            ...(props.supported
+              ? [
+                  {
+                    value: "navigation" as const,
+                    label: text({ key: "mission:navigation.navigation" }),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      )}
       {taskType === "navigation" && (
         <>
           <p>{text({ key: "mission:navigation.hint" })}</p>

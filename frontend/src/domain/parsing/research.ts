@@ -1,7 +1,6 @@
 import {
   GOAL_KINDS,
   type HazardView,
-  type HypothesisView,
   type MissionGoal,
   type MissionPlanView,
   PLANNER_MODES,
@@ -15,6 +14,7 @@ import {
   type TeamRobotView,
   type TeamView,
 } from "../contract"
+import { readHypothesis } from "./hypothesis"
 import {
   arrayOf,
   enumReader,
@@ -85,20 +85,6 @@ const readHazard: Reader<HazardView> = (value, path) => {
   }
 }
 
-const readHypothesis: Reader<HypothesisView> = (value, path) => {
-  const source = readObject(value, path)
-  return {
-    hypothesis_id: field(source, "hypothesis_id", path, readString),
-    kind: field(source, "kind", path, readString),
-    status: field(source, "status", path, readString),
-    center: field(source, "center", path, readPoint),
-    prediction: field(source, "prediction", path, readString),
-    measurement: field(source, "measurement", path, nullable(readString)),
-    detection_id: field(source, "detection_id", path, nullable(readString)),
-    experiment_id: field(source, "experiment_id", path, nullable(readString)),
-  }
-}
-
 export const readResearch: Reader<ResearchView> = (value, path) => {
   const source = readObject(value, path)
   const sensorPath = `${path}.sensor`
@@ -119,6 +105,13 @@ export const readResearch: Reader<ResearchView> = (value, path) => {
       nullable(readString),
     ),
     planner_requests: field(source, "planner_requests", path, readCount),
+    active_hypothesis_id: optionalField(
+      source,
+      "active_hypothesis_id",
+      path,
+      nullable(readString),
+      null,
+    ),
   }
 }
 

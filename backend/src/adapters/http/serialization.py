@@ -1,6 +1,8 @@
 """Перевод доменных значений в JSON контракта /api/v1 (snake_case, метры, радианы)."""
 from __future__ import annotations
 
+from dataclasses import asdict
+
 import math
 
 from application.run_service import JournalPage
@@ -90,6 +92,7 @@ def snapshot_json(snapshot: MissionSnapshot) -> dict:
         "team": team_json(snapshot),
         "task_type": snapshot.task_type.value,
         "navigation": navigation_json(snapshot),
+        "analytics": None if snapshot.analytics is None else asdict(snapshot.analytics),
     }
 
 
@@ -181,12 +184,19 @@ def research_json(snapshot: MissionSnapshot) -> dict | None:
                 "hypothesis_id": h.hypothesis_id, "kind": h.kind, "status": h.status,
                 "center": point_json(h.center), "prediction": h.prediction, "measurement": h.measurement,
                 "detection_id": h.detection_id, "experiment_id": h.experiment_id,
+                "expected_energy_per_m": h.expected_energy_per_m, "measured_energy_per_m": h.measured_energy_per_m,
+                "measured_distance_m": h.measured_distance_m, "confirm_at_least": h.confirm_at_least,
+                "confirm_at_most": h.confirm_at_most,
+                "expected_signal": h.expected_signal, "measured_signal": h.measured_signal,
+                "baseline_signal": h.baseline_signal, "measurement_count": h.measurement_count,
+                "action": h.action, "conclusion": h.conclusion,
             }
             for h in view.hypotheses
         ],
         "last_replan_reason": view.last_replan_reason,
         "last_replan_detection_id": view.last_replan_detection_id,
         "planner_requests": view.planner_requests,
+        "active_hypothesis_id": view.active_hypothesis_id,
     }
 
 

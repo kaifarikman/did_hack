@@ -33,7 +33,8 @@
   "hypothesisKind": {
     "costlyTerrain": "Дорогой грунт",
     "terrainChange": "Смена грунта",
-    "unknown": "Гипотеза «{{kind}}»"
+    "unknown": "Гипотеза «{{kind}}»",
+    "sampleSignal": "Сигнал образца у цели"
   },
   "label": {
     "premises": "Предпосылки",
@@ -61,5 +62,19 @@
     "value": "{{energy}} усл. ед./м",
     "valueSpread": "{{energy}} ± {{spread}} усл. ед./м",
     "regime": "режим {{regime}}"
+  },
+  "experiment": {
+    "prediction": "Прогноз до эксперимента",
+    "action": "Действие для проверки",
+    "measurement": "Независимое измерение",
+    "conclusion": "Вывод",
+    "pending": "Ожидаем завершения проверки.",
+    "missing": "Недостаточно независимых измерений.",
+    "signalEvidence": "Измерения сигнала · 0–1",
+    "forecastSignal": "Прогноз сигнала",
+    "measuredSignal": "Измеренный сигнал",
+    "baselineSignal": "Сигнал до движения",
+    "measurementCount": "Независимые показания",
+    "signalNote": "Сигнал — относительное показание от 0 до 1, а не вероятность или энергия. Показаны только измерения завершённой проверки."
   }
 }

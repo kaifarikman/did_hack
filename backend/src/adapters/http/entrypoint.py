@@ -84,6 +84,8 @@ def create_default_app() -> FastAPI:
     maps = _LazyMap(Path(os.environ.get("MAP_YAML", "/workspace/simulation/judge/data/map.yaml")))
     journal = JsonlJournal(Path(os.environ.get("JOURNAL_DIR", "/data/journal")))
     llm_config = LlmConfig.from_environment()
+    if llm_config is not None:
+        llm_config.validate_execution_deadline(settings.planner_timeout_s)
     runtime = RosRuntime(
         observation_max_age_s=settings.observation_max_age_s,
         odom_topic=os.environ.get("ROS_ODOM_TOPIC", "/odom"),

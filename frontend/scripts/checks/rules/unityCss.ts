@@ -19,7 +19,11 @@ import {
 import { literalStrings } from "./texts.ts"
 
 export const ALLOWED_BREAKPOINTS = new Set(["30rem", "48rem", "64rem", "75rem"])
-export const SIGNAL_SCOPES = ["src/ui/shared/ui/meter/", "src/ui/features/map/"]
+export const SIGNAL_SCOPES = [
+  "src/ui/features/analytics/metric-chart/",
+  "src/ui/shared/ui/meter/",
+  "src/ui/features/map/",
+]
 const SIGNAL_NAME = /^--(signal|data)-/
 const MEDIA_LENGTH = /(\d*\.?\d+)(rem|px|em)/g
 const SPACING_PROPERTY =

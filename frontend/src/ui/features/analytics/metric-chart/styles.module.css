@@ -1,0 +1,64 @@
+.card {
+  min-inline-size: 0;
+  align-content: start;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  justify-content: space-between;
+}
+.chart {
+  inline-size: 100%;
+  display: block;
+  min-block-size: 12rem;
+}
+.chart text {
+  fill: var(--text-secondary);
+  font-size: var(--font-size-caption);
+  font-variant-numeric: var(--font-numeric);
+}
+.grid {
+  stroke: var(--border-hairline);
+  stroke-width: 1;
+}
+.primary,
+.return {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.primary {
+  stroke: var(--data-path);
+}
+.return {
+  stroke: var(--data-soil-high);
+  stroke-dasharray: 6 4;
+}
+.marker {
+  stroke: var(--data-goal);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.legend {
+  display: flex;
+  gap: var(--space-16);
+  flex-wrap: wrap;
+  font-size: var(--font-size-caption);
+}
+.returnLabel {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: var(--space-4);
+}
+.note {
+  color: var(--text-secondary);
+  font-size: var(--font-size-caption);
+}
+.selection {
+  display: flex;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: var(--font-size-caption);
+}

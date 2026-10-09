@@ -294,3 +294,16 @@ def test_scan_is_projected_with_pose_at_scan_stamp_not_latest_odom(bridge):
     bridge._on_scan(scan)
     point = bridge._scan.value[0]
     assert point.x_m == pytest.approx(0.0) and point.y_m == pytest.approx(-0.5)  # курс 0 момента scan
+
+
+def test_repeated_reads_preserve_signal_measurement_identity(bridge):
+    clock = Clock()
+    clock.clock.sec = 1
+    bridge._on_clock(clock)
+    bridge._odom.value = Pose(0, 0, 0)
+    bridge._on_telemetry(String(data=json.dumps({"generation": 2, "robot_id": "robot_1",
+        "simulation_time_s": 1.0, "battery": 50.0, "signal": 0.4})))
+    first, second = bridge.latest(), bridge.latest()
+    assert first.sample_signal_received_monotonic_s is not None
+    assert first.sample_signal_received_monotonic_s == second.sample_signal_received_monotonic_s
+    assert first.sequence != second.sequence

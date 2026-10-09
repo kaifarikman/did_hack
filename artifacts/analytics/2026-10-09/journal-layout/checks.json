@@ -1,0 +1,60 @@
+{
+  "resize": [
+    {
+      "columns": "2",
+      "width": 2400
+    },
+    {
+      "aligned": true,
+      "below": true,
+      "columns": "1",
+      "overflow": 0,
+      "width": 1280
+    },
+    {
+      "columns": "2",
+      "width": 2400
+    },
+    {
+      "aligned": true,
+      "below": true,
+      "columns": "1",
+      "overflow": 0,
+      "width": 1280
+    },
+    {
+      "columns": "2",
+      "width": 2400
+    },
+    {
+      "aligned": true,
+      "below": true,
+      "columns": "1",
+      "overflow": 0,
+      "width": 1280
+    }
+  ],
+  "tabs": [
+    {
+      "columns": "1",
+      "filter": "Гипотеза",
+      "sharedStack": true
+    },
+    {
+      "columns": "1",
+      "filter": "Гипотеза",
+      "sharedStack": true
+    },
+    {
+      "columns": "1",
+      "filter": "Гипотеза",
+      "sharedStack": true
+    }
+  ],
+  "seedPreserved": 37,
+  "mobile": {
+    "width": 390,
+    "overflow": 0,
+    "columns": 1
+  }
+}

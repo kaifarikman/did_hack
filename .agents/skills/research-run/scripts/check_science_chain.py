@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -25,7 +26,7 @@ def check(entries: list[dict]) -> tuple[list[dict], list[str]]:
     for hypothesis_id in ids:
         related = [e for e in entries if e.get("hypothesis_id") == hypothesis_id]
         first_prediction = next((e["sequence"] for e in related if e.get("expected")), None)
-        experiment = next((e["sequence"] for e in related if e["kind"] == "experiment" and e["title"] == "Проверочный проезд"), None)
+        experiment = next((e["sequence"] for e in related if e["kind"] == "experiment" and e.get("experiment_id")), None)
         conclusion = next((e for e in related if e.get("conclusion")), None)
         measured = conclusion is not None and conclusion.get("observed")
         decision = any(e["title"] == "Вывод учтён в решении" for e in related)
@@ -42,6 +43,25 @@ def check(entries: list[dict]) -> tuple[list[dict], list[str]]:
             continue  # гипотеза ещё не проверена или данных недостаточно без вывода — не дефект
         if first_prediction is None or (experiment is not None and first_prediction > experiment):
             defects.append(f"{hypothesis_id}: прогноз не записан до проверки")
+        decisive = not conclusion["conclusion"].startswith("Недостаточно")
+        if decisive and experiment is None:
+            defects.append(f"{hypothesis_id}: вывод без проверочного эксперимента")
+        if decisive and hypothesis_id.startswith("sample-hypothesis-"):
+            prediction = next((e for e in related if e.get("expected") and e["kind"] == "hypothesis"), {})
+            baseline = next((int(value.removeprefix("observation-")) for value in prediction.get("evidence", [])
+                             if re.fullmatch(r"observation-\d+", value)), None)
+            moment = next((float(value.removeprefix("prediction-monotonic-")) for value in prediction.get("evidence", [])
+                           if re.fullmatch(r"prediction-monotonic-[0-9.]+", value)), None)
+            measurements = []
+            for value in conclusion.get("evidence", []):
+                match = re.fullmatch(r"sample-time-([0-9.]+)-observation-(\d+)", value)
+                if match:
+                    measurements.append((float(match.group(1)), int(match.group(2))))
+            independent = (moment is not None and baseline is not None and len(measurements) >= 3
+                           and len(set(time for time, _ in measurements)) == len(measurements)
+                           and all(time > moment and sequence > baseline for time, sequence in measurements))
+            if not independent:
+                defects.append(f"{hypothesis_id}: нет трёх независимых измерений после прогноза")
         if not conclusion["conclusion"].startswith("Недостаточно") and not measured:
             defects.append(f"{hypothesis_id}: вывод без независимого измерения")
         if not conclusion["conclusion"].startswith("Недостаточно") and not decision:

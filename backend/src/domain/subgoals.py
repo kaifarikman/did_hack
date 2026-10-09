@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 from domain.geometry import Point, Pose
+from domain.run_metrics import RunMetricsSummary
 
 
 class GoalKind(str, Enum):
@@ -59,6 +60,7 @@ class PlanningContext:
     decisions_since_improvement: int
     collect_attempts_here: int
     total_collect_attempts: int
+    metrics: RunMetricsSummary | None = None
     candidates: tuple[Candidate, ...] = ()
     refine_candidates: tuple[Candidate, ...] = ()  # пробы вокруг робота при сильном сигнале
     at_signal_peak: bool = False  # сигнал здесь не ниже соседних измерений: место для попытки сбора

@@ -5,7 +5,11 @@ import type { ControllerSession } from "./session"
 const STALE_CHECK_MAX_MS = 500
 
 interface StatePollingHooks {
-  readonly onSnapshot: (snapshot: MissionSnapshot, seq: number) => void
+  readonly onSnapshot: (
+    snapshot: MissionSnapshot,
+    seq: number,
+    requestedRunId: string | null,
+  ) => void
   readonly onTick: () => void
 }
 
@@ -32,10 +36,11 @@ export class StatePolling {
     this.stateInFlight = true
     const generation = session.generation
     const startedAt = session.scheduler.now()
+    const requestedRunId = session.current.snapshot?.run_id ?? null
     const seq = session.nextRequestSeq()
     try {
       const snapshot = await session.gateway.getState({ signal: session.signal })
-      if (session.isCurrent(generation)) this.hooks.onSnapshot(snapshot, seq)
+      if (session.isCurrent(generation)) this.hooks.onSnapshot(snapshot, seq, requestedRunId)
     } catch (error) {
       if (session.isCurrent(generation))
         session.update({ connectionError: describeError(error) })

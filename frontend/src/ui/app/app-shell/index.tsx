@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import {
   DEFAULT_FIXTURE_SCENARIO,
   FIXTURE_SCENARIOS,
@@ -8,17 +9,21 @@ import type { FixtureControls } from "@/adapters/fixture/fixtureGateway"
 import type { MissionController } from "@/application/missionController"
 import { navigationStartDisabledReason } from "@/application/navigation"
 import type { MissionViewState } from "@/application/viewState"
+import { showStopAction, stopDisabledReason } from "@/application/viewState"
 import type { TeamRobotView } from "@/domain/contract"
+import { AnalyticsPanel } from "@/ui/features/analytics/analytics-panel"
 import { DemoPicker } from "@/ui/features/demo/demo-picker"
 import { JournalCard } from "@/ui/features/journal/journal-card"
 import { LocaleSwitch } from "@/ui/features/locale-switch"
 import { MapCard } from "@/ui/features/map/map-card"
+import { CommandBanner } from "@/ui/features/mission/command-banner"
 import { GOAL_LABELS, STATUS_LABELS } from "@/ui/features/mission/labels"
 import { MissionCard } from "@/ui/features/mission/mission-card"
 import { NavigationFields } from "@/ui/features/mission/navigation-fields"
 import { ResearchCard } from "@/ui/features/research/research-card"
 import { TeamCard } from "@/ui/features/team/team-card"
 import { useMessageText } from "@/ui/shared/i18n"
+import { Button, Segmented } from "@/ui/shared/ui"
 import { AppHeader } from "../app-header"
 import { AppLayout } from "../app-layout"
 import { AppNotices } from "../app-notices"
@@ -42,6 +47,8 @@ function demoLocked(view: MissionViewState): boolean {
 
 export function AppShell({ controller, fixtureControls }: AppShellProps) {
   const view = useMission(controller)
+  const { t } = useTranslation("analytics")
+  const [section, setSection] = useState<"control" | "analytics">("control")
   const navigation = useNavigation(view)
   const navigationSupported = navigationStartDisabledReason(view) === null
   const [viewMode] = useState(() => readViewMode(window.location.search))
@@ -71,6 +78,18 @@ export function AppShell({ controller, fixtureControls }: AppShellProps) {
   return (
     <AppLayout
       view={viewMode}
+      workspaceActive={section === "analytics"}
+      workspace={
+        <>
+          <CommandBanner command={view.command} controller={controller} />
+          <AnalyticsPanel
+            view={view}
+            onExport={(analytics) =>
+              downloadJson(`metrics-${analytics.summary.run_id}.json`, analytics)
+            }
+          />
+        </>
+      }
       restLabel={text({ key: "mission:panels.details" })}
       extraLabel={text({ key: "mission:panels.research" })}
       header={
@@ -78,6 +97,34 @@ export function AppShell({ controller, fixtureControls }: AppShellProps) {
           brand={text({ key: "common:app.name" })}
           demo={demo}
           locale={<LocaleSwitch />}
+          navigation={
+            <Segmented
+              label={t("navigation")}
+              value={section}
+              onChange={setSection}
+              options={[
+                { value: "control", label: t("controlTab") },
+                { value: "analytics", label: t("tab") },
+              ]}
+            />
+          }
+          action={
+            section === "analytics" && showStopAction(view) ? (
+              <Button
+                icon="stop"
+                variant="dark"
+                size="compact"
+                disabled={stopDisabledReason(view) !== null}
+                pending={
+                  view.command.kind === "stop" &&
+                  (view.command.phase === "sending" || view.command.phase === "awaiting")
+                }
+                onClick={() => void controller.stopRun()}
+              >
+                {text({ key: "mission:action.stop" })}
+              </Button>
+            ) : undefined
+          }
         />
       }
       notice={<AppNotices view={view} />}

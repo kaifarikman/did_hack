@@ -1,0 +1,55 @@
+{
+ "runs": [
+  {
+   "source": "artifacts/analysis/easy-hypotheses-2026-10-09",
+   "run_id": "de380e866cfd40328f110832e98da7fd",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "failed",
+   "error": "observations_stale",
+   "collected": 1,
+   "returned": false,
+   "battery_left": 49.19486834645664,
+   "false_collects": 0,
+   "hypotheses": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 13,
+   "planner_requests": 13,
+   "route_prediction_error_median": 0.94,
+   "route_predictions": 11
+  }
+ ],
+ "summary": {
+  "easy/static/x1": {
+   "runs": 1,
+   "returned": 0,
+   "statuses": {
+    "failed": 1
+   },
+   "collected_mean": 1,
+   "collected_median": 1,
+   "collected_min_max": [
+    1,
+    1
+   ],
+   "false_collects_mean": 0,
+   "conclusions": {},
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "route_prediction_error_median": 0.94
+  }
+ }
+}

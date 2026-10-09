@@ -16,7 +16,7 @@ from dataclasses import dataclass
 import rclpy
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
-from rclpy.executors import MultiThreadedExecutor
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.signals import SignalHandlerOptions
@@ -271,6 +271,7 @@ class RosBridge(Node):
                 penalty_recent=penalty,
                 sequence=self._observation_sequence,
                 generation=self._generation,
+                sample_signal_received_monotonic_s=self._signal.received_s,
                 sample_signal_age_s=(None if self._signal.received_s is None
                                      else max(0.0, now - self._signal.received_s)),
                 scan_obstacles=tuple(self._scan.value or ()),
@@ -398,7 +399,9 @@ class RosRuntime:
         self._shutdown_lock = threading.Lock()
         self._closed = False
         self.bridge = RosBridge(**bridge_options)
-        self._executor = MultiThreadedExecutor(num_threads=4)
+        # All callbacks use one MutuallyExclusive group and are non-blocking.
+        # A worker pool adds contention at the ~1 kHz clock rate without parallelism.
+        self._executor = SingleThreadedExecutor()
         self._executor.add_node(self.bridge)
         self._thread = threading.Thread(target=self._executor.spin, name="ros-spin", daemon=True)
         self._thread.start()

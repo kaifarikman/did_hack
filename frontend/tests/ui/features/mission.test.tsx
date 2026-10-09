@@ -83,22 +83,26 @@ describe("MissionForm", () => {
     ).toBeGreaterThan(0)
   })
 
-  it("disables options the environment does not support", () => {
+  it("hides unsupported options and shows fixed capabilities as text", () => {
     const view = viewOf({
       snapshot: frame("success", -1),
       health: {
         ...READY_HEALTH,
         supported_scenarios: ["easy"],
         supported_robot_counts: [1],
+        supported_map_modes: ["static"],
       },
     })
     renderWithLocale(
       <MissionForm view={view} onStart={() => undefined} onStop={() => undefined} />,
     )
-    expect(
-      screen.getByRole("radio", { name: RU.mission.scenario.medium }).hasAttribute("disabled"),
-    ).toBe(true)
-    expect(screen.getByRole("radio", { name: "2" }).hasAttribute("disabled")).toBe(true)
+    expect(screen.queryByRole("radio", { name: RU.mission.scenario.medium })).toBeNull()
+    expect(screen.queryByRole("radio", { name: RU.mission.mapMode.slam })).toBeNull()
+    expect(screen.queryByRole("radio", { name: "2" })).toBeNull()
+    expect(screen.queryByRole("radio", { name: "1" })).toBeNull()
+    expect(screen.getByText(RU.mission.form.robots)).toBeTruthy()
+    expect(screen.getByText(RU.mission.mapMode.static)).toBeTruthy()
+    expect(screen.getByText("1")).toBeTruthy()
   })
 
   it("keeps a blocked Start focusable and does not submit", () => {

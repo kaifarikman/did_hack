@@ -172,3 +172,97 @@ def test_key_is_sent_only_to_transport_and_never_in_payload_or_errors():
     assert SECRET not in str(caught.value)
     for _, payload, api_key, _ in transport.requests:
         assert api_key == SECRET and SECRET not in json.dumps(payload, ensure_ascii=False)
+
+
+def test_retry_uses_remaining_total_budget_and_stops_after_exhaustion(monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr("adapters.llm.openai_planner.time.monotonic", lambda: clock[0])
+    class SlowTransport(FakeTransport):
+        def post_json(self, url, payload, api_key, timeout_s):
+            reply = super().post_json(url, payload, api_key, timeout_s)
+            clock[0] += 0.75
+            return reply
+    transport = SlowTransport([chat("invalid"), chat("invalid")])
+    with pytest.raises(PlannerError):
+        OpenAiCompatiblePlanner(CONFIG, transport).propose(context(), never)
+    assert transport.requests[0][3] == 1
+    assert transport.requests[1][3] == 0.25
+
+
+def test_transport_consuming_budget_does_not_start_another_request(monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr("adapters.llm.openai_planner.time.monotonic", lambda: clock[0])
+    class TimeoutTransport(FakeTransport):
+        def post_json(self, url, payload, api_key, timeout_s):
+            self.requests.append((url, payload, api_key, timeout_s))
+            clock[0] += timeout_s
+            raise TransportError("таймаут")
+    transport = TimeoutTransport([])
+    with pytest.raises(PlannerError):
+        OpenAiCompatiblePlanner(CONFIG, transport).propose(context(), never)
+    assert len(transport.requests) == 1
+
+
+def test_cancelled_during_response_does_not_parse_or_return_late_plan():
+    cancelled = [False]
+    class LateTransport(FakeTransport):
+        def post_json(self, *arguments):
+            cancelled[0] = True
+            return chat(GOOD)
+    with pytest.raises(PlannerError, match="отменён"):
+        OpenAiCompatiblePlanner(CONFIG, LateTransport([])).propose(context(), lambda: cancelled[0])
+
+
+def test_repeated_provider_failures_open_circuit_then_success_closes_it(monkeypatch):
+    from dataclasses import replace
+    clock = [0.0]
+    monkeypatch.setattr("adapters.llm.openai_planner.time.monotonic", lambda: clock[0])
+    transport = FakeTransport([TransportError("HTTP 503"), TransportError("HTTP 503"), chat(GOOD), chat(GOOD)])
+    planner = OpenAiCompatiblePlanner(replace(CONFIG, max_attempts=1), transport)
+    for _ in range(2):
+        with pytest.raises(PlannerError, match="HTTP 503"):
+            planner.propose(context(), never)
+    for _ in range(5):
+        with pytest.raises(PlannerError, match="паузы восстановления"):
+            planner.propose(context(), never)
+    assert len(transport.requests) == 2
+    clock[0] = 30
+    assert planner.propose(context(), never).source == "llm"
+    assert planner.propose(context(), never).source == "llm"
+    assert len(transport.requests) == 4
+
+
+def test_failed_recovery_probe_reopens_circuit(monkeypatch):
+    from dataclasses import replace
+    clock = [0.0]
+    monkeypatch.setattr("adapters.llm.openai_planner.time.monotonic", lambda: clock[0])
+    transport = FakeTransport([TransportError("HTTP 503")] * 3)
+    planner = OpenAiCompatiblePlanner(replace(CONFIG, max_attempts=1), transport)
+    for _ in range(2):
+        with pytest.raises(PlannerError):
+            planner.propose(context(), never)
+    clock[0] = 30
+    with pytest.raises(PlannerError, match="HTTP 503"):
+        planner.propose(context(), never)
+    clock[0] = 31
+    with pytest.raises(PlannerError, match="паузы восстановления"):
+        planner.propose(context(), never)
+    assert len(transport.requests) == 3
+
+
+@pytest.mark.parametrize("overrides", [
+    {"timeout_s": 0}, {"timeout_s": float("nan")}, {"max_attempts": 0},
+    {"failure_threshold": 0}, {"recovery_cooldown_s": float("inf")},
+])
+def test_invalid_timing_configuration_fails_early(overrides):
+    from dataclasses import replace
+    with pytest.raises(ValueError):
+        replace(CONFIG, **overrides)
+
+
+def test_llm_budget_must_fit_inside_execution_deadline():
+    CONFIG.validate_execution_deadline(2)
+    with pytest.raises(ValueError, match="execution deadline"):
+        CONFIG.validate_execution_deadline(1)
+    with pytest.raises(ValueError, match="execution deadline"):
+        CONFIG.validate_execution_deadline(0.5)

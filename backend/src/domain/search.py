@@ -158,6 +158,19 @@ class SignalSearch:
             return None
         return (sxs * syy - sys_ * sxy) / determinant, (sys_ * sxx - sxs * sxy) / determinant
 
+    def predicted_signal(self, point: Point) -> float:
+        """Forecast from prior public observations only, before a new route starts."""
+        return self._predicted_signal(point)
+
+    def assimilate_measurement(self, point: Point, signal: float) -> None:
+        """A completed independent probe supersedes older local signal estimates."""
+        self._history = [sample for sample in self._history if distance_m(point, sample.point) > 0.30]
+        self._history.append(_SignalSample(point, signal))
+        self._recent_here = [signal]
+        self._corrected_upto = min(self._corrected_upto, len(self._history))
+        strongest = max(self._history, key=lambda sample: sample.signal)
+        self._best_signal, self._best_point = strongest.signal, strongest.point
+
     def _predicted_signal(self, point: Point) -> float:
         if not self._history:
             return 0.0

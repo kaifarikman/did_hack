@@ -33,6 +33,17 @@ export default defineConfig({
   use: { baseURL: `http://localhost:${PORT}` },
   projects: [
     ...scenarioProjects,
+    ...MOTIONS.map((motion) => ({
+      name: `workspace-${motion}`,
+      testMatch: /workspace\.spec\.ts/,
+      metadata: { width: 1280, motion },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 800 },
+        deviceScaleFactor: 1,
+        reducedMotion: motion === "reduce" ? ("reduce" as const) : ("no-preference" as const),
+      },
+    })),
     {
       name: "fps",
       testMatch: /fps\.spec\.ts/,

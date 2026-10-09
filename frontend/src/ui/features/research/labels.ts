@@ -65,10 +65,11 @@ export const HYPOTHESIS_STATUS_LABELS: Readonly<Record<HypothesisStatus, Researc
   unverified: "research:hypothesis.unverified",
 }
 
-export const HYPOTHESIS_KINDS = ["costly_terrain", "terrain_change"] as const
+export const HYPOTHESIS_KINDS = ["costly_terrain", "terrain_change", "sample_signal"] as const
 type HypothesisKind = (typeof HYPOTHESIS_KINDS)[number]
 
 export const HYPOTHESIS_KIND_LABELS: Readonly<Record<HypothesisKind, ResearchKey>> = {
+  sample_signal: "research:hypothesisKind.sampleSignal",
   costly_terrain: "research:hypothesisKind.costlyTerrain",
   terrain_change: "research:hypothesisKind.terrainChange",
 }

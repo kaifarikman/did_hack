@@ -1,0 +1,50 @@
+{
+  "captured_at": "2026-10-09T10:45:16+00:00",
+  "commit": "8ffd1a2f1abe46d413c82f21a7e488208865e7c6",
+  "working_tree_dirty": true,
+  "working_tree": {
+    "stash_commit": "af6bac6a9bb1dcf7559a1948a6f5a0345cbc38d0",
+    "diff_and_untracked_sha256": "38756a3f47aa1c6609b3321c3224cf453f25451180e1d5a3e3e38d169028a050",
+    "untracked_code_files": 40
+  },
+  "compose_project": "did-defense",
+  "env_file": "scripts/defense/defense.env",
+  "images": [
+    {
+      "service": "did-defense-simulation-1",
+      "repository": "did-sim",
+      "tag": "dev",
+      "id": "sha256:86cc4f9fc0443be2e83bdc3e691f039ff7f987d044b7cf0f18cab5d751bbc775"
+    },
+    {
+      "service": "did-defense-frontend-1",
+      "repository": "did-defense-frontend",
+      "tag": "latest",
+      "id": "sha256:2d6c9284a60232c92d6d5d194c168380a64ca7e70742f0f163ed2433c06e4dd3"
+    },
+    {
+      "service": "did-defense-gui-1",
+      "repository": "did-defense-gui",
+      "tag": "latest",
+      "id": "sha256:0b16187fc6fbd422886975625d74d35523eea578b3b59912f45f7452deb7a37e"
+    },
+    {
+      "service": "did-defense-backend-1",
+      "repository": "did-defense-backend",
+      "tag": "latest",
+      "id": "sha256:e8a195336e8ebfe7ca6765962aacc013a9ac22528db755c3a721bce6b51f444a"
+    }
+  ],
+  "panel_url": "http://localhost:8090",
+  "http_status": {
+    "health": 200,
+    "state": 200,
+    "map": 200
+  },
+  "run_id": "c49cbfb9e7f141648cfc2cf88978e99f",
+  "status": "failed",
+  "schema_version": "1.4",
+  "task_type": "research",
+  "journal_entries": 133,
+  "note": "Перед записью нового демо: сохраняем предыдущий неудачный пользовательский запуск"
+}

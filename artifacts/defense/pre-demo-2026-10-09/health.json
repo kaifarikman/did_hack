@@ -1,0 +1,21 @@
+{
+  "status": "ready",
+  "ros_connected": true,
+  "judge_mode": "local",
+  "llm_available": true,
+  "supported_scenarios": [
+    "easy",
+    "medium",
+    "hard"
+  ],
+  "supported_map_modes": [
+    "static"
+  ],
+  "supported_robot_counts": [
+    1
+  ],
+  "supported_task_types": [
+    "research",
+    "navigation"
+  ]
+}

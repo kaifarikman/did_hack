@@ -2201,7 +2201,8 @@
     "hypotheses": [],
     "last_replan_reason": null,
     "last_replan_detection_id": null,
-    "planner_requests": 0
+    "planner_requests": 0,
+    "active_hypothesis_id": null
   },
   "team": null,
   "task_type": "navigation",
@@ -2215,5 +2216,6 @@
     "target_reached": true,
     "target_reached_at_s": 128.0999999999984,
     "arrival_tolerance_m": 0.12
-  }
+  },
+  "analytics": null
 }

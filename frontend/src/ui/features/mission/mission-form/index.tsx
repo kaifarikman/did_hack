@@ -2,6 +2,7 @@ import { clsx } from "clsx"
 import { type ReactNode, useState } from "react"
 import {
   type MissionViewState,
+  showStopAction,
   startDisabledReason,
   stopDisabledReason,
 } from "@/application/viewState"
@@ -15,6 +16,7 @@ import {
   MissionFields,
   type RobotCount,
 } from "../mission-fields"
+import { supportedDraft } from "../mission-fields/choices"
 import styles from "./styles.module.css"
 
 interface StartRequest {
@@ -65,6 +67,7 @@ function formHint(
   stopHint: string | undefined,
 ): string | undefined {
   if (view.command.phase !== "idle") return undefined
+  if (compact && !showStopAction(view)) return undefined
   return compact ? stopHint : startHint
 }
 
@@ -82,13 +85,23 @@ export function MissionForm({
   className,
 }: MissionFormProps) {
   const text = useMessageText()
-  const [scenario, setScenario] = useState<Scenario>("easy")
-  const [mapMode, setMapMode] = useState<MapMode>("static")
-  const [robots, setRobots] = useState<RobotCount>("1")
+  const [selectedScenario, setScenario] = useState<Scenario>("easy")
+  const [selectedMapMode, setMapMode] = useState<MapMode>("static")
+  const [selectedRobots, setRobots] = useState<RobotCount>("1")
   const [seed, setSeed] = useState<number | null>(DEFAULT_SEED)
   const [missionText, setMissionText] = useState("")
-  const draft: MissionDraft = { scenario, mapMode, robots, seed, missionText }
   const allowed = supportedOf(view)
+  const draft: MissionDraft = supportedDraft(
+    {
+      scenario: selectedScenario,
+      mapMode: selectedMapMode,
+      robots: selectedRobots,
+      seed,
+      missionText,
+    },
+    allowed,
+  )
+  const { scenario, mapMode, robots } = draft
   const unsupported = text({ key: "mission:form.unsupported" })
   const optionalText = (key: MissionKey | null) => (key === null ? undefined : text({ key }))
   const startBlocker = startDisabledReason(view)
@@ -123,31 +136,31 @@ export function MissionForm({
     >
       {scrolled && (
         <div className={styles.body}>
-            {lead}
-            {!compact && taskFields}
-            {!compact && navigation && (
-              <NumberField
-                label={text({ key: "mission:form.seed" })}
-                value={seed}
-                onChange={setSeed}
-                step={1}
-                error={seedError}
-              />
-            )}
+          {lead}
+          {!compact && taskFields}
+          {!compact && navigation && (
+            <NumberField
+              label={text({ key: "mission:form.seed" })}
+              value={seed}
+              onChange={setSeed}
+              step={1}
+              error={seedError}
+            />
+          )}
 
-            {!compact && !navigation && (
-              <MissionFields
-                draft={draft}
-                allowed={allowed}
-                unsupported={unsupported}
-                seedError={seedError}
-                onScenario={setScenario}
-                onMapMode={setMapMode}
-                onRobots={setRobots}
-                onSeed={setSeed}
-                onMissionText={setMissionText}
-              />
-            )}
+          {!compact && !navigation && (
+            <MissionFields
+              draft={draft}
+              allowed={allowed}
+              unsupported={unsupported}
+              seedError={seedError}
+              onScenario={setScenario}
+              onMapMode={setMapMode}
+              onRobots={setRobots}
+              onSeed={setSeed}
+              onMissionText={setMissionText}
+            />
+          )}
         </div>
       )}
       <div className={styles.footer}>
@@ -163,16 +176,18 @@ export function MissionForm({
           >
             {text({ key: "mission:action.start" })}
           </Button>
-          <Button
-            variant="dark"
-            icon="stop"
-            pending={busy && view.command.kind === "stop"}
-            disabled={stopBlocker !== null}
-            disabledReason={stopHint}
-            onClick={onStop}
-          >
-            {text({ key: "mission:action.stop" })}
-          </Button>
+          {showStopAction(view) && (
+            <Button
+              variant="dark"
+              icon="stop"
+              pending={busy && view.command.kind === "stop"}
+              disabled={stopBlocker !== null}
+              disabledReason={stopHint}
+              onClick={onStop}
+            >
+              {text({ key: "mission:action.stop" })}
+            </Button>
+          )}
         </div>
         {hint !== undefined && <p className={styles.hint}>{hint}</p>}
       </div>

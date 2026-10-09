@@ -1,25 +1,13 @@
-import { MAP_MODES, type MapMode, SCENARIOS, type Scenario } from "@/domain/contract"
+import type { MapMode, Scenario } from "@/domain/contract"
 import { useMessageText } from "@/ui/shared/i18n"
-import { NumberField, Segmented, TextArea } from "@/ui/shared/ui"
+import { Eyebrow, NumberField, Segmented, TextArea } from "@/ui/shared/ui"
+import type { SegmentedOption } from "@/ui/shared/ui/segmented"
 import { MAP_MODE_LABELS, SCENARIO_LABELS } from "../labels"
+import { supportedChoices } from "./choices"
+import type { MissionAllowance, MissionDraft, RobotCount } from "./contract"
 import styles from "./styles.module.css"
 
-const ROBOT_COUNTS = ["1", "2"] as const
-export type RobotCount = (typeof ROBOT_COUNTS)[number]
-
-export interface MissionDraft {
-  readonly scenario: Scenario
-  readonly mapMode: MapMode
-  readonly robots: RobotCount
-  readonly seed: number | null
-  readonly missionText: string
-}
-
-export interface MissionAllowance {
-  readonly scenarios: readonly string[]
-  readonly mapModes: readonly string[]
-  readonly robotCounts: readonly number[]
-}
+export type { MissionAllowance, MissionDraft, RobotCount } from "./contract"
 
 export interface MissionFieldsProps {
   readonly draft: MissionDraft
@@ -45,45 +33,37 @@ export function MissionFields({
   onMissionText,
 }: MissionFieldsProps) {
   const text = useMessageText()
+  const choices = supportedChoices(allowed)
   return (
     <div className={styles.fields} data-motion="fade">
-      <Segmented
-        showLabel
-        className={styles.wide}
+      <CapabilityChoice
+        unsupported={unsupported}
         label={text({ key: "mission:form.scenario" })}
         value={draft.scenario}
         onChange={onScenario}
-        options={SCENARIOS.map((value) => ({
+        options={choices.scenarios.map((value) => ({
           value,
           label: text({ key: SCENARIO_LABELS[value] }),
-          disabled: !allowed.scenarios.includes(value),
-          disabledReason: unsupported,
         }))}
       />
-      <Segmented
-        showLabel
-        className={styles.wide}
+      <CapabilityChoice
+        unsupported={unsupported}
         label={text({ key: "mission:form.mapMode" })}
         value={draft.mapMode}
         onChange={onMapMode}
-        options={MAP_MODES.map((value) => ({
+        options={choices.mapModes.map((value) => ({
           value,
           label: text({ key: MAP_MODE_LABELS[value] }),
-          disabled: !allowed.mapModes.includes(value),
-          disabledReason: unsupported,
         }))}
       />
-      <Segmented
-        showLabel
-        className={styles.wide}
+      <CapabilityChoice
+        unsupported={unsupported}
         label={text({ key: "mission:form.robots" })}
         value={draft.robots}
         onChange={onRobots}
-        options={ROBOT_COUNTS.map((value) => ({
+        options={choices.robots.map((value) => ({
           value,
           label: value,
-          disabled: !allowed.robotCounts.includes(Number(value)),
-          disabledReason: unsupported,
         }))}
       />
       <NumberField
@@ -102,6 +82,25 @@ export function MissionFields({
         placeholder={text({ key: "mission:form.missionPlaceholder" })}
         minRows={2}
       />
+    </div>
+  )
+}
+
+interface CapabilityChoiceProps<T extends string> {
+  readonly label: string
+  readonly value: T
+  readonly options: readonly SegmentedOption<T>[]
+  readonly onChange: (value: T) => void
+  readonly unsupported: string
+}
+
+function CapabilityChoice<T extends string>(props: CapabilityChoiceProps<T>) {
+  if (props.options.length > 1)
+    return <Segmented {...props} showLabel className={styles.wide} />
+  return (
+    <div className={styles.wide}>
+      <Eyebrow>{props.label}</Eyebrow>
+      <p>{props.options[0]?.label ?? props.unsupported}</p>
     </div>
   )
 }

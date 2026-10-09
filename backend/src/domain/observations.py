@@ -54,6 +54,8 @@ class Observation:
     freshness: ObservationFreshness | None = None
     scan_obstacles: tuple[Point, ...] = ()  # попадания LaserScan в координатах world
 
+    sample_signal_received_monotonic_s: float | None = None  # stable identity of the public sensor packet
+
     @property
     def motion_critical_missing(self) -> bool:
         """Без позы, батареи или при потере локализации двигаться нельзя."""

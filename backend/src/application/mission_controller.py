@@ -12,6 +12,8 @@ from application.motion import MotionExecutor, MotionState
 from application.navigation_goal import TargetAssessment, assess_navigation_target
 from application.plan_execution import NothingValid, PlanExecutor, Waiting
 from application.research import TerrainResearch
+from application.sample_research import SampleResearch
+from application.run_metrics import RunMetrics
 from application.team import RobotLink
 from application.navigation_service import NavigationService
 from application.ports import (
@@ -28,6 +30,7 @@ from domain.navigation_task import TaskType
 from domain.observations import DEFAULT_ROBOT_ID, LocalizationStatus, Observation
 from domain.target_selection import rank_by_utility
 from domain.search import SignalSearch
+from domain.sample_hypotheses import sample_time
 from domain.settings import MissionSettings
 from domain.subgoals import GoalKind, PlanningContext, Subgoal, TerrainView
 
@@ -97,6 +100,7 @@ class MissionController:
         self._research = research
         self._estimator = research.estimator
         self._search = search
+        self._sample_research = SampleResearch()
         self._goal: Subgoal | None = None
         self._pending_judge: _PendingJudgeOperation | None = None
         # планировщик (LLM) отвечает в фоне, тик не ждёт его; тесты подставляют синхронный исполнитель
@@ -131,6 +135,7 @@ class MissionController:
         self._navigation_return_logged = False
         self._odometer = _Odometer()
         self._blocked: _BlockedEpisode | None = None
+        self._metrics = RunMetrics(settings.return_reserve, settings.pose_jump_m)
 
     # ---------------------------------------------------------------- tick
 
@@ -347,6 +352,7 @@ class MissionController:
         jump = distance_m(previous, observation.pose.point)
         if jump < self._settings.pose_jump_m:
             return
+        self._interrupt_sample("скачок локализации")
         delta = Point(observation.pose.x_m - previous.x_m, observation.pose.y_m - previous.y_m)
         self._research.discard_segment()
         self._search.shift_since_correction(delta)
@@ -405,6 +411,7 @@ class MissionController:
         )
 
     def _finish_stop(self) -> None:
+        self._interrupt_sample("миссия остановлена")
         self._plans.cancel()
         self._pending_judge = None
         self._ports.motion.stop()
@@ -430,6 +437,7 @@ class MissionController:
         self._fail("internal_error", message)
 
     def _fail(self, code: str, message: str, retryable: bool = False) -> None:
+        self._interrupt_sample(code)
         self._ports.motion.stop()
         self._pending_judge = None
         self._mission.fail(MissionError(code, message, retryable))
@@ -483,6 +491,7 @@ class MissionController:
         now = self._ports.clock.monotonic_s()
         if self._localization_lost_since_s is None:
             self._localization_lost_since_s = now
+            self._interrupt_sample("локализация потеряна")
             self._goal = None
             self._log(JournalKind.ERROR, "Локализация потеряна", "Движение остановлено до восстановления позы.")
         elif now - self._localization_lost_since_s > self._settings.localization_recovery_s:
@@ -492,6 +501,9 @@ class MissionController:
 
     def _ingest(self, observation: Observation) -> None:
         self._simulation_time_s = observation.simulation_time_s
+        if self._sample_research.active is not None and (self._goal is None or
+                self._goal.hypothesis_id != self._sample_research.active.hypothesis_id):
+            self._interrupt_sample("проверочная подцель прервана")
         self._check_pose_jump(observation)
         pose = observation.pose
         self._mission.update_telemetry(
@@ -510,6 +522,7 @@ class MissionController:
                 )
             self._write(*self._research.record_event(event, pose.point, observation.localization_error_m))
         self._write(*self._research.observe(observation, self._ports.clock.monotonic_s(), penalty))
+        self._sample_research.observe(observation, self._research.sensor.quality >= 0.8, self._ports.clock.monotonic_s())
         if observation.sample_signal is not None and self._research.sensor.quality > 0:
             self._search.record_signal(pose.point, observation.sample_signal)
         for change in self._research.take_changes():
@@ -522,6 +535,10 @@ class MissionController:
         if self._is_navigation:
             self._odometer.record(pose.point, observation.battery_remaining, self._settings.pose_jump_m)
         self._refresh_return_estimate(observation)
+        self._mission.set_analytics(self._metrics.observe(
+            replace(self._mission.snapshot(), return_energy_estimate=(
+                None if self._return_estimate is None else self._return_estimate * self._localization_margin(observation))),
+            self._ports.clock.monotonic_s(), self._plans.waiting, self._plans.metrics))
 
     def _publish_research(self) -> None:
         research, sensor = self._research, self._research.sensor
@@ -532,13 +549,21 @@ class MissionController:
             hazards=tuple(HazardView(h.detection_id, h.center, h.radius_m, h.hits) for h in research.hazards.sightings),
             hypotheses=tuple(
                 HypothesisView(item.hypothesis_id, item.kind.value, item.status.value, item.center,
-                               item.prediction.describe(), describe_measurement(item), item.detection_id,
-                               item.experiment_id)
+                               item.prediction.describe(), None if item.status.value == "testing" else describe_measurement(item), item.detection_id,
+                               item.experiment_id, item.expected_energy_per_m,
+                               None if item.status.value == "testing" else item.measured_energy_per_m,
+                               0.0 if item.status.value == "testing" else item.measured_distance_m,
+                               item.prediction.confirm_at_least, item.prediction.confirm_at_most)
                 for item in research.hypotheses.items
-            ),
+            ) + self._sample_research.views(),
             last_replan_reason=self._last_replan[0],
             last_replan_detection_id=self._last_replan[1],
             planner_requests=self._plans.requests,
+            active_hypothesis_id=(self._sample_research.active.hypothesis_id if self._sample_research.active is not None else
+                                  self._goal.hypothesis_id if self._goal is not None
+                                  and self._goal.hypothesis_id is not None
+                                  and any(item.hypothesis_id == self._goal.hypothesis_id and item.status.value == "testing"
+                                          for item in research.hypotheses.items) else None),
         ))
 
     def _react_to_change(self, change, observation: Observation) -> None:
@@ -657,6 +682,8 @@ class MissionController:
         self._publish_plan()
         if goal.kind is GoalKind.RETURN:
             self._finish_mission(observation)
+        elif self._sample_research.active is not None and goal.hypothesis_id == self._sample_research.active.hypothesis_id:
+            self._finish_sample(observation)
         elif goal.hypothesis_id is not None:
             self._conclude_experiment(goal.hypothesis_id, observation)
 
@@ -888,6 +915,7 @@ class MissionController:
         sensor = self._research.sensor
         return PlanningContext(
             run_id=self._mission.run_id,
+            metrics=None if self._metrics.view is None else self._metrics.view.summary,
             pose=pose,
             base=self._settings.base,
             battery_remaining=observation.battery_remaining,
@@ -927,7 +955,8 @@ class MissionController:
                 f"{item.hypothesis_id} [{item.status.value}] {item.kind.value} ячейка {item.bucket}: "
                 f"{item.prediction.describe()}"
                 for item in self._research.hypotheses.items[-4:]
-            ),
+            ) + tuple(f"{item.hypothesis_id} [{item.status}] {item.prediction} {item.conclusion or ''}"
+                      for item in self._sample_research.items[-4:]),
             detections=tuple(
                 f"{entry.draft.detection_id}: {entry.draft.title}"
                 for entry in tail if entry.draft.detection_id
@@ -1007,6 +1036,15 @@ class MissionController:
 
     def _start_route(self, observation: Observation, goal: Subgoal, verdict: GoalVerdict) -> None:
         mission = self._mission
+        active = self._sample_research.active
+        if active is not None and goal.hypothesis_id != active.hypothesis_id:
+            self._interrupt_sample("принята другая подцель")
+        if not self._is_navigation and goal.target is not None:
+            hypothesis, notes = self._sample_research.start(
+                observation, goal, self._search.predicted_signal(goal.target), self._research.sensor.quality >= 0.8, self._ports.clock.monotonic_s())
+            self._write(*notes)
+            if hypothesis is not None:
+                goal = replace(goal, hypothesis_id=hypothesis.hypothesis_id)
         if goal.kind is GoalKind.RETURN:
             mission.begin_return()
         self._goal = goal
@@ -1019,6 +1057,7 @@ class MissionController:
             elif goal.target is not None:
                 link.claim(goal.target, self._ports.clock.monotonic_s())
         mission.set_goal(goal, verdict.route.waypoints)
+        self._publish_research()
         self._ports.motion.follow(list(verdict.route.waypoints), start=observation.pose.point)
         if self._repeating_blocked_goal(goal):
             return  # тот же маршрут после остановки перед препятствием: уже записан
@@ -1213,6 +1252,27 @@ class MissionController:
         )
 
     # ----------------------------------------------------------- experiment
+
+    def _interrupt_sample(self, reason: str) -> None:
+        _, notes = self._sample_research.finish(self._simulation_time_s, reason)
+        self._write(*notes)
+        if notes:
+            self._publish_research()
+
+    def _finish_sample(self, observation: Observation) -> None:
+        reason = None if self._research.sensor.quality >= 0.8 and sample_time(observation, self._ports.clock.monotonic_s()) is not None else "датчик недостоверен или устарел"
+        item, notes = self._sample_research.finish(observation.simulation_time_s, reason)
+        self._write(*notes)
+        if item is not None and item.status in ("confirmed", "refuted"):
+            self._search.assimilate_measurement(item.center, item.measured_signal)
+            self._plans.invalidate(f"проверен прогноз {item.hypothesis_id}")
+            self._publish_plan()
+            self._log(JournalKind.DECISION, "Вывод учтён в решении",
+                      "Старые оценки сигнала в радиусе 0.30 м заменены независимой медианой; "
+                      "оставшиеся шаги плана сброшены. Следующий выбор цели использует уточнённый прогноз сигнала.",
+                      hypothesis_id=item.hypothesis_id, experiment_id=item.experiment_id,
+                      observed=item.measurement)
+        self._publish_research()
 
     def _try_experiment(self, observation: Observation) -> bool:
         navigation = self._ports.navigation

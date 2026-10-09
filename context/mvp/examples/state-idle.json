@@ -56,5 +56,6 @@
   "route_revision": 0,
   "plan_revision": 0,
   "map_revision": 0,
-  "model_revision": 0
+  "model_revision": 0,
+  "analytics": null
 }

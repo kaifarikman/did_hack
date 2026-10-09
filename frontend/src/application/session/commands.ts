@@ -16,7 +16,11 @@ import type { ControllerSession } from "./session"
 
 interface CommandHooks {
   readonly generateId: () => string
-  readonly onSnapshot: (snapshot: MissionSnapshot, seq: number) => void
+  readonly onSnapshot: (
+    snapshot: MissionSnapshot,
+    seq: number,
+    startBaselineRunId?: string | null,
+  ) => void
   readonly onAccepted: () => void
   readonly onMapChanged: () => void
 }
@@ -140,7 +144,11 @@ export class CommandDispatcher {
       const snapshot = await this.send(pending)
       if (!session.isCurrent(generation)) return
       session.markLive()
-      this.hooks.onSnapshot(snapshot, seq)
+      this.hooks.onSnapshot(
+        snapshot,
+        seq,
+        pending.kind === "start" ? pending.baselineRunId : undefined,
+      )
       if (this.pending === pending) this.settle(pending, snapshot)
       this.hooks.onAccepted()
     } catch (error) {

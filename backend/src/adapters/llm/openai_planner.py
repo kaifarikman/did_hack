@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import math
+import time
 
 from adapters.llm.config import LlmConfig
 from adapters.llm.prompt import SYSTEM_PROMPT, build_user_message
@@ -118,8 +119,28 @@ class OpenAiCompatiblePlanner:
     def __init__(self, config: LlmConfig, transport: ChatTransport | None = None) -> None:
         self._config = config
         self._transport = transport or UrllibChatTransport()
+        self._consecutive_failures = 0
+        self._retry_after_s = 0.0
 
     def propose(self, context: PlanningContext, is_cancelled: CancelCheck) -> MissionPlan:
+        if is_cancelled():
+            raise PlannerError("запрос отменён")
+        if time.monotonic() < self._retry_after_s:
+            raise PlannerError("LLM временно недоступна; повтор после паузы восстановления")
+        try:
+            plan = self._request(context, is_cancelled)
+        except PlannerError:
+            if not is_cancelled():
+                self._consecutive_failures += 1
+                if self._consecutive_failures >= self._config.failure_threshold:
+                    self._retry_after_s = time.monotonic() + self._config.recovery_cooldown_s
+            raise
+        self._consecutive_failures = 0
+        self._retry_after_s = 0.0
+        return plan
+
+    def _request(self, context: PlanningContext, is_cancelled: CancelCheck) -> MissionPlan:
+        deadline_s = time.monotonic() + self._config.timeout_s
         payload = {
             "model": self._config.model,
             "temperature": 0.2,
@@ -133,10 +154,17 @@ class OpenAiCompatiblePlanner:
         for _ in range(self._config.max_attempts):
             if is_cancelled():
                 raise PlannerError("запрос отменён")
+            remaining_s = deadline_s - time.monotonic()
+            if remaining_s <= 0:
+                break
             try:
                 reply = self._transport.post_json(
-                    self._config.endpoint, payload, self._config.api_key, self._config.timeout_s
+                    self._config.endpoint, payload, self._config.api_key, remaining_s
                 )
+                if is_cancelled():
+                    raise PlannerError("запрос отменён")
+                if time.monotonic() >= deadline_s:
+                    raise PlannerError("LLM не ответила в общий срок запроса")
                 content = reply["choices"][0]["message"]["content"]
                 if not isinstance(content, str):
                     raise LlmResponseError("content не строка")

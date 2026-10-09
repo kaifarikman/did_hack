@@ -1,0 +1,63 @@
+{
+ "runs": [
+  {
+   "source": "artifacts/analysis/easy-science-fixed-2026-10-09/f003c8aca81d463a90ac78411bc3007f",
+   "run_id": "f003c8aca81d463a90ac78411bc3007f",
+   "profile": "easy",
+   "map_mode": "static",
+   "robot_count": 1,
+   "status": "completed",
+   "error": null,
+   "collected": 1,
+   "returned": true,
+   "battery_left": 37.7626431841631,
+   "false_collects": 0,
+   "hypotheses": 24,
+   "conclusions": {
+    "refuted": 8,
+    "confirmed": 11,
+    "insufficient": 5
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "plans_with_fallback_reason": 26,
+   "planner_requests": 26,
+   "route_prediction_error_median": 0.6,
+   "route_predictions": 24
+  }
+ ],
+ "summary": {
+  "easy/static/x1": {
+   "runs": 1,
+   "returned": 1,
+   "statuses": {
+    "completed": 1
+   },
+   "collected_mean": 1,
+   "collected_median": 1,
+   "collected_min_max": [
+    1,
+    1
+   ],
+   "false_collects_mean": 0,
+   "conclusions": {
+    "refuted": 8,
+    "confirmed": 11,
+    "insufficient": 5
+   },
+   "detections": {
+    "terrain": 0,
+    "hazard": 0,
+    "sensor": 0
+   },
+   "replans": 0,
+   "plans_llm": 0,
+   "route_prediction_error_median": 0.6
+  }
+ }
+}

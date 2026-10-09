@@ -58,6 +58,10 @@ services:
       LLM_ENDPOINT: ${LLM_ENDPOINT:-}
       LLM_MODEL: ${LLM_MODEL:-}
       LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_TIMEOUT_S: "${LLM_TIMEOUT_S:-8}"
+      LLM_MAX_ATTEMPTS: "${LLM_MAX_ATTEMPTS:-2}"
+      LLM_FAILURE_THRESHOLD: "${LLM_FAILURE_THRESHOLD:-2}"
+      LLM_RECOVERY_COOLDOWN_S: "${LLM_RECOVERY_COOLDOWN_S:-30}"
     volumes:
       - ./simulation/judge/data:/workspace/simulation/judge/data:ro
       - journal:/data/journal

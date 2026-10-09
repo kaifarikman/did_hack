@@ -14,6 +14,7 @@ from domain.navigation_task import NavigationPhase, NavigationTask, NavigationVi
 from domain.observations import ObservationFreshness
 from domain.plans import MissionPlan, StepStatus
 from domain.subgoals import Subgoal
+from domain.run_metrics import RunMetricsView
 
 TRAJECTORY_LIMIT = 500
 
@@ -128,6 +129,7 @@ class MissionSnapshot:
     team: "TeamView | None" = None
     task_type: TaskType = TaskType.RESEARCH
     navigation: NavigationView | None = None
+    analytics: RunMetricsView | None = None
 
 
 @dataclass(frozen=True)
@@ -174,6 +176,17 @@ class HypothesisView:
     measurement: str | None
     detection_id: str | None
     experiment_id: str | None
+    expected_energy_per_m: float | None = None
+    measured_energy_per_m: float | None = None
+    measured_distance_m: float = 0.0
+    confirm_at_least: float | None = None
+    confirm_at_most: float | None = None
+    expected_signal: float | None = None
+    measured_signal: float | None = None
+    baseline_signal: float | None = None
+    measurement_count: int = 0
+    action: str | None = None
+    conclusion: str | None = None
 
 
 @dataclass(frozen=True)
@@ -188,6 +201,7 @@ class ResearchView:
     last_replan_reason: str | None = None
     last_replan_detection_id: str | None = None
     planner_requests: int = 0
+    active_hypothesis_id: str | None = None
 
 
 class Mission:
@@ -223,6 +237,7 @@ class Mission:
         self._plan_statuses: tuple[StepStatus, ...] = ()
         self._plan_revision_reason: str | None = None
         self._research_view: ResearchView = ResearchView()
+        self._analytics: RunMetricsView | None = None
         self._judge_mode = judge_mode
         self._planner_mode = planner_mode
         self._map_id = map_id
@@ -423,6 +438,10 @@ class Mission:
             self._revision += 1
             return sample
 
+    def set_analytics(self, analytics: RunMetricsView | None) -> None:
+        with self._lock:
+            self._analytics = analytics
+
     def snapshot(self) -> MissionSnapshot:
         with self._lock:
             return MissionSnapshot(
@@ -464,6 +483,7 @@ class Mission:
                 plan_statuses=self._plan_statuses,
                 plan_revision_reason=self._plan_revision_reason,
                 research=self._research_view,
+                analytics=self._analytics,
                 task_type=self.task_type,
                 navigation=None if self._navigation is None else self._navigation.view(),
             )

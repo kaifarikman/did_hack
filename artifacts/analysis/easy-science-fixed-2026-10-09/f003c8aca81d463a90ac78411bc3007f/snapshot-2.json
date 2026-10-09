@@ -1,0 +1,662 @@
+{
+  "schema_version": "1.4",
+  "run_id": "f003c8aca81d463a90ac78411bc3007f",
+  "robot_id": "robot_1",
+  "generation": 7,
+  "observation_sequence": 100,
+  "sample_signal_age_s": 0.1220955419994425,
+  "revision": 205,
+  "route_revision": 1,
+  "plan_revision": 1,
+  "map_revision": 0,
+  "model_revision": 2,
+  "freshness": {
+    "odom": {
+      "age_s": 0.0005009580054320395,
+      "fresh": true
+    },
+    "scan": {
+      "age_s": 0.0875468330050353,
+      "fresh": true
+    },
+    "battery": {
+      "age_s": 0.1220955419994425,
+      "fresh": true
+    },
+    "clock": {
+      "age_s": 0.0007779160077916458,
+      "fresh": true
+    }
+  },
+  "status": "running",
+  "scenario": "easy",
+  "seed": 42,
+  "judge_mode": "local",
+  "planner_mode": "fallback",
+  "simulation_time_s": 14.3,
+  "map_id": "map-33a36ebf",
+  "robot_pose": {
+    "position_x_m": -1.9749638799778684,
+    "position_y_m": -0.5216813505733555,
+    "heading_rad": -0.8024224287788204
+  },
+  "base_position": {
+    "position_x_m": -2.0,
+    "position_y_m": -0.5
+  },
+  "battery_remaining": 59.88508786256931,
+  "battery_initial": 60.0,
+  "sample_signal": 0.26375724296293884,
+  "samples_collected": 0,
+  "return_energy_estimate": 2.808225017525423e-08,
+  "current_goal": {
+    "kind": "explore",
+    "target": {
+      "position_x_m": -0.9749999999999996,
+      "position_y_m": -1.9749999999999996
+    },
+    "reason": "Прогноз сигнала 0.26; сигнал слабый, исследуем новые области. Путь ≈ 6.8, возврат оттуда ≈ 6.8. (fallback: LLM недоступна: сеть недоступна или таймаут)"
+  },
+  "trajectory": [
+    {
+      "position_x_m": -1.9999999903992307,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399215,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399199,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991863,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991705,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991625,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991657,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992387,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399223,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399207,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991912,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991785,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991628,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991645,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992427,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399227,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992143,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991985,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991825,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991668,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991637,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991668,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399233,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399217,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992012,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991852,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991694,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399164,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991674,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992365,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992207,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399208,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399192,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991794,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399164,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991672,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992414,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992254,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992096,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399197,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399181,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991652,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991683,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992376,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399225,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399209,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991932,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991772,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991668,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991694,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992354,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992196,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992038,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991879,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991752,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399168,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992445,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399232,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399216,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992003,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991843,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991716,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991699,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399239,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992263,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992105,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991945,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991819,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399169,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399172,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992312,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992154,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992027,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991867,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.999999990399171,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991725,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992371,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992212,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992054,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991894,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991768,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991725,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992376,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992218,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903992058,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -1.9999999903991932,
+      "position_y_m": -0.5
+    },
+    {
+      "position_x_m": -2.000078333848765,
+      "position_y_m": -0.49999962678776044
+    },
+    {
+      "position_x_m": -2.000078333848771,
+      "position_y_m": -0.49999962678775983
+    },
+    {
+      "position_x_m": -2.0000783338488892,
+      "position_y_m": -0.49999962678773263
+    },
+    {
+      "position_x_m": -2.0000783338488977,
+      "position_y_m": -0.4999996267877295
+    },
+    {
+      "position_x_m": -2.0000783338488985,
+      "position_y_m": -0.4999996267877292
+    },
+    {
+      "position_x_m": -2.0000772257935338,
+      "position_y_m": -0.5000001784120408
+    },
+    {
+      "position_x_m": -1.9978039922231134,
+      "position_y_m": -0.501453272725023
+    },
+    {
+      "position_x_m": -1.9948618447616302,
+      "position_y_m": -0.5035272674476955
+    },
+    {
+      "position_x_m": -1.9910634725346052,
+      "position_y_m": -0.5065020065007859
+    },
+    {
+      "position_x_m": -1.9865302988380464,
+      "position_y_m": -0.5104245334985872
+    },
+    {
+      "position_x_m": -1.981088039438306,
+      "position_y_m": -0.5155317502075635
+    },
+    {
+      "position_x_m": -1.9749638799778684,
+      "position_y_m": -0.5216813505733555
+    }
+  ],
+  "planned_path": [
+    {
+      "position_x_m": -1.125,
+      "position_y_m": -1.7750000000000004
+    },
+    {
+      "position_x_m": -0.9749999999999996,
+      "position_y_m": -1.9749999999999996
+    }
+  ],
+  "collected_samples": [],
+  "terrain_estimates": [],
+  "last_error": null,
+  "mission_text": "Собрать как можно больше образцов и вернуться на базу с положительной батареей.",
+  "map_mode": "static",
+  "target_samples": 3,
+  "plan": {
+    "plan_id": "plan-1",
+    "source": "fallback",
+    "rationale": "Алгоритмический резерв: Прогноз сигнала 0.26; сигнал слабый, исследуем новые области. Путь ≈ 6.8, возврат оттуда ≈ 6.8.",
+    "premises": [],
+    "fallback_reason": "LLM недоступна: сеть недоступна или таймаут",
+    "revision_reason": null,
+    "steps": [
+      {
+        "kind": "explore",
+        "target": {
+          "position_x_m": -0.9749999999999996,
+          "position_y_m": -1.9749999999999996
+        },
+        "reason": "Прогноз сигнала 0.26; сигнал слабый, исследуем новые области. Путь ≈ 6.8, возврат оттуда ≈ 6.8. (fallback: LLM недоступна: сеть недоступна или таймаут)",
+        "status": "active",
+        "evidence": [],
+        "revise_if": null
+      }
+    ]
+  },
+  "research": {
+    "sensor": {
+      "state": "ok",
+      "fault": null,
+      "quality": 1.0
+    },
+    "hazards": [],
+    "hypotheses": [
+      {
+        "hypothesis_id": "sample-hypothesis-1",
+        "kind": "sample_signal",
+        "status": "testing",
+        "center": {
+          "position_x_m": -0.9749999999999996,
+          "position_y_m": -1.9749999999999996
+        },
+        "prediction": "Сигнал в целевой области ≈ 0.255; медиана новых показаний в [0.155, 0.355].",
+        "measurement": null,
+        "detection_id": null,
+        "experiment_id": "sample-experiment-1",
+        "expected_energy_per_m": null,
+        "measured_energy_per_m": null,
+        "measured_distance_m": 0.0,
+        "confirm_at_least": 0.15538968517607307,
+        "confirm_at_most": 0.35538968517607306,
+        "expected_signal": 0.2553896851760731,
+        "measured_signal": null,
+        "baseline_signal": 0.3063797802498838,
+        "measurement_count": 0,
+        "action": "Доехать к (-0.97, -1.97) и измерить сигнал образцов.",
+        "conclusion": null
+      }
+    ],
+    "last_replan_reason": null,
+    "last_replan_detection_id": null,
+    "planner_requests": 1,
+    "active_hypothesis_id": "sample-hypothesis-1"
+  },
+  "team": null,
+  "task_type": "research",
+  "navigation": null,
+  "analytics": {
+    "summary": {
+      "run_id": "f003c8aca81d463a90ac78411bc3007f",
+      "robot_id": "robot_1",
+      "generation": 7,
+      "observation_sequence": 100,
+      "simulation_time_s": 14.3,
+      "distance_m": 0.03333872931943879,
+      "speed_mps": 0.09332126288073748,
+      "reserve_energy": 3.0,
+      "available_energy": 56.88508783448706,
+      "elapsed_sim_s": 9.211,
+      "elapsed_wall_s": 9.73287466999318,
+      "real_time_factor": 0.9463802126619242,
+      "phase": "moving",
+      "phase_seconds": [
+        [
+          "moving",
+          0.5739999999999998
+        ],
+        [
+          "turning",
+          0.572000000000001
+        ],
+        [
+          "planning",
+          7.972999999999999
+        ],
+        [
+          "stationary",
+          0.09200000000000053
+        ],
+        [
+          "unknown",
+          0.0
+        ]
+      ],
+      "planner": {
+        "requests": 1,
+        "deadline_timeouts": 0,
+        "fallbacks": 1,
+        "last_wait_wall_s": 8.384435795000172
+      }
+    },
+    "history": [
+      {
+        "simulation_time_s": 5.089,
+        "battery_remaining": 59.995414055683014,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.2553896851760731,
+        "speed_mps": null,
+        "phase": "unknown",
+        "continuous": false
+      },
+      {
+        "simulation_time_s": 6.1370000000000005,
+        "battery_remaining": 59.99449090513037,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.29002174759324156,
+        "speed_mps": 1.3183898417423721e-13,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 7.188,
+        "battery_remaining": 59.993680398763,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.22676430691807967,
+        "speed_mps": 6.82157652243914e-13,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 8.217,
+        "battery_remaining": 59.9926904966991,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.24595508892742127,
+        "speed_mps": 1.4220834248007557e-13,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 9.258,
+        "battery_remaining": 59.991875492303514,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.2636820711101087,
+        "speed_mps": 1.3047981938893655e-13,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 10.311,
+        "battery_remaining": 59.99105472994444,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.299054977480158,
+        "speed_mps": 7.558965274043666e-14,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 11.342,
+        "battery_remaining": 59.99015049320281,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.18812232395047523,
+        "speed_mps": 1.7190550058712107e-13,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 12.394,
+        "battery_remaining": 59.98927411171148,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.26939915381033674,
+        "speed_mps": 1.6653345369377333e-13,
+        "phase": "planning",
+        "continuous": true
+      },
+      {
+        "simulation_time_s": 13.44,
+        "battery_remaining": 59.96874861971172,
+        "return_energy": 2.808225017525423e-08,
+        "sample_signal": 0.2850497050885759,
+        "speed_mps": 1.2496795550527194e-12,
+        "phase": "turning",
+        "continuous": true
+      }
+    ],
+    "history_limit": 180,
+    "sample_interval_s": 1.0
+  }
+}

@@ -1,4 +1,5 @@
 import type { Locale } from "./locale"
+import enAnalytics from "./locales/en/analytics.json"
 import enCommon from "./locales/en/common.json"
 import enDemo from "./locales/en/demo.json"
 import enErrors from "./locales/en/errors.json"
@@ -7,6 +8,7 @@ import enMap from "./locales/en/map.json"
 import enMission from "./locales/en/mission.json"
 import enResearch from "./locales/en/research.json"
 import enTeam from "./locales/en/team.json"
+import ruAnalytics from "./locales/ru/analytics.json"
 import ruCommon from "./locales/ru/common.json"
 import ruDemo from "./locales/ru/demo.json"
 import ruErrors from "./locales/ru/errors.json"
@@ -17,6 +19,7 @@ import ruResearch from "./locales/ru/research.json"
 import ruTeam from "./locales/ru/team.json"
 
 export const NAMESPACES = [
+  "analytics",
   "common",
   "errors",
   "mission",
@@ -32,6 +35,7 @@ export type Namespace = (typeof NAMESPACES)[number]
 export const DEFAULT_NAMESPACE: Namespace = "common"
 
 const en = {
+  analytics: enAnalytics,
   common: enCommon,
   errors: enErrors,
   mission: enMission,
@@ -43,6 +47,7 @@ const en = {
 }
 
 const ru = {
+  analytics: ruAnalytics,
   common: ruCommon,
   errors: ruErrors,
   mission: ruMission,

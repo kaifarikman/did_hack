@@ -1,0 +1,9 @@
+{
+  "run_id": "f003c8aca81d463a90ac78411bc3007f",
+  "profile": "easy",
+  "seed": 42,
+  "map_mode": "static",
+  "robot_count": 1,
+  "stand": "Gazebo did-defense local judge",
+  "wall_limit_s": 720
+}
